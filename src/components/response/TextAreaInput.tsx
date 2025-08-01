@@ -1,8 +1,8 @@
-import { Box, Flex, Textarea } from '@mantine/core';
-import { LongTextResponse } from '../../parser/types';
-import { generateErrorMessage } from './utils';
-import { ReactMarkdownWrapper } from '../ReactMarkdownWrapper';
-import classes from './css/Input.module.css';
+import { Box, Flex, Textarea } from "@mantine/core";
+import { LongTextResponse } from "../../parser/types";
+import { generateErrorMessage } from "./utils";
+import { ReactMarkdownWrapper } from "../ReactMarkdownWrapper";
+import classes from "./css/Input.module.css";
 
 export function TextAreaInput({
   response,
@@ -17,31 +17,33 @@ export function TextAreaInput({
   index: number;
   enumerateQuestions: boolean;
 }) {
-  const {
-    placeholder,
-    prompt,
-    required,
-    secondaryText,
-  } = response;
+  const { placeholder, prompt, required, secondaryText } = response;
 
   return (
     <Textarea
       disabled={disabled}
       placeholder={placeholder}
-      label={(
+      label={
         <Flex direction="row" wrap="nowrap" gap={4}>
-          {enumerateQuestions && <Box style={{ minWidth: 'fit-content', fontSize: 16, fontWeight: 500 }}>{`${index}. `}</Box>}
-          <Box style={{ display: 'block' }} className="no-last-child-bottom-padding">
+          {enumerateQuestions && (
+            <Box
+              style={{ minWidth: "fit-content", fontSize: 16, fontWeight: 500 }}
+            >{`${index}. `}</Box>
+          )}
+          <Box
+            style={{ display: "block" }}
+            className="no-last-child-bottom-padding"
+          >
             <ReactMarkdownWrapper text={prompt} required={required} />
           </Box>
         </Flex>
-      )}
+      }
       description={secondaryText}
       radius="md"
       size="md"
       {...answer}
-        // This is necessary so the component doesnt switch from uncontrolled to controlled, which can cause issues.
-      value={answer.value || ''}
+      // This is necessary so the component doesnt switch from uncontrolled to controlled, which can cause issues.
+      value={answer.value || ""}
       error={generateErrorMessage(response, answer)}
       classNames={{ input: classes.fixDisabled }}
     />

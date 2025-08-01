@@ -1,7 +1,7 @@
-import { useSearchParams } from 'react-router';
+import { useSearchParams } from "react-router";
 
 export function useIsAnalysis() {
   const [searchParams] = useSearchParams();
 
-  return !!searchParams.get('participantId');
+  return !!searchParams.get("participantId");
 }

@@ -1,14 +1,17 @@
-import { sanitizeStringForUrl } from './sanitizeStringForUrl';
-import { GlobalConfig, ParsedConfig, StudyConfig } from '../parser/types';
-import { parseStudyConfig } from '../parser/parser';
-import { PREFIX } from './Prefix';
+import { sanitizeStringForUrl } from "./sanitizeStringForUrl";
+import { GlobalConfig, ParsedConfig, StudyConfig } from "../parser/types";
+import { parseStudyConfig } from "../parser/parser";
+import { PREFIX } from "./Prefix";
 
 async function fetchStudyConfig(configLocation: string) {
   const config = await (await fetch(`${PREFIX}${configLocation}`)).text();
   return await parseStudyConfig(config);
 }
 
-export async function getStudyConfig(studyId: string, globalConfig: GlobalConfig) {
+export async function getStudyConfig(
+  studyId: string,
+  globalConfig: GlobalConfig,
+) {
   const configKey = globalConfig.configsList.find(
     (c) => sanitizeStringForUrl(c) === studyId,
   );
@@ -21,8 +24,9 @@ export async function getStudyConfig(studyId: string, globalConfig: GlobalConfig
 
 export async function fetchStudyConfigs(globalConfig: GlobalConfig) {
   const studyConfigs: Record<string, ParsedConfig<StudyConfig> | null> = {};
-  const configPromises = globalConfig.configsList
-    .map(async (configId) => getStudyConfig(configId, globalConfig));
+  const configPromises = globalConfig.configsList.map(async (configId) =>
+    getStudyConfig(configId, globalConfig),
+  );
 
   const configs = await Promise.all(configPromises);
 

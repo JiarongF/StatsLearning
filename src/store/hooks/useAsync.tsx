@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Took this whole thing from https://github.com/datavisyn/visyn_core/blob/develop/src/hooks/useAsync.tsx
-import {
-  useState, useRef, useEffect, useCallback,
-} from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import { useState, useRef, useEffect, useCallback } from "react";
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 // https://stackoverflow.com/questions/48011353/how-to-unwrap-type-of-a-promise
-type Awaited<T> = T extends PromiseLike<infer U> ? { 0: Awaited<U>; 1: U }[U extends PromiseLike<any> ? 0 : 1] : T;
+type Awaited<T> =
+  T extends PromiseLike<infer U>
+    ? { 0: Awaited<U>; 1: U }[U extends PromiseLike<any> ? 0 : 1]
+    : T;
 
-export type useAsyncStatus = 'idle' | 'pending' | 'success' | 'error';
+export type useAsyncStatus = "idle" | "pending" | "success" | "error";
 
 /**
  * Wraps an (async) function and provides value, status and error states.
@@ -34,11 +35,15 @@ export type useAsyncStatus = 'idle' | 'pending' | 'success' | 'error';
  * @param asyncFunction Async function to be wrapped.
  * @param immediate Null if function should not be triggered immediately, or the initial parameter array if immediate.
  */
-export const useAsync = <F extends (...args: any[]) => any, E = Error, T = Awaited<ReturnType<F>>>(
+export const useAsync = <
+  F extends (...args: any[]) => any,
+  E = Error,
+  T = Awaited<ReturnType<F>>,
+>(
   asyncFunction: F,
   immediate: Parameters<F> | null = null,
 ) => {
-  const [status, setStatus] = useState<useAsyncStatus>('idle');
+  const [status, setStatus] = useState<useAsyncStatus>("idle");
   const [value, setValue] = useState<T | null>(null);
   const [error, setError] = useState<E | null>(null);
   const latestPromiseRef = useRef<Promise<T> | null>(null);
@@ -57,23 +62,29 @@ export const useAsync = <F extends (...args: any[]) => any, E = Error, T = Await
   // on every render, but only if asyncFunction changes.
   const execute = useCallback(
     (...args: Parameters<typeof asyncFunction>) => {
-      setStatus('pending');
+      setStatus("pending");
       // Do not unset the value, as we mostly want to retain the last value to avoid flickering, i.e. for "silent" updates.
       // setValue(null);
       setError(null);
       const currentPromise = Promise.resolve(asyncFunction(...args))
         .then((response: T) => {
-          if (mountedRef.current && currentPromise === latestPromiseRef.current) {
+          if (
+            mountedRef.current &&
+            currentPromise === latestPromiseRef.current
+          ) {
             setValue(response);
-            setStatus('success');
+            setStatus("success");
           }
           return response;
         })
         .catch((e: E) => {
-          if (mountedRef.current && currentPromise === latestPromiseRef.current) {
+          if (
+            mountedRef.current &&
+            currentPromise === latestPromiseRef.current
+          ) {
             setValue(null);
             setError(e);
-            setStatus('error');
+            setStatus("error");
           }
           throw e;
         });
@@ -96,6 +107,9 @@ export const useAsync = <F extends (...args: any[]) => any, E = Error, T = Await
   }, [execute, immediate]);
 
   return {
-    execute, status, value, error,
+    execute,
+    status,
+    value,
+    error,
   };
 };

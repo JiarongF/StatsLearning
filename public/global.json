@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/dev/src/parser/GlobalConfigSchema.json",
   "configsList": [
+    "stats-study",
     "tutorial",
     "example-brush-interactions",
     "example-cleveland",
@@ -40,6 +41,9 @@
     "test-step-logic"
   ],
   "configs": {
+    "stats-study": {
+      "path": "stats-study/config.json"
+    },
     "tutorial": {
       "path": "tutorial/config.json"
     },

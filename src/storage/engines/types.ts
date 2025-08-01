@@ -1,31 +1,31 @@
-import { User } from '@firebase/auth';
-import localforage from 'localforage';
-import { v4 as uuidv4 } from 'uuid';
-import throttle from 'lodash.throttle';
-import { StudyConfig } from '../../parser/types';
-import { ParticipantMetadata, Sequence } from '../../store/types';
-import { ParticipantData } from '../types';
-import { hash, isParticipantData } from './utils';
-import { RevisitNotification } from '../../utils/notifications';
+import { User } from "@firebase/auth";
+import localforage from "localforage";
+import { v4 as uuidv4 } from "uuid";
+import throttle from "lodash.throttle";
+import { StudyConfig } from "../../parser/types";
+import { ParticipantMetadata, Sequence } from "../../store/types";
+import { ParticipantData } from "../types";
+import { hash, isParticipantData } from "./utils";
+import { RevisitNotification } from "../../utils/notifications";
 
 export interface StoredUser {
-  email: string,
-  uid: string | null,
+  email: string;
+  uid: string | null;
 }
 
 export interface LocalStorageUser {
-  name: string,
-  email: string,
-  uid: string,
+  name: string;
+  email: string;
+  uid: string;
 }
 
 export type UserOptions = User | LocalStorageUser | null;
 
 export interface UserWrapped {
-  user: UserOptions,
-  determiningStatus: boolean,
-  isAdmin: boolean,
-  adminVerification:boolean
+  user: UserOptions;
+  determiningStatus: boolean;
+  isAdmin: boolean;
+  adminVerification: boolean;
 }
 
 export type SequenceAssignment = {
@@ -37,17 +37,24 @@ export type SequenceAssignment = {
   createdTime: number;
 };
 
-export type REVISIT_MODE = 'dataCollectionEnabled' | 'studyNavigatorEnabled' | 'analyticsInterfacePubliclyAccessible';
+export type REVISIT_MODE =
+  | "dataCollectionEnabled"
+  | "studyNavigatorEnabled"
+  | "analyticsInterfacePubliclyAccessible";
 
-export type StorageObjectType = 'sequenceArray' | 'participantData' | 'config' | string;
+export type StorageObjectType =
+  | "sequenceArray"
+  | "participantData"
+  | "config"
+  | string;
 export type StorageObject<T extends StorageObjectType> =
-  T extends 'sequenceArray'
+  T extends "sequenceArray"
     ? Sequence[]
-    : T extends 'participantData'
-    ? ParticipantData
-    : T extends 'config'
-    ? StudyConfig
-    : Blob; // Fallback for any random string
+    : T extends "participantData"
+      ? ParticipantData
+      : T extends "config"
+        ? StudyConfig
+        : Blob; // Fallback for any random string
 
 export interface CloudStorageEngineError {
   title: string;
@@ -57,27 +64,25 @@ export interface CloudStorageEngineError {
 
 // Success response always has list of notifications which are then presented to user. Notifications can contain pieces which are individual errors from upstream functions.
 interface ActionResponseSuccess {
-  status: 'SUCCESS';
+  status: "SUCCESS";
   error?: undefined;
   notifications?: RevisitNotification[];
 }
 
 // Failed responses never take notifications, only report error. Notifications will be handled in downstream functions.
 interface ActionResponseFailed {
-  status: 'FAILED';
+  status: "FAILED";
   error: CloudStorageEngineError;
   notifications?: undefined;
 }
 
-export type ActionResponse =
-  | ActionResponseSuccess
-  | ActionResponseFailed;
+export type ActionResponse = ActionResponseSuccess | ActionResponseFailed;
 
 // Represents a snapshot name item with an original name and an optional alternate (renamed) name.
-export type SnapshotDocContent = Record<string, { name: string; }>;
+export type SnapshotDocContent = Record<string, { name: string }>;
 
 export abstract class StorageEngine {
-  protected engine: 'localStorage' | 'supabase' | 'firebase';
+  protected engine: "localStorage" | "supabase" | "firebase";
 
   protected testing: boolean;
 
@@ -86,10 +91,10 @@ export abstract class StorageEngine {
   protected connected = false;
 
   protected localForage = localforage.createInstance({
-    name: 'revisit',
+    name: "revisit",
   });
 
-  protected collectionPrefix = import.meta.env.DEV ? 'dev-' : 'prod-';
+  protected collectionPrefix = import.meta.env.DEV ? "dev-" : "prod-";
 
   protected studyId: string | undefined;
 
@@ -115,21 +120,35 @@ export abstract class StorageEngine {
   }
 
   /*
-  * PRIMITIVE METHODS
-  * These methods are provided by the storage engine implementation and are used by the higher-level methods.
-  */
+   * PRIMITIVE METHODS
+   * These methods are provided by the storage engine implementation and are used by the higher-level methods.
+   */
   /* Storage ------------------------------------------------------------- */
   // Gets an object from the storage engine. The object is identified by its type and studyId.
-  protected abstract _getFromStorage<T extends StorageObjectType>(prefix: string, type: T, studyId?: string): Promise<StorageObject<T> | null>;
+  protected abstract _getFromStorage<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+    studyId?: string,
+  ): Promise<StorageObject<T> | null>;
 
   // Pushes an object to the storage engine. The object is identified by its type and studyId.
-  protected abstract _pushToStorage<T extends StorageObjectType>(prefix: string, type: T, objectToUpload: StorageObject<T>): Promise<void>;
+  protected abstract _pushToStorage<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+    objectToUpload: StorageObject<T>,
+  ): Promise<void>;
 
   // Deletes an object from the storage engine. The object is identified by its type and studyId.
-  protected abstract _deleteFromStorage<T extends StorageObjectType>(prefix: string, type: T): Promise<void>;
+  protected abstract _deleteFromStorage<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+  ): Promise<void>;
 
   // Caches an object in the storage engine (using cache headers) to avoid fetching it from the server every time.
-  protected abstract _cacheStorageObject<T extends StorageObjectType>(prefix: string, type: T): Promise<void>;
+  protected abstract _cacheStorageObject<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+  ): Promise<void>;
 
   /* Realtime database --------------------------------------------------- */
   // Verifies that the realtime study database and storage is set up correctly.
@@ -143,19 +162,30 @@ export abstract class StorageEngine {
 
   /* General/Realtime ---------------------------------------------------- */
   // Gets all sequence assignments for the given studyId. The sequence assignments are sorted ascending by timestamp.
-  protected abstract _getAllSequenceAssignments(studyId: string): Promise<SequenceAssignment[]>;
+  protected abstract _getAllSequenceAssignments(
+    studyId: string,
+  ): Promise<SequenceAssignment[]>;
 
   // Creates a sequence assignment for the given participantId and sequenceAssignment. Cloud storage engines should use the realtime database to create the sequence assignment and should use the server to prevent race conditions (i.e. using server timestamps).
-  protected abstract _createSequenceAssignment(participantId: string, sequenceAssignment: SequenceAssignment, withServerTimestamp: boolean): Promise<void>;
+  protected abstract _createSequenceAssignment(
+    participantId: string,
+    sequenceAssignment: SequenceAssignment,
+    withServerTimestamp: boolean,
+  ): Promise<void>;
 
   // Sets the participant to completed in the sequence assignments in the realtime database.
   protected abstract _completeCurrentParticipantRealtime(): Promise<void>;
 
   // Rejects the participant in the realtime database sequence assignments. This must also reverse any claimed sequence assignments.
-  protected abstract _rejectParticipantRealtime(participantId: string): Promise<void>;
+  protected abstract _rejectParticipantRealtime(
+    participantId: string,
+  ): Promise<void>;
 
   // Helper function to claim a sequence assignment of the given participant in the realtime database.
-  protected abstract _claimSequenceAssignment(participantId: string, sequenceAssignment: SequenceAssignment): Promise<void>;
+  protected abstract _claimSequenceAssignment(
+    participantId: string,
+    sequenceAssignment: SequenceAssignment,
+  ): Promise<void>;
 
   // Sets up the study database (firestore, indexedDB, etc.) for the given studyId. Also sets the studyId in the storage engine.
   abstract initializeStudyDb(studyId: string): Promise<void>;
@@ -168,10 +198,17 @@ export abstract class StorageEngine {
   abstract getModes(studyId: string): Promise<Record<REVISIT_MODE, boolean>>;
 
   // Sets the mode for the given studyId. The mode is stored as a record with the mode name as the key and a boolean value indicating whether the mode is enabled or not.
-  abstract setMode(studyId: string, mode: REVISIT_MODE, value: boolean): Promise<void>;
+  abstract setMode(
+    studyId: string,
+    mode: REVISIT_MODE,
+    value: boolean,
+  ): Promise<void>;
 
   // Gets the audio URL for the given task and participantId. This method is used to fetch the audio file from the storage engine.
-  protected abstract _getAudioUrl(task: string, participantId?: string): Promise<string | null>;
+  protected abstract _getAudioUrl(
+    task: string,
+    participantId?: string,
+  ): Promise<string | null>;
 
   // Resets the entire study database for testing purposes. This is used to reset the study database to a clean state for testing.
   protected abstract _testingReset(studyId: string): Promise<void>;
@@ -184,39 +221,59 @@ export abstract class StorageEngine {
   protected abstract _directoryExists(path: string): Promise<boolean>;
 
   // Copies a storage directory and all its contents.
-  protected abstract _copyDirectory(source: string, target: string): Promise<void>;
+  protected abstract _copyDirectory(
+    source: string,
+    target: string,
+  ): Promise<void>;
 
   // Deletes a storage directory and all its contents.
   protected abstract _deleteDirectory(path: string): Promise<void>;
 
   // Copies the realtime data from the source to the target. This is used by createSnapshot to copy the realtime data associated with a snapshot.
-  protected abstract _copyRealtimeData(source: string, target: string): Promise<void>;
+  protected abstract _copyRealtimeData(
+    source: string,
+    target: string,
+  ): Promise<void>;
 
   // Deletes the realtime data for the given target. This is used by removeSnapshotOrLive to delete the realtime data associated with a snapshot or live data.
   protected abstract _deleteRealtimeData(path: string): Promise<void>;
 
   // Adds a directory name to the metadata. This is used by createSnapshot
-  protected abstract _addDirectoryNameToSnapshots(directoryName: string, studyId: string): Promise<void>;
+  protected abstract _addDirectoryNameToSnapshots(
+    directoryName: string,
+    studyId: string,
+  ): Promise<void>;
 
   // Removes a snapshot from the metadata. This is used by removeSnapshotOrLive
-  protected abstract _removeDirectoryNameFromSnapshots(directoryName: string, studyId: string): Promise<void>;
+  protected abstract _removeDirectoryNameFromSnapshots(
+    directoryName: string,
+    studyId: string,
+  ): Promise<void>;
 
   // Updates a snapshot in the metadata. This is used by renameSnapshot
-  protected abstract _changeDirectoryNameInSnapshots(oldName: string, newName: string, studyId: string): Promise<void>;
+  protected abstract _changeDirectoryNameInSnapshots(
+    oldName: string,
+    newName: string,
+    studyId: string,
+  ): Promise<void>;
 
   /*
-  * THROTTLED METHODS
-  * These methods are used to throttle the calls to the storage engine's methods that can be called frequently.
-  */
-  private __throttleVerifyStudyDatabase = throttle(async () => { await this._verifyStudyDatabase(); }, 10000);
+   * THROTTLED METHODS
+   * These methods are used to throttle the calls to the storage engine's methods that can be called frequently.
+   */
+  private __throttleVerifyStudyDatabase = throttle(async () => {
+    await this._verifyStudyDatabase();
+  }, 10000);
 
-  private __throttleSaveAnswers = throttle(async () => { await this._saveAnswers(); }, 3000);
+  private __throttleSaveAnswers = throttle(async () => {
+    await this._saveAnswers();
+  }, 3000);
 
   /*
-  * HIGHER-LEVEL METHODS
-  * These methods are used by the application to interact with the storage engine and provide consistent behavior across different storage engines.
-  * They are built on top of the primitive methods and provide a more user-friendly interface.
-  */
+   * HIGHER-LEVEL METHODS
+   * These methods are used by the application to interact with the storage engine and provide consistent behavior across different storage engines.
+   * They are built on top of the primitive methods and provide a more user-friendly interface.
+   */
   // Verify study database using provided primitive from storage engine with a throttle of 10 seconds.
   protected async verifyStudyDatabase() {
     return await this.__throttleVerifyStudyDatabase();
@@ -229,17 +286,13 @@ export abstract class StorageEngine {
     const configHash = await hash(JSON.stringify(config));
 
     // Push the config to storage and cache it, since it won't change
-    await this._pushToStorage(
-      `configs/${configHash}`,
-      'config',
-      config,
-    );
-    await this._cacheStorageObject(`configs/${configHash}`, 'config');
+    await this._pushToStorage(`configs/${configHash}`, "config", config);
+    await this._cacheStorageObject(`configs/${configHash}`, "config");
 
     // Clear sequence array and current participant data if the config has changed
     if (currentConfigHash && currentConfigHash !== configHash) {
       try {
-        await this._deleteFromStorage('', 'sequenceArray');
+        await this._deleteFromStorage("", "sequenceArray");
       } catch {
         // pass, if this happens, we didn't have a sequence array yet
       }
@@ -251,7 +304,10 @@ export abstract class StorageEngine {
 
   // Gets all configs from the storage engine based on the provided temporary hashes and studyId.
   async getAllConfigsFromHash(tempHashes: string[], studyId: string) {
-    const allConfigs = tempHashes.map(async (singleHash) => [singleHash, await this._getFromStorage(`configs/${singleHash}`, 'config', studyId)]);
+    const allConfigs = tempHashes.map(async (singleHash) => [
+      singleHash,
+      await this._getFromStorage(`configs/${singleHash}`, "config", studyId),
+    ]);
     const configs = (await Promise.all(allConfigs)) as [string, StudyConfig][];
     return Object.fromEntries(configs);
   }
@@ -272,7 +328,7 @@ export abstract class StorageEngine {
 
     // Next check localForage for currentParticipantId
     if (!this.studyId) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
     const currentParticipantId = await this.localForage.getItem(
       `${this.collectionPrefix}${this.studyId}/currentParticipantId`,
@@ -297,9 +353,11 @@ export abstract class StorageEngine {
   async clearCurrentParticipantId() {
     this.currentParticipantId = undefined;
     if (!this.studyId) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
-    return await this.localForage.removeItem(`${this.collectionPrefix}${this.studyId}/currentParticipantId`);
+    return await this.localForage.removeItem(
+      `${this.collectionPrefix}${this.studyId}/currentParticipantId`,
+    );
   }
 
   // This function is one of the most critical functions in the storage engine.
@@ -307,18 +365,21 @@ export abstract class StorageEngine {
   // It handles rejected participants and allows for reusing a rejected participant's sequence.
   protected async _getSequence() {
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
     if (this.studyId === undefined) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
-    let sequenceAssignments = await this._getAllSequenceAssignments(this.studyId);
+    let sequenceAssignments = await this._getAllSequenceAssignments(
+      this.studyId,
+    );
 
     const modes = await this.getModes(this.studyId);
 
     // Find all rejected documents
-    const rejectedDocs = sequenceAssignments
-      .filter((doc) => doc.rejected && !doc.claimed);
+    const rejectedDocs = sequenceAssignments.filter(
+      (doc) => doc.rejected && !doc.claimed,
+    );
     if (rejectedDocs.length > 0) {
       const firstReject = rejectedDocs[0];
       const firstRejectTime = firstReject.timestamp;
@@ -333,9 +394,16 @@ export abstract class StorageEngine {
           createdTime: new Date().getTime(), // Placeholder, will be set to server timestamp in cloud engines
         };
         // Mark the first reject as claimed
-        await this._claimSequenceAssignment(firstReject.participantId, firstReject);
+        await this._claimSequenceAssignment(
+          firstReject.participantId,
+          firstReject,
+        );
         // Set the participant's sequence assignment document
-        await this._createSequenceAssignment(this.currentParticipantId, participantSequenceAssignmentData, false);
+        await this._createSequenceAssignment(
+          this.currentParticipantId,
+          participantSequenceAssignmentData,
+          false,
+        );
       }
     } else if (modes.dataCollectionEnabled) {
       const timestamp = new Date().getTime();
@@ -347,7 +415,11 @@ export abstract class StorageEngine {
         completed: null,
         createdTime: timestamp, // Placeholder, will be set to server timestamp in cloud engines
       };
-      await this._createSequenceAssignment(this.currentParticipantId, participantSequenceAssignmentData, true);
+      await this._createSequenceAssignment(
+        this.currentParticipantId,
+        participantSequenceAssignmentData,
+        true,
+      );
     }
 
     // Query all the intents to get a sequence and find our position in the queue
@@ -356,32 +428,42 @@ export abstract class StorageEngine {
     // Get the latin square
     const sequenceArray = await this.getSequenceArray();
     if (!sequenceArray) {
-      throw new Error('Latin square not initialized');
+      throw new Error("Latin square not initialized");
     }
 
     // Get the current row
-    const intentIndex = sequenceAssignments.filter((assignment) => !assignment.rejected).findIndex(
-      (assignment) => assignment.participantId === this.currentParticipantId,
-    ) % sequenceArray.length;
+    const intentIndex =
+      sequenceAssignments
+        .filter((assignment) => !assignment.rejected)
+        .findIndex(
+          (assignment) =>
+            assignment.participantId === this.currentParticipantId,
+        ) % sequenceArray.length;
     if (sequenceArray.length === 0) {
-      throw new Error('Something really bad happened with sequence assignment');
+      throw new Error("Something really bad happened with sequence assignment");
     }
     // If index = -1, we probably have data collection disabled. Give a random assignment.
     if (intentIndex === -1) {
       return {
-        currentRow: sequenceArray[Math.floor(Math.random() * sequenceArray.length)],
+        currentRow:
+          sequenceArray[Math.floor(Math.random() * sequenceArray.length)],
         creationIndex: 1,
       };
     }
     const currentRow = sequenceArray[intentIndex];
 
     if (!currentRow) {
-      throw new Error('Latin square is empty');
+      throw new Error("Latin square is empty");
     }
 
-    const creationSorted = sequenceAssignments.sort((a, b) => a.createdTime - b.createdTime);
+    const creationSorted = sequenceAssignments.sort(
+      (a, b) => a.createdTime - b.createdTime,
+    );
 
-    const creationIndex = creationSorted.findIndex((assignment) => assignment.participantId === this.currentParticipantId) + 1;
+    const creationIndex =
+      creationSorted.findIndex(
+        (assignment) => assignment.participantId === this.currentParticipantId,
+      ) + 1;
 
     return { currentRow, creationIndex };
   }
@@ -398,17 +480,17 @@ export abstract class StorageEngine {
     // Ensure that we have a participantId
     await this.getCurrentParticipantId(urlParticipantId);
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     // Check if the participant has already been initialized
     const participant = await this._getFromStorage(
       `participants/${this.currentParticipantId}`,
-      'participantData',
+      "participantData",
     );
 
     if (this.studyId === undefined) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
 
     // Get modes
@@ -438,7 +520,7 @@ export abstract class StorageEngine {
     if (modes.dataCollectionEnabled) {
       await this._pushToStorage(
         `participants/${this.currentParticipantId}`,
-        'participantData',
+        "participantData",
         this.participantData,
       );
     }
@@ -449,9 +531,11 @@ export abstract class StorageEngine {
   // Gets all participant IDs for the given studyId
   async getAllParticipantIds(studyId?: string) {
     if (!this.studyId) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
-    const sequenceAssignments = await this._getAllSequenceAssignments(studyId || this.studyId);
+    const sequenceAssignments = await this._getAllSequenceAssignments(
+      studyId || this.studyId,
+    );
     return sequenceAssignments.map((assignment) => assignment.participantId);
   }
 
@@ -460,12 +544,12 @@ export abstract class StorageEngine {
     await this.verifyStudyDatabase();
 
     if (this.currentParticipantId === null && !participantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     const participantData = await this._getFromStorage(
       `participants/${participantId || this.currentParticipantId}`,
-      'participantData',
+      "participantData",
     );
 
     return isParticipantData(participantData) ? participantData : null;
@@ -477,7 +561,7 @@ export abstract class StorageEngine {
 
     const participantData = await this.getParticipantData();
     if (!participantData) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     return participantData.participantTags;
@@ -487,13 +571,15 @@ export abstract class StorageEngine {
   async addParticipantTags(tags: string[]) {
     await this.verifyStudyDatabase();
     if (!this.participantData) {
-      throw new Error('Participant data not initialized');
+      throw new Error("Participant data not initialized");
     }
-    this.participantData.participantTags = [...new Set([...this.participantData.participantTags, ...tags])];
+    this.participantData.participantTags = [
+      ...new Set([...this.participantData.participantTags, ...tags]),
+    ];
 
     await this._pushToStorage(
       `participants/${this.currentParticipantId}`,
-      'participantData',
+      "participantData",
       this.participantData,
     );
   }
@@ -503,31 +589,36 @@ export abstract class StorageEngine {
     await this.verifyStudyDatabase();
 
     if (!this.participantData) {
-      throw new Error('Participant data not initialized');
+      throw new Error("Participant data not initialized");
     }
-    this.participantData.participantTags = this.participantData.participantTags.filter((tag) => !tags.includes(tag));
+    this.participantData.participantTags =
+      this.participantData.participantTags.filter((tag) => !tags.includes(tag));
 
     await this._pushToStorage(
       `participants/${this.currentParticipantId}`,
-      'participantData',
+      "participantData",
       this.participantData,
     );
   }
 
   // Rejects a participant with the given participantId and reason.
-  async rejectParticipant(participantId: string, reason: string, studyId?: string) {
+  async rejectParticipant(
+    participantId: string,
+    reason: string,
+    studyId?: string,
+  ) {
     const participant = await this._getFromStorage(
       `participants/${participantId}`,
-      'participantData',
+      "participantData",
       studyId,
     );
 
     try {
       // If the user doesn't exist or is already rejected, return
       if (
-        !participant
-          || !isParticipantData(participant)
-          || participant.rejected
+        !participant ||
+        !isParticipantData(participant) ||
+        participant.rejected
       ) {
         return;
       }
@@ -539,19 +630,19 @@ export abstract class StorageEngine {
       };
       await this._pushToStorage(
         `participants/${participantId}`,
-        'participantData',
+        "participantData",
         participant,
       );
       await this._rejectParticipantRealtime(participantId);
     } catch (error) {
-      console.warn('Error rejecting participant:', error);
+      console.warn("Error rejecting participant:", error);
     }
   }
 
   // Rejects the current participant with the given reason.
   async rejectCurrentParticipant(reason: string) {
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     return await this.rejectParticipant(this.currentParticipantId, reason);
@@ -567,7 +658,7 @@ export abstract class StorageEngine {
     const participantPulls = participantIds.map(async (participantId) => {
       const participantData = await this._getFromStorage(
         `participants/${participantId}`,
-        'participantData',
+        "participantData",
         studyId,
       );
 
@@ -584,11 +675,19 @@ export abstract class StorageEngine {
   async getParticipantsStatusCounts(studyId: string) {
     const sequenceAssignments = await this._getAllSequenceAssignments(studyId);
 
-    const completed = sequenceAssignments.filter((assignment) => assignment.completed && !assignment.rejected).length;
-    const rejected = sequenceAssignments.filter((assignment) => assignment.rejected).length;
+    const completed = sequenceAssignments.filter(
+      (assignment) => assignment.completed && !assignment.rejected,
+    ).length;
+    const rejected = sequenceAssignments.filter(
+      (assignment) => assignment.rejected,
+    ).length;
     const inProgress = sequenceAssignments.length - completed - rejected;
-    const minTime = sequenceAssignments.length > 0 ? sequenceAssignments[0].timestamp : null;
-    const maxTime = sequenceAssignments.length > 0 ? sequenceAssignments.at(-1)!.timestamp : null;
+    const minTime =
+      sequenceAssignments.length > 0 ? sequenceAssignments[0].timestamp : null;
+    const maxTime =
+      sequenceAssignments.length > 0
+        ? sequenceAssignments.at(-1)!.timestamp
+        : null;
 
     return {
       completed,
@@ -604,22 +703,22 @@ export abstract class StorageEngine {
     await this.verifyStudyDatabase();
 
     if (!this.currentParticipantId || this.participantData === undefined) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     // Push the updated participant data to firebase
     await this._pushToStorage(
       `participants/${this.currentParticipantId}`,
-      'participantData',
+      "participantData",
       this.participantData,
     );
   }
 
   // Save the answer into the local participant data and then call the throttled saveAnswers method.
   // The throttled method calls _saveAnswers which is the actual logic to save the answers to storage
-  async saveAnswers(answers: ParticipantData['answers']) {
+  async saveAnswers(answers: ParticipantData["answers"]) {
     if (!this.currentParticipantId || this.participantData === undefined) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
     // Update the local copy of the participant data
     this.participantData = {
@@ -635,17 +734,17 @@ export abstract class StorageEngine {
     await this.verifyStudyDatabase();
 
     if (!this.studyId) {
-      throw new Error('Study not initialized');
+      throw new Error("Study not initialized");
     }
 
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     // Get the participantData
     const participantData = await this.getParticipantData();
     if (!participantData) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
 
     if (participantData.completed) {
@@ -655,19 +754,23 @@ export abstract class StorageEngine {
     // Get modes
     const modes = await this.getModes(this.studyId);
 
-    const serverEndTime = Object.values(participantData.answers).map((answer) => answer.endTime).reduce((a, b) => Math.max(a, b), 0);
-    const localEndTime = Object.values(this.participantData?.answers || {}).map((answer) => answer.endTime).reduce((a, b) => Math.max(a, b), 0);
+    const serverEndTime = Object.values(participantData.answers)
+      .map((answer) => answer.endTime)
+      .reduce((a, b) => Math.max(a, b), 0);
+    const localEndTime = Object.values(this.participantData?.answers || {})
+      .map((answer) => answer.endTime)
+      .reduce((a, b) => Math.max(a, b), 0);
     if (this.participantData && serverEndTime === localEndTime) {
       this.participantData.completed = true;
       if (modes.dataCollectionEnabled) {
         await this._pushToStorage(
           `participants/${this.currentParticipantId}`,
-          'participantData',
+          "participantData",
           this.participantData,
         );
         await this._cacheStorageObject(
           `participants/${this.currentParticipantId}`,
-          'participantData',
+          "participantData",
         );
 
         await this._completeCurrentParticipantRealtime();
@@ -680,10 +783,7 @@ export abstract class StorageEngine {
   }
 
   // Gets the audio for a specific task and participantId.
-  async getAudio(
-    task: string,
-    participantId: string,
-  ) {
+  async getAudio(task: string, participantId: string) {
     const url = await this._getAudioUrl(task, participantId);
     if (!url) {
       return null;
@@ -691,7 +791,7 @@ export abstract class StorageEngine {
 
     const allAudioList = new Promise<string>((resolve) => {
       const xhr = new XMLHttpRequest();
-      xhr.responseType = 'blob';
+      xhr.responseType = "blob";
       xhr.onload = () => {
         const blob = xhr.response;
 
@@ -699,7 +799,7 @@ export abstract class StorageEngine {
 
         resolve(_url);
       };
-      xhr.open('GET', url);
+      xhr.open("GET", url);
       xhr.send();
     });
 
@@ -707,10 +807,7 @@ export abstract class StorageEngine {
   }
 
   // Saves the audio stream to the storage engine. This method is used to save the audio data from a MediaRecorder stream.
-  async saveAudio(
-    audioStream: MediaRecorder,
-    taskName: string,
-  ) {
+  async saveAudio(audioStream: MediaRecorder, taskName: string) {
     let debounceTimeout: NodeJS.Timeout | null = null;
 
     const listener = async (data: BlobEvent) => {
@@ -719,12 +816,19 @@ export abstract class StorageEngine {
       }
 
       debounceTimeout = setTimeout(async () => {
-        await this._pushToStorage(`audio/${this.currentParticipantId}`, taskName, data.data);
-        await this._cacheStorageObject(`audio/${this.currentParticipantId}`, taskName);
+        await this._pushToStorage(
+          `audio/${this.currentParticipantId}`,
+          taskName,
+          data.data,
+        );
+        await this._cacheStorageObject(
+          `audio/${this.currentParticipantId}`,
+          taskName,
+        );
       }, 500);
     };
 
-    audioStream.addEventListener('dataavailable', listener);
+    audioStream.addEventListener("dataavailable", listener);
     audioStream.requestData();
 
     // Don't clean up the listener. The stream will be destroyed.
@@ -735,8 +839,8 @@ export abstract class StorageEngine {
     await this.verifyStudyDatabase();
 
     const sequenceArrayDocData = await this._getFromStorage(
-      '',
-      'sequenceArray',
+      "",
+      "sequenceArray",
     );
 
     return Array.isArray(sequenceArrayDocData) ? sequenceArrayDocData : null;
@@ -746,7 +850,7 @@ export abstract class StorageEngine {
   async setSequenceArray(latinSquare: Sequence[]) {
     await this.verifyStudyDatabase();
 
-    await this._pushToStorage('', 'sequenceArray', latinSquare);
+    await this._pushToStorage("", "sequenceArray", latinSquare);
   }
 
   protected async __testingReset() {
@@ -770,32 +874,38 @@ export abstract class StorageEngine {
       console.warn(`Source directory ${sourceName} does not exist.`);
 
       return {
-        status: 'FAILED',
+        status: "FAILED",
         error: {
           message:
-              'There is currently no data in your study. A snapshot could not be created.',
-          title: 'Failed to Create Snapshot.',
+            "There is currently no data in your study. A snapshot could not be created.",
+          title: "Failed to Create Snapshot.",
         },
       };
     }
 
     const today = new Date();
     const year = today.getUTCFullYear();
-    const month = (today.getUTCMonth() + 1).toString().padStart(2, '0');
-    const date = today.getUTCDate().toString().padStart(2, '0');
-    const hours = today.getUTCHours().toString().padStart(2, '0');
-    const minutes = today.getUTCMinutes().toString().padStart(2, '0');
-    const seconds = today.getUTCSeconds().toString().padStart(2, '0');
+    const month = (today.getUTCMonth() + 1).toString().padStart(2, "0");
+    const date = today.getUTCDate().toString().padStart(2, "0");
+    const hours = today.getUTCHours().toString().padStart(2, "0");
+    const minutes = today.getUTCMinutes().toString().padStart(2, "0");
+    const seconds = today.getUTCSeconds().toString().padStart(2, "0");
 
     const formattedDate = `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
 
     const targetName = `${this.collectionPrefix}${studyId}-snapshot-${formattedDate}`;
 
-    if (this.getEngine() === 'localStorage') {
+    if (this.getEngine() === "localStorage") {
       await this._copyDirectory(`${sourceName}/`, `${targetName}/`);
     } else {
-      await this._copyDirectory(`${sourceName}/configs`, `${targetName}/configs`);
-      await this._copyDirectory(`${sourceName}/participants`, `${targetName}/participants`);
+      await this._copyDirectory(
+        `${sourceName}/configs`,
+        `${targetName}/configs`,
+      );
+      await this._copyDirectory(
+        `${sourceName}/participants`,
+        `${targetName}/participants`,
+      );
       await this._copyDirectory(`${sourceName}/audio`, `${targetName}/audio`);
       await this._copyDirectory(sourceName, targetName);
       await this._copyRealtimeData(sourceName, targetName);
@@ -804,28 +914,31 @@ export abstract class StorageEngine {
 
     const createSnapshotSuccessNotifications: RevisitNotification[] = [];
     if (deleteData) {
-      const removeSnapshotResponse = await this.removeSnapshotOrLive(sourceName, studyId);
-      if (removeSnapshotResponse.status === 'FAILED') {
+      const removeSnapshotResponse = await this.removeSnapshotOrLive(
+        sourceName,
+        studyId,
+      );
+      if (removeSnapshotResponse.status === "FAILED") {
         createSnapshotSuccessNotifications.push({
           title: removeSnapshotResponse.error.title,
           message: removeSnapshotResponse.error.message,
-          color: 'red',
+          color: "red",
         });
       } else {
         createSnapshotSuccessNotifications.push({
-          title: 'Success!',
-          message: 'Successfully deleted live data.',
-          color: 'green',
+          title: "Success!",
+          message: "Successfully deleted live data.",
+          color: "green",
         });
       }
     }
     createSnapshotSuccessNotifications.push({
-      message: 'Successfully created snapshot',
-      title: 'Success!',
-      color: 'green',
+      message: "Successfully created snapshot",
+      title: "Success!",
+      color: "green",
     });
     return {
-      status: 'SUCCESS',
+      status: "SUCCESS",
       notifications: createSnapshotSuccessNotifications,
     };
   }
@@ -835,9 +948,11 @@ export abstract class StorageEngine {
     targetName: string,
     studyId: string,
   ): Promise<ActionResponse> {
-    const deletionTarget = targetName.startsWith(this.collectionPrefix) ? targetName : `${this.collectionPrefix}${targetName}`;
+    const deletionTarget = targetName.startsWith(this.collectionPrefix)
+      ? targetName
+      : `${this.collectionPrefix}${targetName}`;
     try {
-      if (this.getEngine() === 'localStorage') {
+      if (this.getEngine() === "localStorage") {
         await this._deleteDirectory(`${deletionTarget}/`);
       } else {
         await this._deleteDirectory(`${deletionTarget}/configs`);
@@ -850,22 +965,22 @@ export abstract class StorageEngine {
       await this._removeDirectoryNameFromSnapshots(deletionTarget, studyId);
 
       return {
-        status: 'SUCCESS',
+        status: "SUCCESS",
         notifications: [
           {
-            message: 'Successfully deleted snapshot or live data.',
-            title: 'Success!',
-            color: 'green',
+            message: "Successfully deleted snapshot or live data.",
+            title: "Success!",
+            color: "green",
           },
         ],
       };
     } catch {
       return {
-        status: 'FAILED',
+        status: "FAILED",
         error: {
-          title: 'Failed to delete live data or snapshot',
+          title: "Failed to delete live data or snapshot",
           message:
-              'There was an unspecified error when trying to remove a snapshot or live data.',
+            "There was an unspecified error when trying to remove a snapshot or live data.",
         },
       };
     }
@@ -881,18 +996,18 @@ export abstract class StorageEngine {
     const successNotifications: RevisitNotification[] = [];
     try {
       const createSnapshotResponse = await this.createSnapshot(studyId, true);
-      if (createSnapshotResponse.status === 'FAILED') {
-        console.warn('No live data to capture.');
+      if (createSnapshotResponse.status === "FAILED") {
+        console.warn("No live data to capture.");
         successNotifications.push({
           title: createSnapshotResponse.error.title,
           message: createSnapshotResponse.error.message,
-          color: 'yellow',
+          color: "yellow",
         });
       } else {
         successNotifications.push({
-          title: 'Success!',
-          message: 'Successfully created snapshot of live data.',
-          color: 'green',
+          title: "Success!",
+          message: "Successfully created snapshot of live data.",
+          color: "green",
         });
       }
 
@@ -911,22 +1026,22 @@ export abstract class StorageEngine {
       await this._copyDirectory(snapshotName, originalName);
       await this._copyRealtimeData(snapshotName, originalName);
       successNotifications.push({
-        message: 'Successfully restored snapshot to live data.',
-        title: 'Success!',
-        color: 'green',
+        message: "Successfully restored snapshot to live data.",
+        title: "Success!",
+        color: "green",
       });
       return {
-        status: 'SUCCESS',
+        status: "SUCCESS",
         notifications: successNotifications,
       };
     } catch (error) {
-      console.error('Error trying to delete a snapshot', error);
+      console.error("Error trying to delete a snapshot", error);
       return {
-        status: 'FAILED',
+        status: "FAILED",
         error: {
-          title: 'Failed to restore a snapshot fully.',
+          title: "Failed to restore a snapshot fully.",
           message:
-              'There was an unspecified error when trying to restore this snapshot.',
+            "There was an unspecified error when trying to restore this snapshot.",
         },
       };
     }
@@ -941,29 +1056,32 @@ export abstract class StorageEngine {
     try {
       await this._changeDirectoryNameInSnapshots(key, newName, studyId);
       return {
-        status: 'SUCCESS',
+        status: "SUCCESS",
         notifications: [
           {
-            message: 'Successfully renamed snapshot.',
-            title: 'Success!',
-            color: 'green',
+            message: "Successfully renamed snapshot.",
+            title: "Success!",
+            color: "green",
           },
         ],
       };
     } catch (error) {
-      console.error('Error renaming collection in metadata', error);
+      console.error("Error renaming collection in metadata", error);
       return {
-        status: 'FAILED',
+        status: "FAILED",
         error: {
-          title: 'Failed to Rename Snapshot.',
-          message: 'There was an error when trying to rename the snapshot.',
+          title: "Failed to Rename Snapshot.",
+          message: "There was an error when trying to rename the snapshot.",
         },
       };
     }
   }
 }
 
-export type UserManagementData = { authentication?: { isEnabled: boolean }; adminUsers?: { adminUsersList: StoredUser[] } };
+export type UserManagementData = {
+  authentication?: { isEnabled: boolean };
+  adminUsers?: { adminUsersList: StoredUser[] };
+};
 
 // A StorageEngine that is specifically designed to work with cloud storage solutions like Firebase, Supabase, etc.
 // It extends the StorageEngine class and provides additional methods for cloud storage operations (such as authentication, snapshots, etc.).
@@ -973,15 +1091,24 @@ export abstract class CloudStorageEngine extends StorageEngine {
   protected userManagementData: UserManagementData = {};
 
   /*
-  * PRIMITIVE METHODS
-  * These methods are provided by the storage engine implementation and are used by the higher-level methods.
-  */
+   * PRIMITIVE METHODS
+   * These methods are provided by the storage engine implementation and are used by the higher-level methods.
+   */
   /* User management ----------------------------------------------------- */
   // Gets the user management data for the given key. This is used to get the authentication state or admin users list.
-  abstract getUserManagementData<T extends 'authentication' | 'adminUsers'>(key: T): Promise<(T extends 'authentication' ? { isEnabled: boolean } : { adminUsersList: StoredUser[] }) | undefined>;
+  abstract getUserManagementData<T extends "authentication" | "adminUsers">(
+    key: T,
+  ): Promise<
+    | (T extends "authentication"
+        ? { isEnabled: boolean }
+        : { adminUsersList: StoredUser[] })
+    | undefined
+  >;
 
   // Updates the user management data for the given key. This is used to update the authentication state or admin users list.
-  protected abstract _updateAdminUsersList(adminUsers: { adminUsersList: StoredUser[] }): Promise<void>;
+  protected abstract _updateAdminUsersList(adminUsers: {
+    adminUsersList: StoredUser[];
+  }): Promise<void>;
 
   // Changes the authentication state of the storage engine. This will enable or disable authentication for the storage engine.
   abstract changeAuth(bool: boolean): Promise<void>;
@@ -993,10 +1120,10 @@ export abstract class CloudStorageEngine extends StorageEngine {
   abstract removeAdminUser(email: string): Promise<void>;
 
   /*
-  * HIGHER-LEVEL METHODS
-  * These methods are used by the application to interact with the storage engine and provide consistent behavior across different storage engines.
-  * They are built on top of the primitive methods and provide a more user-friendly interface.
-  */
+   * HIGHER-LEVEL METHODS
+   * These methods are used by the application to interact with the storage engine and provide consistent behavior across different storage engines.
+   * They are built on top of the primitive methods and provide a more user-friendly interface.
+   */
   /* User management --------------------------------------------------- */
   // Gets the user management data for the given key. This is used to get the authentication
   async validateUser(user: UserWrapped | null, refresh = false) {
@@ -1006,9 +1133,9 @@ export abstract class CloudStorageEngine extends StorageEngine {
 
     if (user?.user) {
       // Case 1: Database exists
-      const authInfo = await this.getUserManagementData('authentication');
+      const authInfo = await this.getUserManagementData("authentication");
       if (authInfo?.isEnabled) {
-        const adminUsers = await this.getUserManagementData('adminUsers');
+        const adminUsers = await this.getUserManagementData("adminUsers");
         if (adminUsers && adminUsers.adminUsersList) {
           const adminUsersObject = Object.fromEntries(
             adminUsers.adminUsersList.map((storedUser: StoredUser) => [
@@ -1017,15 +1144,17 @@ export abstract class CloudStorageEngine extends StorageEngine {
             ]),
           );
           // Verifies that, if the user has signed in and thus their UID is added to the Firestore, that the current UID matches the Firestore entries UID. Prevents impersonation (otherwise, users would be able to alter email to impersonate).
-          const isAdmin = user.user.email
-            && (adminUsersObject[user.user.email] === user.user.uid
-              || adminUsersObject[user.user.email] === null);
+          const isAdmin =
+            user.user.email &&
+            (adminUsersObject[user.user.email] === user.user.uid ||
+              adminUsersObject[user.user.email] === null);
           if (isAdmin) {
             // Add UID to user in collection if not existent.
             if (user.user.email && adminUsersObject[user.user.email] === null) {
-              const adminUser: StoredUser | undefined = adminUsers.adminUsersList.find(
-                (u: StoredUser) => u.email === user.user!.email,
-              );
+              const adminUser: StoredUser | undefined =
+                adminUsers.adminUsersList.find(
+                  (u: StoredUser) => u.email === user.user!.email,
+                );
               if (adminUser) {
                 adminUser.uid = user.user.uid;
               }

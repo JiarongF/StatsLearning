@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useRef, useLayoutEffect, useCallback } from 'react';
+import { useRef, useLayoutEffect, useCallback } from "react";
 
 /**
  * Creates a callback that always has the latest version of the given handler.
@@ -17,10 +17,13 @@ import { useRef, useLayoutEffect, useCallback } from 'react';
  * @param handler Event handler to be wrapped.
  * @returns Callback that always has the latest version of the given handler.
  */
-export function useEvent<T extends(...args: any[]) => any, P extends Parameters<T>>(handler: T) {
+export function useEvent<
+  T extends (...args: any[]) => any,
+  P extends Parameters<T>,
+>(handler: T) {
   // @ts-ignore
   const handlerRef = useRef<T>(() => {
-    throw new Error('Cannot call an event handler while rendering.');
+    throw new Error("Cannot call an event handler while rendering.");
   });
 
   useLayoutEffect(() => {

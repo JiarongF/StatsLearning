@@ -1,14 +1,25 @@
 import {
-  Card, Container, Text, LoadingOverlay, Box, Title, Flex, Modal, TextInput, Button, Tooltip, ActionIcon,
-} from '@mantine/core';
-import { useForm, isEmail } from '@mantine/form';
-import { useEffect, useMemo, useState } from 'react';
-import { IconUserPlus, IconAt, IconTrashX } from '@tabler/icons-react';
-import { useAuth } from '../../store/hooks/useAuth';
-import { useStorageEngine } from '../../storage/storageEngineHooks';
-import { StoredUser } from '../../storage/engines/types';
-import { signInWithGoogle } from '../../Login';
-import { isCloudStorageEngine } from '../../storage/engines/utils';
+  Card,
+  Container,
+  Text,
+  LoadingOverlay,
+  Box,
+  Title,
+  Flex,
+  Modal,
+  TextInput,
+  Button,
+  Tooltip,
+  ActionIcon,
+} from "@mantine/core";
+import { useForm, isEmail } from "@mantine/form";
+import { useEffect, useMemo, useState } from "react";
+import { IconUserPlus, IconAt, IconTrashX } from "@tabler/icons-react";
+import { useAuth } from "../../store/hooks/useAuth";
+import { useStorageEngine } from "../../storage/storageEngineHooks";
+import { StoredUser } from "../../storage/engines/types";
+import { signInWithGoogle } from "../../Login";
+import { isCloudStorageEngine } from "../../storage/engines/utils";
 
 export function GlobalSettings() {
   const { user, triggerAuth, logout } = useAuth();
@@ -19,17 +30,19 @@ export function GlobalSettings() {
   const [loading, setLoading] = useState<boolean>(false);
   const [modalAddOpened, setModalAddOpened] = useState<boolean>(false);
   const [modalRemoveOpened, setModalRemoveOpened] = useState<boolean>(false);
-  const [modalEnableAuthOpened, setModalEnableAuthOpened] = useState<boolean>(false);
-  const [modalEnableAuthErrorOpened, setModalEnableAuthErrorOpened] = useState<boolean>(false);
-  const [userToRemove, setUserToRemove] = useState<string>('');
+  const [modalEnableAuthOpened, setModalEnableAuthOpened] =
+    useState<boolean>(false);
+  const [modalEnableAuthErrorOpened, setModalEnableAuthErrorOpened] =
+    useState<boolean>(false);
+  const [userToRemove, setUserToRemove] = useState<string>("");
   const [enableAuthUser, setEnableAuthUser] = useState<StoredUser | null>(null);
 
   const form = useForm({
     initialValues: {
-      email: '',
+      email: "",
     },
     validate: {
-      email: isEmail('Invalid email'),
+      email: isEmail("Invalid email"),
     },
   });
 
@@ -37,11 +50,17 @@ export function GlobalSettings() {
     const determineAuthenticationEnabled = async () => {
       setLoading(true);
       if (storageEngine && isCloudStorageEngine(storageEngine)) {
-        const authInfo = await storageEngine?.getUserManagementData('authentication');
+        const authInfo =
+          await storageEngine?.getUserManagementData("authentication");
         setAuthEnabled(authInfo?.isEnabled || false);
-        const adminUsers = await storageEngine?.getUserManagementData('adminUsers');
+        const adminUsers =
+          await storageEngine?.getUserManagementData("adminUsers");
         if (adminUsers && adminUsers.adminUsersList) {
-          setAuthenticatedUsers(adminUsers?.adminUsersList.map((storedUser: StoredUser) => storedUser.email));
+          setAuthenticatedUsers(
+            adminUsers?.adminUsersList.map(
+              (storedUser: StoredUser) => storedUser.email,
+            ),
+          );
         }
       } else {
         setAuthEnabled(false);
@@ -87,13 +106,18 @@ export function GlobalSettings() {
     setLoading(true);
     if (storageEngine && isCloudStorageEngine(storageEngine)) {
       await storageEngine.addAdminUser({ email: form.values.email, uid: null });
-      const adminUsers = await storageEngine.getUserManagementData('adminUsers');
-      setAuthenticatedUsers(adminUsers?.adminUsersList.map((storedUser: StoredUser) => storedUser.email) || []);
+      const adminUsers =
+        await storageEngine.getUserManagementData("adminUsers");
+      setAuthenticatedUsers(
+        adminUsers?.adminUsersList.map(
+          (storedUser: StoredUser) => storedUser.email,
+        ) || [],
+      );
     }
     setLoading(false);
     setModalAddOpened(false);
     form.setValues({
-      email: '',
+      email: "",
     });
   };
 
@@ -106,66 +130,99 @@ export function GlobalSettings() {
     setLoading(true);
     if (storageEngine && isCloudStorageEngine(storageEngine)) {
       await storageEngine.removeAdminUser(userToRemove);
-      const adminUsers = await storageEngine.getUserManagementData('adminUsers');
-      setAuthenticatedUsers(adminUsers?.adminUsersList.map((storedUser: StoredUser) => storedUser.email) || []);
+      const adminUsers =
+        await storageEngine.getUserManagementData("adminUsers");
+      setAuthenticatedUsers(
+        adminUsers?.adminUsersList.map(
+          (storedUser: StoredUser) => storedUser.email,
+        ) || [],
+      );
     }
     setModalRemoveOpened(false);
     setLoading(false);
   };
 
-  const storageEngineIsCloud = useMemo(() => storageEngine && isCloudStorageEngine(storageEngine), [storageEngine]);
+  const storageEngineIsCloud = useMemo(
+    () => storageEngine && isCloudStorageEngine(storageEngine),
+    [storageEngine],
+  );
 
   return (
     <>
       <Container>
-        <Card withBorder style={{ backgroundColor: '#FAFAFA' }}>
-          <Title mb={20} order={3}>Authentication</Title>
-          {isAuthEnabled
-            ? <Flex><Text>Authentication is enabled.</Text></Flex>
-            : (
-              <Flex justify="space-between">
-                <Box>
-                  <Text>Authentication is currently disabled.</Text>
-                </Box>
-                <Tooltip label="You can only enable auth when using Firebase" disabled={storageEngineIsCloud}>
-                  <Button
-                    onClick={(event) => (!storageEngineIsCloud ? event.preventDefault() : handleEnableAuth())}
-                    color="green"
-                    data-disabled={!storageEngineIsCloud ? true : undefined}
-                    style={{ '&[dataDisabled]': { pointerEvents: 'all' } }}
-                  >
-                    Enable Authentication
-                  </Button>
-                </Tooltip>
+        <Card withBorder style={{ backgroundColor: "#FAFAFA" }}>
+          <Title mb={20} order={3}>
+            Authentication
+          </Title>
+          {isAuthEnabled ? (
+            <Flex>
+              <Text>Authentication is enabled.</Text>
+            </Flex>
+          ) : (
+            <Flex justify="space-between">
+              <Box>
+                <Text>Authentication is currently disabled.</Text>
+              </Box>
+              <Tooltip
+                label="You can only enable auth when using Firebase"
+                disabled={storageEngineIsCloud}
+              >
+                <Button
+                  onClick={(event) =>
+                    !storageEngineIsCloud
+                      ? event.preventDefault()
+                      : handleEnableAuth()
+                  }
+                  color="green"
+                  data-disabled={!storageEngineIsCloud ? true : undefined}
+                  style={{ "&[dataDisabled]": { pointerEvents: "all" } }}
+                >
+                  Enable Authentication
+                </Button>
+              </Tooltip>
+            </Flex>
+          )}
+          {isAuthEnabled ? (
+            <Flex mt={40} direction="column">
+              <Flex
+                style={{ borderBottom: "1px solid #dedede" }}
+                direction="row"
+                justify="space-between"
+                mb={15}
+                pb={15}
+              >
+                <Title order={6}>Enabled Users</Title>
+                <IconUserPlus
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setModalAddOpened(true)}
+                />
               </Flex>
-            )}
-          {isAuthEnabled
-            ? (
-              <Flex mt={40} direction="column">
-                <Flex style={{ borderBottom: '1px solid #dedede' }} direction="row" justify="space-between" mb={15} pb={15}>
-                  <Title order={6}>Enabled Users</Title>
-                  <IconUserPlus style={{ cursor: 'pointer' }} onClick={() => setModalAddOpened(true)} />
-                </Flex>
-                {authenticatedUsers.length > 0 ? authenticatedUsers.map(
-                  (storedUser: string) => (
+              {authenticatedUsers.length > 0
+                ? authenticatedUsers.map((storedUser: string) => (
                     <Flex key={storedUser} justify="space-between" mb={10}>
                       <Text>{storedUser}</Text>
-                      {storedUser === user.user?.email ? <Text color="blue" size="xs">You</Text>
-                        : <ActionIcon variant="subtle" onClick={() => handleRemoveUser(storedUser)}><IconTrashX color="red" /></ActionIcon>}
+                      {storedUser === user.user?.email ? (
+                        <Text color="blue" size="xs">
+                          You
+                        </Text>
+                      ) : (
+                        <ActionIcon
+                          variant="subtle"
+                          onClick={() => handleRemoveUser(storedUser)}
+                        >
+                          <IconTrashX color="red" />
+                        </ActionIcon>
+                      )}
                     </Flex>
-                  ),
-                ) : null}
-                <Flex direction="row" justify="left">
-                  <Button
-                    onClick={() => logout()}
-                    mt={20}
-                  >
-                    Log out
-                  </Button>
-                </Flex>
+                  ))
+                : null}
+              <Flex direction="row" justify="left">
+                <Button onClick={() => logout()} mt={20}>
+                  Log out
+                </Button>
               </Flex>
-            )
-            : null}
+            </Flex>
+          ) : null}
         </Card>
       </Container>
       <Modal
@@ -173,19 +230,22 @@ export function GlobalSettings() {
         onClose={() => setModalAddOpened(false)}
         title="Add Admin User"
       >
-        <Box component="form" onSubmit={(form.onSubmit(() => handleAddUser()))}>
+        <Box component="form" onSubmit={form.onSubmit(() => handleAddUser())}>
           <TextInput
             leftSection={<IconAt />}
             placeholder="User Gmail Account"
-            {...form.getInputProps('email')}
+            {...form.getInputProps("email")}
           />
           <Flex mt={30} justify="right">
-            <Button mr={5} variant="subtle" color="red" onClick={() => setModalAddOpened(false)}>
+            <Button
+              mr={5}
+              variant="subtle"
+              color="red"
+              onClick={() => setModalAddOpened(false)}
+            >
               Cancel
             </Button>
-            <Button type="submit">
-              Save
-            </Button>
+            <Button type="submit">Save</Button>
           </Flex>
         </Box>
       </Modal>
@@ -193,55 +253,54 @@ export function GlobalSettings() {
         opened={modalRemoveOpened}
         size="large"
         onClose={() => setModalRemoveOpened(false)}
-        title={(
+        title={
           <Text fw={700}>
             Remove
-            {userToRemove}
-            ?
+            {userToRemove}?
           </Text>
-        )}
+        }
       >
         <Text mt={40}>
           Are you sure you want to remove
-          <b>{userToRemove}</b>
-          {' '}
-          as an administrator?
+          <b>{userToRemove}</b> as an administrator?
         </Text>
         <Flex mt={40} justify="right">
-          <Button mr={5} variant="subtle" color="red" onClick={() => setModalRemoveOpened(false)}>
+          <Button
+            mr={5}
+            variant="subtle"
+            color="red"
+            onClick={() => setModalRemoveOpened(false)}
+          >
             Cancel
           </Button>
           <Button onClick={() => confirmRemoveUser()}>
             Yes, I&apos;m sure.
           </Button>
-
         </Flex>
       </Modal>
       <Modal
         opened={modalEnableAuthOpened}
         size="md"
         onClose={() => setModalEnableAuthOpened(false)}
-        title={(
-          <Text fw={700}>
-            Enable Authentication?
-          </Text>
-        )}
+        title={<Text fw={700}>Enable Authentication?</Text>}
       >
         <Text mt={40}>
-          User
-          {' '}
-          <b>{enableAuthUser?.email}</b>
-          {' '}
-          will be added as an administrator to this application. After enabling authentication, you&apos;ll be able to add additional users below. This action cannot be undone.
+          User <b>{enableAuthUser?.email}</b> will be added as an administrator
+          to this application. After enabling authentication, you&apos;ll be
+          able to add additional users below. This action cannot be undone.
         </Text>
         <Flex mt={40} justify="right">
-          <Button mr={5} variant="subtle" color="red" onClick={() => setModalEnableAuthOpened(false)}>
+          <Button
+            mr={5}
+            variant="subtle"
+            color="red"
+            onClick={() => setModalEnableAuthOpened(false)}
+          >
             Cancel
           </Button>
           <Button onClick={() => confirmEnableAuth(enableAuthUser)}>
             Yes, I&apos;m sure.
           </Button>
-
         </Flex>
       </Modal>
 
@@ -249,17 +308,18 @@ export function GlobalSettings() {
         opened={modalEnableAuthErrorOpened}
         size="md"
         onClose={() => setModalEnableAuthErrorOpened(false)}
-        title={(
-          <Text fw={700}>
-            An Error Occurred.
-          </Text>
-        )}
+        title={<Text fw={700}>An Error Occurred.</Text>}
       >
         <Text mt={40}>
-          An error has occurred when trying to enable authentication. Please consult the
-          {' '}
-          <a href="https://revisit.dev/docs/data-and-deployment/authentication-authorization/adding-removing-ui/" target="_blank" rel="noreferrer">documentation</a>
-          {' '}
+          An error has occurred when trying to enable authentication. Please
+          consult the{" "}
+          <a
+            href="https://revisit.dev/docs/data-and-deployment/authentication-authorization/adding-removing-ui/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            documentation
+          </a>{" "}
           for more information.
         </Text>
         <Flex mt={40} justify="right">
@@ -270,6 +330,5 @@ export function GlobalSettings() {
       </Modal>
       <LoadingOverlay visible={loading} />
     </>
-
   );
 }

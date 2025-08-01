@@ -1,8 +1,8 @@
-import { Box, Flex, NumberInput } from '@mantine/core';
-import { NumericalResponse } from '../../parser/types';
-import { generateErrorMessage } from './utils';
-import { ReactMarkdownWrapper } from '../ReactMarkdownWrapper';
-import classes from './css/Input.module.css';
+import { Box, Flex, NumberInput } from "@mantine/core";
+import { NumericalResponse } from "../../parser/types";
+import { generateErrorMessage } from "./utils";
+import { ReactMarkdownWrapper } from "../ReactMarkdownWrapper";
+import classes from "./css/Input.module.css";
 
 export function NumericInput({
   response,
@@ -17,27 +17,27 @@ export function NumericInput({
   index: number;
   enumerateQuestions: boolean;
 }) {
-  const {
-    prompt,
-    required,
-    min,
-    max,
-    placeholder,
-    secondaryText,
-  } = response;
+  const { prompt, required, min, max, placeholder, secondaryText } = response;
 
   return (
     <NumberInput
       disabled={disabled}
       placeholder={placeholder}
-      label={(
+      label={
         <Flex direction="row" wrap="nowrap" gap={4}>
-          {enumerateQuestions && <Box style={{ minWidth: 'fit-content', fontSize: 16, fontWeight: 500 }}>{`${index}. `}</Box>}
-          <Box style={{ display: 'block' }} className="no-last-child-bottom-padding">
+          {enumerateQuestions && (
+            <Box
+              style={{ minWidth: "fit-content", fontSize: 16, fontWeight: 500 }}
+            >{`${index}. `}</Box>
+          )}
+          <Box
+            style={{ display: "block" }}
+            className="no-last-child-bottom-padding"
+          >
             <ReactMarkdownWrapper text={prompt} required={required} />
           </Box>
         </Flex>
-      )}
+      }
       description={secondaryText}
       radius="md"
       size="md"

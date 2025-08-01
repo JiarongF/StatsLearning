@@ -1,7 +1,7 @@
-import { LocalStorageEngine } from './engines/LocalStorageEngine';
-import { FirebaseStorageEngine } from './engines/FirebaseStorageEngine';
-import { SupabaseStorageEngine } from './engines/SupabaseStorageEngine';
-import { StorageEngine } from './engines/types';
+import { LocalStorageEngine } from "./engines/LocalStorageEngine";
+import { FirebaseStorageEngine } from "./engines/FirebaseStorageEngine";
+import { SupabaseStorageEngine } from "./engines/SupabaseStorageEngine";
+import { StorageEngine } from "./engines/types";
 
 export async function initializeStorageEngine() {
   let storageEngine: StorageEngine | undefined;
@@ -9,7 +9,7 @@ export async function initializeStorageEngine() {
 
   const storageEngineName: string = import.meta.env.VITE_STORAGE_ENGINE;
 
-  if (storageEngineName === 'supabase') {
+  if (storageEngineName === "supabase") {
     const supabaseStorageEngine = new SupabaseStorageEngine();
     await supabaseStorageEngine.connect();
 
@@ -20,7 +20,7 @@ export async function initializeStorageEngine() {
     }
   }
 
-  if (storageEngineName === 'firebase') {
+  if (storageEngineName === "firebase") {
     const firebaseStorageEngine = new FirebaseStorageEngine();
     await firebaseStorageEngine.connect();
 
@@ -31,7 +31,7 @@ export async function initializeStorageEngine() {
     }
   }
 
-  if (storageEngineName === 'localStorage' || fallback) {
+  if (storageEngineName === "localStorage" || fallback) {
     const localStorageEngine = new LocalStorageEngine();
     await localStorageEngine.connect();
 

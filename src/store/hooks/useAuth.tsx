@@ -1,14 +1,22 @@
 import {
-  createContext, useContext, useMemo, ReactNode,
-  useEffect, useState,
-} from 'react';
+  createContext,
+  useContext,
+  useMemo,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import {
-  getAuth, onAuthStateChanged, User, signOut, Auth,
-} from 'firebase/auth';
-import { LoadingOverlay } from '@mantine/core';
-import { useStorageEngine } from '../../storage/storageEngineHooks';
-import { UserWrapped } from '../../storage/engines/types';
-import { isCloudStorageEngine } from '../../storage/engines/utils';
+  getAuth,
+  onAuthStateChanged,
+  User,
+  signOut,
+  Auth,
+} from "firebase/auth";
+import { LoadingOverlay } from "@mantine/core";
+import { useStorageEngine } from "../../storage/storageEngineHooks";
+import { UserWrapped } from "../../storage/engines/types";
+import { isCloudStorageEngine } from "../../storage/engines/utils";
 
 // Defines default AuthContextValue
 interface AuthContextValue {
@@ -16,7 +24,7 @@ interface AuthContextValue {
   logout: () => Promise<void>;
   triggerAuth: () => void;
   verifyAdminStatus: (inputUser: UserWrapped) => Promise<boolean>;
-  }
+}
 
 // Initializes AuthContext
 const AuthContext = createContext<AuthContextValue>({
@@ -35,9 +43,9 @@ const AuthContext = createContext<AuthContextValue>({
 export const useAuth = () => useContext(AuthContext);
 
 // Defines the functions that are exposed in this hook.
-export function AuthProvider({ children } : { children: ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   // Default non-user when loading
-  const loadingNullUser : UserWrapped = {
+  const loadingNullUser: UserWrapped = {
     user: null,
     determiningStatus: true,
     isAdmin: false,
@@ -45,7 +53,7 @@ export function AuthProvider({ children } : { children: ReactNode }) {
   };
 
   // Default non-user when not loading
-  const nonLoadingNullUser : UserWrapped = {
+  const nonLoadingNullUser: UserWrapped = {
     user: null,
     determiningStatus: false,
     isAdmin: false,
@@ -53,11 +61,11 @@ export function AuthProvider({ children } : { children: ReactNode }) {
   };
 
   // Non-auth User
-  const nonAuthUser : UserWrapped = {
+  const nonAuthUser: UserWrapped = {
     user: {
-      name: 'fakeName',
-      email: 'fakeEmail@fake.com',
-      uid: 'fakeUid',
+      name: "fakeName",
+      email: "fakeEmail@fake.com",
+      uid: "fakeUid",
     },
     determiningStatus: false,
     isAdmin: true,
@@ -73,9 +81,11 @@ export function AuthProvider({ children } : { children: ReactNode }) {
     const auth = getAuth();
     try {
       await signOut(auth);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error(`There was an issue signing-out the user: ${error.message}`);
+      console.error(
+        `There was an issue signing-out the user: ${error.message}`,
+      );
     } finally {
       setUser(nonLoadingNullUser);
     }
@@ -102,7 +112,7 @@ export function AuthProvider({ children } : { children: ReactNode }) {
       try {
         auth = getAuth();
       } catch {
-        console.warn('No firebase store.');
+        console.warn("No firebase store.");
       }
     }
 
@@ -134,10 +144,14 @@ export function AuthProvider({ children } : { children: ReactNode }) {
     // Determine authentication listener based on storageEngine and authEnabled variable
     const determineAuthentication = async () => {
       if (storageEngine && isCloudStorageEngine(storageEngine)) {
-        const authInfo = await storageEngine?.getUserManagementData('authentication');
+        const authInfo =
+          await storageEngine?.getUserManagementData("authentication");
         if (authInfo?.isEnabled) {
           // Define unsubscribe function for listening to authentication state changes when using Firebase with authentication
-          const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => await handleAuthStateChanged(firebaseUser));
+          const unsubscribe = onAuthStateChanged(
+            auth,
+            async (firebaseUser) => await handleAuthStateChanged(firebaseUser),
+          );
           return () => unsubscribe();
         }
         setUser(nonAuthUser);
@@ -152,20 +166,23 @@ export function AuthProvider({ children } : { children: ReactNode }) {
     return () => {
       cleanupPromise.then((cleanup) => cleanup());
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storageEngine, enableAuthTrigger]);
 
-  const value = useMemo(() => ({
-    user,
-    triggerAuth,
-    logout,
-    verifyAdminStatus,
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [user]);
+  const value = useMemo(
+    () => ({
+      user,
+      triggerAuth,
+      logout,
+      verifyAdminStatus,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }),
+    [user],
+  );
 
   return (
     <AuthContext.Provider value={value}>
-      {user.determiningStatus ? <LoadingOverlay visible /> : children }
+      {user.determiningStatus ? <LoadingOverlay visible /> : children}
     </AuthContext.Provider>
   );
 }

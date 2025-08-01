@@ -1,26 +1,29 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router';
-import { ModalsProvider } from '@mantine/modals';
-import { AppShell } from '@mantine/core';
-import { ConfigSwitcher } from './components/ConfigSwitcher';
-import { Shell } from './components/Shell';
-import { parseGlobalConfig } from './parser/parser';
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router";
+import { ModalsProvider } from "@mantine/modals";
+import { AppShell } from "@mantine/core";
+import { ConfigSwitcher } from "./components/ConfigSwitcher";
+import { Shell } from "./components/Shell";
+import { parseGlobalConfig } from "./parser/parser";
 import {
-  GlobalConfig, Nullable, ParsedConfig, StudyConfig,
-} from './parser/types';
-import { StudyAnalysisTabs } from './analysis/individualStudy/StudyAnalysisTabs';
-import { PREFIX } from './utils/Prefix';
-import { ProtectedRoute } from './ProtectedRoute';
-import { Login } from './Login';
-import { AuthProvider } from './store/hooks/useAuth';
-import { GlobalSettings } from './components/settings/GlobalSettings';
-import { NavigateWithParams } from './utils/NavigateWithParams';
-import { AppHeader } from './analysis/interface/AppHeader';
-import { fetchStudyConfigs } from './utils/fetchConfig';
-import { initializeStorageEngine } from './storage/initialize';
-import { useStorageEngine } from './storage/storageEngineHooks';
-import { PageTitle } from './utils/PageTitle';
-import { isCloudStorageEngine } from './storage/engines/utils';
+  GlobalConfig,
+  Nullable,
+  ParsedConfig,
+  StudyConfig,
+} from "./parser/types";
+import { StudyAnalysisTabs } from "./analysis/individualStudy/StudyAnalysisTabs";
+import { PREFIX } from "./utils/Prefix";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { Login } from "./Login";
+import { AuthProvider } from "./store/hooks/useAuth";
+import { GlobalSettings } from "./components/settings/GlobalSettings";
+import { NavigateWithParams } from "./utils/NavigateWithParams";
+import { AppHeader } from "./analysis/interface/AppHeader";
+import { fetchStudyConfigs } from "./utils/fetchConfig";
+import { initializeStorageEngine } from "./storage/initialize";
+import { useStorageEngine } from "./storage/storageEngineHooks";
+import { PageTitle } from "./utils/PageTitle";
+import { isCloudStorageEngine } from "./storage/engines/utils";
 
 async function fetchGlobalConfigArray() {
   const globalFile = await fetch(`${PREFIX}global.json`);
@@ -29,8 +32,11 @@ async function fetchGlobalConfigArray() {
 }
 
 export function GlobalConfigParser() {
-  const [globalConfig, setGlobalConfig] = useState<Nullable<GlobalConfig>>(null);
-  const [studyConfigs, setStudyConfigs] = useState<Record<string, ParsedConfig<StudyConfig> | null>>({});
+  const [globalConfig, setGlobalConfig] =
+    useState<Nullable<GlobalConfig>>(null);
+  const [studyConfigs, setStudyConfigs] = useState<
+    Record<string, ParsedConfig<StudyConfig> | null>
+  >({});
 
   useEffect(() => {
     async function fetchData() {
@@ -61,7 +67,7 @@ export function GlobalConfigParser() {
     fn();
   }, [setStorageEngine, storageEngine]);
 
-  const analysisProtectedCallback = async (studyId:string) => {
+  const analysisProtectedCallback = async (studyId: string) => {
     if (storageEngine && isCloudStorageEngine(storageEngine)) {
       const modes = await storageEngine.getModes(studyId);
       if (modes.analyticsInterfacePubliclyAccessible) {
@@ -81,13 +87,10 @@ export function GlobalConfigParser() {
           <Routes>
             <Route
               path="/"
-              element={(
+              element={
                 <>
                   <PageTitle title="ReVISit | Home" />
-                  <AppShell
-                    padding="md"
-                    header={{ height: 70 }}
-                  >
+                  <AppShell padding="md" header={{ height: 70 }}>
                     <AppHeader studyIds={globalConfig.configsList} />
                     <ConfigSwitcher
                       globalConfig={globalConfig}
@@ -95,34 +98,32 @@ export function GlobalConfigParser() {
                     />
                   </AppShell>
                 </>
-            )}
+              }
             />
             <Route
               path="/:studyId/*"
-              element={(
+              element={
                 <>
                   <PageTitle title="ReVISit | Study" />
                   <Shell globalConfig={globalConfig} />
                 </>
-                )}
+              }
             />
             <Route
               path="/analysis/stats/:studyId/:analysisTab/:trialId?"
-              element={(
+              element={
                 <>
                   <PageTitle title="ReVISit | Analysis" />
-                  <ProtectedRoute paramToCheck="studyId" paramCallback={analysisProtectedCallback}>
-                    <AppShell
-                      padding="md"
-                      header={{ height: 70 }}
-                    >
-                      <StudyAnalysisTabs
-                        globalConfig={globalConfig}
-                      />
+                  <ProtectedRoute
+                    paramToCheck="studyId"
+                    paramCallback={analysisProtectedCallback}
+                  >
+                    <AppShell padding="md" header={{ height: 70 }}>
+                      <StudyAnalysisTabs globalConfig={globalConfig} />
                     </AppShell>
                   </ProtectedRoute>
                 </>
-            )}
+              }
             />
             <Route
               path="/analysis/stats/:studyId"
@@ -130,30 +131,24 @@ export function GlobalConfigParser() {
             />
             <Route
               path="/settings"
-              element={(
+              element={
                 <ProtectedRoute>
                   <PageTitle title="ReVISit | Settings" />
-                  <AppShell
-                    padding="md"
-                    header={{ height: 70 }}
-                  >
+                  <AppShell padding="md" header={{ height: 70 }}>
                     <AppHeader studyIds={globalConfig.configsList} />
                     <AppShell.Main>
                       <GlobalSettings />
                     </AppShell.Main>
                   </AppShell>
                 </ProtectedRoute>
-            )}
+              }
             />
             <Route
               path="/login"
-              element={(
+              element={
                 <>
                   <PageTitle title="ReVISit | Login" />
-                  <AppShell
-                    padding="md"
-                    header={{ height: 70 }}
-                  >
+                  <AppShell padding="md" header={{ height: 70 }}>
                     <AppHeader studyIds={globalConfig.configsList} />
 
                     <AppShell.Main>
@@ -161,7 +156,7 @@ export function GlobalConfigParser() {
                     </AppShell.Main>
                   </AppShell>
                 </>
-            )}
+              }
             />
           </Routes>
         </ModalsProvider>

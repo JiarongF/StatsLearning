@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useMemo } from 'react';
-import { Center, Group, Text } from '@mantine/core';
+import * as React from "react";
+import { useMemo } from "react";
+import { Center, Group, Text } from "@mantine/core";
 
 // code taken from https://wattenberger.com/blog/react-and-d3
 export function YAxisBar({
@@ -12,7 +12,7 @@ export function YAxisBar({
   showLines,
   compact = false,
 }: {
-  yScale: d3.ScaleBand<string>
+  yScale: d3.ScaleBand<string>;
   xRange: [number, number];
   horizontalPosition: number;
   label: string;
@@ -31,12 +31,19 @@ export function YAxisBar({
 
   return (
     <>
-      <g transform={`translate(${horizontalPosition - labelSpacing - 40}, ${yScale.range()[1]}) rotate(-90)`}>
-        <foreignObject width={Math.abs(yScale.range()[1] - yScale.range()[0])} height={20}>
+      <g
+        transform={`translate(${horizontalPosition - labelSpacing - 40}, ${yScale.range()[1]}) rotate(-90)`}
+      >
+        <foreignObject
+          width={Math.abs(yScale.range()[1] - yScale.range()[0])}
+          height={20}
+        >
           <Center>
             <Group gap={3}>
-
-              <Text size={compact ? '10px' : '14px'} style={{ color: '#878E95' }}>
+              <Text
+                size={compact ? "10px" : "14px"}
+                style={{ color: "#878E95" }}
+              >
                 {label}
               </Text>
             </Group>
@@ -45,15 +52,27 @@ export function YAxisBar({
       </g>
       <path
         transform={`translate(${horizontalPosition}, 0)`}
-        d={['M', 0, yScale.range()[0], 'V', yScale.range()[1]].join(' ')}
+        d={["M", 0, yScale.range()[0], "V", yScale.range()[1]].join(" ")}
         fill="none"
         stroke="lightgray"
       />
-      {showLines ? <path transform={`translate(${xRange[1]}, 0)`} d={['M', 0, yScale.range()[0], 'V', yScale.range()[1]].join(' ')} fill="none" stroke="lightgray" /> : null }
+      {showLines ? (
+        <path
+          transform={`translate(${xRange[1]}, 0)`}
+          d={["M", 0, yScale.range()[0], "V", yScale.range()[1]].join(" ")}
+          fill="none"
+          stroke="lightgray"
+        />
+      ) : null}
       {ticks.map(({ value, offset }) => (
-        <g key={value} transform={`translate(${horizontalPosition}, ${offset})`}>
+        <g
+          key={value}
+          transform={`translate(${horizontalPosition}, ${offset})`}
+        >
           <line x2="-6" stroke="currentColor" />
-          {showLines ? <line x2={`${xRange[1] - xRange[0]}`} stroke="lightgray" /> : null}
+          {showLines ? (
+            <line x2={`${xRange[1] - xRange[0]}`} stroke="lightgray" />
+          ) : null}
           <g
             key={value}
             style={{
@@ -61,8 +80,11 @@ export function YAxisBar({
             }}
           >
             <foreignObject width={labelSpacing} height={20}>
-              <Group style={{ width: '100%', height: '100%' }} justify="right">
-                <Text style={{ textOverflow: 'ellipsis', overflow: 'hidden' }} size="10px">
+              <Group style={{ width: "100%", height: "100%" }} justify="right">
+                <Text
+                  style={{ textOverflow: "ellipsis", overflow: "hidden" }}
+                  size="10px"
+                >
                   {value}
                 </Text>
               </Group>

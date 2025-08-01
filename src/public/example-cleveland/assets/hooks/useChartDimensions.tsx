@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface Dimensions {
-  marginTop: number,
-  marginBottom: number,
-  marginRight: number,
-  marginLeft: number,
-  height: number,
-  width: number,
+  marginTop: number;
+  marginBottom: number;
+  marginRight: number;
+  marginLeft: number;
+  height: number;
+  width: number;
 }
 
 interface BoundedDimensions extends Dimensions {
-  boundedHeight: number,
-  boundedWidth: number,
+  boundedHeight: number;
+  boundedWidth: number;
 }
 const combineChartDimensions = (dimensions: Dimensions): BoundedDimensions => {
   const parsedDimensions = {
@@ -23,18 +23,28 @@ const combineChartDimensions = (dimensions: Dimensions): BoundedDimensions => {
   };
   return {
     ...parsedDimensions,
-    boundedHeight: parsedDimensions.height ? Math.max(
-      parsedDimensions.height - parsedDimensions.marginTop - parsedDimensions.marginBottom,
-      0,
-    ) : 0,
-    boundedWidth: parsedDimensions.width ? Math.max(
-      parsedDimensions.width - parsedDimensions.marginLeft - parsedDimensions.marginRight,
-      0,
-    ) : 0,
+    boundedHeight: parsedDimensions.height
+      ? Math.max(
+          parsedDimensions.height -
+            parsedDimensions.marginTop -
+            parsedDimensions.marginBottom,
+          0,
+        )
+      : 0,
+    boundedWidth: parsedDimensions.width
+      ? Math.max(
+          parsedDimensions.width -
+            parsedDimensions.marginLeft -
+            parsedDimensions.marginRight,
+          0,
+        )
+      : 0,
   };
 };
 
-export const useChartDimensions = (passedSettings: Dimensions): [React.RefObject<HTMLDivElement | null>, BoundedDimensions] => {
+export const useChartDimensions = (
+  passedSettings: Dimensions,
+): [React.RefObject<HTMLDivElement | null>, BoundedDimensions] => {
   const ref = useRef<HTMLDivElement>(null);
   const dimensions = combineChartDimensions(passedSettings);
 
@@ -50,8 +60,10 @@ export const useChartDimensions = (passedSettings: Dimensions): [React.RefObject
 
         const entry = entries[0];
 
-        if (width !== entry.contentRect.width) setWidth(entry.contentRect.width);
-        if (height !== entry.contentRect.height) setHeight(entry.contentRect.height);
+        if (width !== entry.contentRect.width)
+          setWidth(entry.contentRect.width);
+        if (height !== entry.contentRect.height)
+          setHeight(entry.contentRect.height);
       });
       resizeObserver.observe(element);
 

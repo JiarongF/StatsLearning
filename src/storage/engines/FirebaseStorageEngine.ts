@@ -1,5 +1,5 @@
-import { parse as hjsonParse } from 'hjson';
-import { initializeApp } from 'firebase/app';
+import { parse as hjsonParse } from "hjson";
+import { initializeApp } from "firebase/app";
 import {
   deleteObject,
   getDownloadURL,
@@ -9,7 +9,7 @@ import {
   listAll,
   FirebaseStorage,
   updateMetadata,
-} from 'firebase/storage';
+} from "firebase/storage";
 import {
   CollectionReference,
   DocumentData,
@@ -25,9 +25,9 @@ import {
   setDoc,
   updateDoc,
   writeBatch,
-} from 'firebase/firestore';
-import { ReCaptchaV3Provider, initializeAppCheck } from '@firebase/app-check';
-import { getAuth, signInAnonymously } from '@firebase/auth';
+} from "firebase/firestore";
+import { ReCaptchaV3Provider, initializeAppCheck } from "@firebase/app-check";
+import { getAuth, signInAnonymously } from "@firebase/auth";
 import {
   CloudStorageEngine,
   StoredUser,
@@ -37,7 +37,7 @@ import {
   UserManagementData,
   SequenceAssignment,
   SnapshotDocContent,
-} from './types';
+} from "./types";
 
 export class FirebaseStorageEngine extends CloudStorageEngine {
   private RECAPTCHAV3TOKEN = import.meta.env.VITE_RECAPTCHAV3TOKEN;
@@ -49,15 +49,12 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
   private storage: FirebaseStorage;
 
   constructor(testing: boolean = false) {
-    super('firebase', testing);
+    super("firebase", testing);
 
     const firebaseConfig = hjsonParse(import.meta.env.VITE_FIREBASE_CONFIG);
     const firebaseApp = initializeApp(firebaseConfig);
     this.firestore = initializeFirestore(firebaseApp, {});
-    this.studyCollection = collection(
-      this.firestore,
-      '_revisit',
-    );
+    this.studyCollection = collection(this.firestore, "_revisit");
     this.storage = getStorage();
 
     // Check if we're in dev, if so use a debug token
@@ -71,11 +68,15 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
         isTokenAutoRefreshEnabled: false,
       });
     } catch {
-      console.warn('Failed to initialize Firebase App Check');
+      console.warn("Failed to initialize Firebase App Check");
     }
   }
 
-  protected async _getFromStorage<T extends StorageObjectType>(prefix: string, type: T, studyId?: string) {
+  protected async _getFromStorage<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+    studyId?: string,
+  ) {
     const storageRef = ref(
       this.storage,
       `${this.collectionPrefix}${studyId || this.studyId}/${prefix}_${type}`,
@@ -96,7 +97,11 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     return storageObj;
   }
 
-  protected async _pushToStorage<T extends StorageObjectType>(prefix: string, type: T, objectToUpload: StorageObject<T>) {
+  protected async _pushToStorage<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+    objectToUpload: StorageObject<T>,
+  ) {
     const storageRef = ref(
       this.storage,
       `${this.collectionPrefix}${this.studyId}/${prefix}_${type}`,
@@ -106,7 +111,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       await uploadBytes(storageRef, objectToUpload);
     } else if (Object.keys(objectToUpload).length > 0) {
       const blob = new Blob([JSON.stringify(objectToUpload)], {
-        type: 'application/json',
+        type: "application/json",
       });
       await uploadBytes(storageRef, blob);
     }
@@ -123,39 +128,38 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     await deleteObject(storageRef);
   }
 
-  protected async _cacheStorageObject<T extends StorageObjectType>(prefix: string, type: T) {
+  protected async _cacheStorageObject<T extends StorageObjectType>(
+    prefix: string,
+    type: T,
+  ) {
     const storageRef = ref(
       this.storage,
       `${this.collectionPrefix}${this.studyId}/${prefix}_${type}`,
     );
     await updateMetadata(storageRef, {
-      cacheControl: 'public,max-age=31536000',
+      cacheControl: "public,max-age=31536000",
     });
   }
 
   protected async _verifyStudyDatabase() {
     // Throw an error if the db does not exist
     if (!this.studyCollection) {
-      throw new Error('Study database not initialized');
+      throw new Error("Study database not initialized");
     }
   }
 
   protected async _getCurrentConfigHash() {
     await this.verifyStudyDatabase();
-    const configHashDoc = doc(
-      this.studyCollection,
-      'configHash',
-    );
+    const configHashDoc = doc(this.studyCollection, "configHash");
     const configHashDocData = await getDoc(configHashDoc);
-    return configHashDocData.exists() ? configHashDocData.data().configHash as string : null;
+    return configHashDocData.exists()
+      ? (configHashDocData.data().configHash as string)
+      : null;
   }
 
   protected async _setCurrentConfigHash(configHash: string) {
     await this.verifyStudyDatabase();
-    const configHashDoc = doc(
-      this.studyCollection,
-      'configHash',
-    );
+    const configHashDoc = doc(this.studyCollection, "configHash");
     await setDoc(configHashDoc, { configHash });
   }
 
@@ -164,71 +168,100 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       this.firestore,
       `${this.collectionPrefix}${studyId}`,
     );
-    const sequenceAssignmentDoc = doc(studyCollection, 'sequenceAssignment');
+    const sequenceAssignmentDoc = doc(studyCollection, "sequenceAssignment");
     const sequenceAssignmentCollection = collection(
       sequenceAssignmentDoc,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
 
     const sequenceAssignments = await getDocs(sequenceAssignmentCollection);
     return sequenceAssignments.docs
       .map((d) => d.data())
-      .map((data) => ({
-        ...data,
-        timestamp: data.timestamp instanceof Timestamp ? data.timestamp.toMillis() : data.timestamp,
-        createdTime: data.createdTime instanceof Timestamp ? data.createdTime.toMillis() : data.createdTime,
-        completed: data.completed instanceof Timestamp ? data.completed.toMillis() : data.completed,
-      } as SequenceAssignment))
+      .map(
+        (data) =>
+          ({
+            ...data,
+            timestamp:
+              data.timestamp instanceof Timestamp
+                ? data.timestamp.toMillis()
+                : data.timestamp,
+            createdTime:
+              data.createdTime instanceof Timestamp
+                ? data.createdTime.toMillis()
+                : data.createdTime,
+            completed:
+              data.completed instanceof Timestamp
+                ? data.completed.toMillis()
+                : data.completed,
+          }) as SequenceAssignment,
+      )
       .sort((a, b) => a.timestamp - b.timestamp);
   }
 
-  protected async _createSequenceAssignment(participantId: string, sequenceAssignment: SequenceAssignment, withServerTimestamp: boolean = false) {
+  protected async _createSequenceAssignment(
+    participantId: string,
+    sequenceAssignment: SequenceAssignment,
+    withServerTimestamp: boolean = false,
+  ) {
     if (this.studyId === undefined) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
 
-    const sequenceAssignmentDoc = doc(this.studyCollection, 'sequenceAssignment');
+    const sequenceAssignmentDoc = doc(
+      this.studyCollection,
+      "sequenceAssignment",
+    );
     const sequenceAssignmentCollection = collection(
       sequenceAssignmentDoc,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     const participantSequenceAssignmentDoc = doc(
       sequenceAssignmentCollection,
       participantId,
     );
 
-    const toUpload = withServerTimestamp ? { ...sequenceAssignment, timestamp: serverTimestamp() } : sequenceAssignment;
-    await setDoc(participantSequenceAssignmentDoc, { ...toUpload, createdTime: serverTimestamp() });
+    const toUpload = withServerTimestamp
+      ? { ...sequenceAssignment, timestamp: serverTimestamp() }
+      : sequenceAssignment;
+    await setDoc(participantSequenceAssignmentDoc, {
+      ...toUpload,
+      createdTime: serverTimestamp(),
+    });
   }
 
   protected async _completeCurrentParticipantRealtime() {
     await this.verifyStudyDatabase();
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
     if (!this.studyId) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
 
-    const sequenceAssignmentDoc = doc(this.studyCollection, 'sequenceAssignment');
+    const sequenceAssignmentDoc = doc(
+      this.studyCollection,
+      "sequenceAssignment",
+    );
     const sequenceAssignmentCollection = collection(
       sequenceAssignmentDoc,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     const participantSequenceAssignmentDoc = doc(
       sequenceAssignmentCollection,
       this.currentParticipantId,
     );
-    await updateDoc(participantSequenceAssignmentDoc, { completed: serverTimestamp() });
+    await updateDoc(participantSequenceAssignmentDoc, {
+      completed: serverTimestamp(),
+    });
   }
 
   protected async _rejectParticipantRealtime(participantId: string) {
     await this.verifyStudyDatabase();
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
     if (!this.studyId) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
 
     const studyCollection = collection(
@@ -237,10 +270,10 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     );
 
     // set sequence assignment to empty string, keep the timestamp
-    const sequenceAssignmentDoc = doc(studyCollection, 'sequenceAssignment');
+    const sequenceAssignmentDoc = doc(studyCollection, "sequenceAssignment");
     const sequenceAssignmentCollection = collection(
       sequenceAssignmentDoc,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     const participantSequenceAssignmentDoc = doc(
       sequenceAssignmentCollection,
@@ -252,16 +285,19 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
   protected async _claimSequenceAssignment(participantId: string) {
     await this.verifyStudyDatabase();
     if (!this.currentParticipantId) {
-      throw new Error('Participant not initialized');
+      throw new Error("Participant not initialized");
     }
     if (!this.studyId) {
-      throw new Error('Study ID is not set');
+      throw new Error("Study ID is not set");
     }
 
-    const sequenceAssignmentDoc = doc(this.studyCollection, 'sequenceAssignment');
+    const sequenceAssignmentDoc = doc(
+      this.studyCollection,
+      "sequenceAssignment",
+    );
     const sequenceAssignmentCollection = collection(
       sequenceAssignmentDoc,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     const participantSequenceAssignmentDoc = doc(
       sequenceAssignmentCollection,
@@ -276,7 +312,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       const auth = getAuth();
       if (!auth.currentUser) {
         await signInAnonymously(auth);
-        if (!auth.currentUser) throw new Error('Login failed with firebase');
+        if (!auth.currentUser) throw new Error("Login failed with firebase");
       }
 
       // Create or retrieve database for study
@@ -286,7 +322,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       );
       this.studyId = studyId;
     } catch {
-      console.warn('Failed to connect to Firebase.');
+      console.warn("Failed to connect to Firebase.");
     }
   }
 
@@ -296,7 +332,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
 
       this.connected = true;
     } catch {
-      console.warn('Failed to connect to Firebase');
+      console.warn("Failed to connect to Firebase");
     }
   }
 
@@ -304,7 +340,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     const revisitModesDoc = doc(
       this.firestore,
       `${this.collectionPrefix}${studyId}`,
-      'modes',
+      "modes",
     );
     const revisitModesData = await getDoc(revisitModesDoc);
 
@@ -326,7 +362,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     const revisitModesDoc = doc(
       this.firestore,
       `${this.collectionPrefix}${studyId}`,
-      'modes',
+      "modes",
     );
 
     return await setDoc(revisitModesDoc, { [mode]: value }, { merge: true });
@@ -337,33 +373,44 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     participantId: string,
   ): Promise<string | null> {
     const storage = getStorage();
-    const audioRef = ref(storage, `${this.collectionPrefix}${this.studyId}/audio/${participantId}_${task}`);
+    const audioRef = ref(
+      storage,
+      `${this.collectionPrefix}${this.studyId}/audio/${participantId}_${task}`,
+    );
 
     try {
       return await getDownloadURL(audioRef);
     } catch {
-      console.warn(`Audio for task ${task} and participant ${participantId} not found.`);
+      console.warn(
+        `Audio for task ${task} and participant ${participantId} not found.`,
+      );
       return null;
     }
   }
 
   protected async _testingReset() {
-    throw new Error('Testing reset not implemented for FirebaseStorageEngine');
+    throw new Error("Testing reset not implemented for FirebaseStorageEngine");
   }
 
   // Gets data from the user-management collection based on the inputted string
-  async getUserManagementData(key: 'authentication'): Promise<{ isEnabled: boolean } | undefined>;
-
-  async getUserManagementData(key: 'adminUsers'): Promise<{ adminUsersList: StoredUser[] } | undefined>;
+  async getUserManagementData(
+    key: "authentication",
+  ): Promise<{ isEnabled: boolean } | undefined>;
 
   async getUserManagementData(
-    key: 'authentication' | 'adminUsers',
-  ): Promise<{ isEnabled: boolean } | { adminUsersList: StoredUser[] } | undefined> {
+    key: "adminUsers",
+  ): Promise<{ adminUsersList: StoredUser[] } | undefined>;
+
+  async getUserManagementData(
+    key: "authentication" | "adminUsers",
+  ): Promise<
+    { isEnabled: boolean } | { adminUsersList: StoredUser[] } | undefined
+  > {
     if (Object.keys(this.userManagementData).length === 0) {
       // Get the user-management collection in Firestore
       const userManagementCollection = collection(
         this.firestore,
-        'user-management',
+        "user-management",
       );
       // Grabs all user-management data and returns data based on key
       const querySnapshot = await getDocs(userManagementCollection);
@@ -375,14 +422,14 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     }
     if (key in this.userManagementData) {
       // Type narrowing to ensure correct return type
-      if (key === 'authentication') {
+      if (key === "authentication") {
         const value = this.userManagementData[key];
-        if (value && typeof value === 'object' && 'isEnabled' in value) {
+        if (value && typeof value === "object" && "isEnabled" in value) {
           return value as { isEnabled: boolean };
         }
-      } else if (key === 'adminUsers') {
+      } else if (key === "adminUsers") {
         const value = this.userManagementData[key];
-        if (value && typeof value === 'object' && 'adminUsersList' in value) {
+        if (value && typeof value === "object" && "adminUsersList" in value) {
           return value as { adminUsersList: StoredUser[] };
         }
       }
@@ -390,23 +437,22 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     return undefined;
   }
 
-  protected async _updateAdminUsersList(adminUsers: { adminUsersList: StoredUser[] }) {
-    await setDoc(
-      doc(this.firestore, 'user-management', 'adminUsers'),
-      {
-        adminUsersList: adminUsers.adminUsersList,
-      },
-    );
+  protected async _updateAdminUsersList(adminUsers: {
+    adminUsersList: StoredUser[];
+  }) {
+    await setDoc(doc(this.firestore, "user-management", "adminUsers"), {
+      adminUsersList: adminUsers.adminUsersList,
+    });
   }
 
   async changeAuth(bool: boolean) {
-    await setDoc(doc(this.firestore, 'user-management', 'authentication'), {
+    await setDoc(doc(this.firestore, "user-management", "authentication"), {
       isEnabled: bool,
     });
   }
 
   async addAdminUser(user: StoredUser) {
-    const adminUsers = await this.getUserManagementData('adminUsers');
+    const adminUsers = await this.getUserManagementData("adminUsers");
     if (adminUsers?.adminUsersList) {
       const adminList = adminUsers.adminUsersList;
       const isInList = adminList.find(
@@ -414,19 +460,19 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       );
       if (!isInList) {
         adminList.push({ email: user.email, uid: user.uid });
-        await setDoc(doc(this.firestore, 'user-management', 'adminUsers'), {
+        await setDoc(doc(this.firestore, "user-management", "adminUsers"), {
           adminUsersList: adminList,
         });
       }
     } else {
-      await setDoc(doc(this.firestore, 'user-management', 'adminUsers'), {
+      await setDoc(doc(this.firestore, "user-management", "adminUsers"), {
         adminUsersList: [{ email: user.email, uid: user.uid }],
       });
     }
   }
 
   async removeAdminUser(email: string) {
-    const adminUsers = await this.getUserManagementData('adminUsers');
+    const adminUsers = await this.getUserManagementData("adminUsers");
     if (adminUsers?.adminUsersList && adminUsers.adminUsersList.length > 1) {
       if (
         adminUsers.adminUsersList.find(
@@ -436,7 +482,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
         adminUsers.adminUsersList = adminUsers?.adminUsersList.filter(
           (storedUser: StoredUser) => storedUser.email !== email,
         );
-        await setDoc(doc(this.firestore, 'user-management', 'adminUsers'), {
+        await setDoc(doc(this.firestore, "user-management", "adminUsers"), {
           adminUsersList: adminUsers?.adminUsersList,
         });
       }
@@ -445,7 +491,11 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
 
   async getSnapshots(studyId: string) {
     try {
-      const snapshotsDoc = doc(this.firestore, `${this.collectionPrefix}${studyId}`, 'snapshots');
+      const snapshotsDoc = doc(
+        this.firestore,
+        `${this.collectionPrefix}${studyId}`,
+        "snapshots",
+      );
       const snapshotsData = await getDoc(snapshotsDoc);
 
       if (snapshotsData.exists()) {
@@ -453,7 +503,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       }
       return {};
     } catch (error) {
-      console.error('Error listing collections with prefix:', error);
+      console.error("Error listing collections with prefix:", error);
       throw error;
     }
   }
@@ -465,10 +515,10 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       return directorySnapshot.items.length > 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error.code === 'storage/object-not-found') {
+      if (error.code === "storage/object-not-found") {
         return false;
       }
-      console.error('Error checking if directory exists:', error);
+      console.error("Error checking if directory exists:", error);
       throw error;
     }
   }
@@ -485,7 +535,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       });
       await Promise.all(copyPromises);
     } catch (error) {
-      console.error('Error copying file:', error);
+      console.error("Error copying file:", error);
     }
   }
 
@@ -494,10 +544,12 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
       const directoryRef = ref(this.storage, directoryPath);
       const directorySnapshot = await listAll(directoryRef);
 
-      const deletePromises = directorySnapshot.items.map((fileRef) => deleteObject(fileRef));
+      const deletePromises = directorySnapshot.items.map((fileRef) =>
+        deleteObject(fileRef),
+      );
       await Promise.all(deletePromises);
     } catch (error) {
-      console.error('Error deleting files in directory:', error);
+      console.error("Error deleting files in directory:", error);
     }
   }
 
@@ -511,11 +563,11 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     );
     const sourceSequenceAssignmentDocRef = doc(
       sourceCollectionRef,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     const sourceSequenceAssignmentCollectionRef = collection(
       sourceSequenceAssignmentDocRef,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
 
     const targetCollectionRef = collection(
@@ -524,12 +576,12 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     );
     const targetSequenceAssignmentDocRef = doc(
       targetCollectionRef,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     await setDoc(targetSequenceAssignmentDocRef, {});
     const targetSequenceAssignmentCollectionRef = collection(
       targetSequenceAssignmentDocRef,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
 
     const sourceSnapshot = await getDocs(sourceSequenceAssignmentCollectionRef);
@@ -555,11 +607,11 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
     );
     const sourceSequenceAssignmentDocRef = doc(
       sourceCollectionRef,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
     const sourceSequenceAssignmentCollectionRef = collection(
       sourceSequenceAssignmentDocRef,
-      'sequenceAssignment',
+      "sequenceAssignment",
     );
 
     const collectionSnapshot = await getDocs(
@@ -579,21 +631,29 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
   // Function to add collection name to metadata
   protected async _addDirectoryNameToSnapshots(directoryName: string) {
     try {
-      const snapshotDoc = doc(this.firestore, `${this.collectionPrefix}${this.studyId}`, 'snapshots');
+      const snapshotDoc = doc(
+        this.firestore,
+        `${this.collectionPrefix}${this.studyId}`,
+        "snapshots",
+      );
       await setDoc(
         snapshotDoc,
         { [directoryName]: { name: directoryName } } as SnapshotDocContent,
         { merge: true },
       );
     } catch (error) {
-      console.error('Error adding collection to metadata:', error);
+      console.error("Error adding collection to metadata:", error);
       throw error;
     }
   }
 
   protected async _removeDirectoryNameFromSnapshots(directoryName: string) {
     try {
-      const snapshotDoc = doc(this.firestore, `${this.collectionPrefix}${this.studyId}`, 'snapshots');
+      const snapshotDoc = doc(
+        this.firestore,
+        `${this.collectionPrefix}${this.studyId}`,
+        "snapshots",
+      );
       const snapshotData = await getDoc(snapshotDoc);
 
       if (snapshotData.exists()) {
@@ -605,16 +665,23 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
           console.warn(`${directoryName} does not exist in metadata.`);
         }
       } else {
-        console.warn('No metadata found.');
+        console.warn("No metadata found.");
       }
     } catch (error) {
-      console.error('Error removing collection from metadata:', error);
+      console.error("Error removing collection from metadata:", error);
       throw error;
     }
   }
 
-  protected async _changeDirectoryNameInSnapshots(oldName: string, newName: string) {
-    const snapshotDoc = doc(this.firestore, `${this.collectionPrefix}${this.studyId}`, 'snapshots');
+  protected async _changeDirectoryNameInSnapshots(
+    oldName: string,
+    newName: string,
+  ) {
+    const snapshotDoc = doc(
+      this.firestore,
+      `${this.collectionPrefix}${this.studyId}`,
+      "snapshots",
+    );
     await setDoc(
       snapshotDoc,
       { [oldName]: { name: newName } },
@@ -633,7 +700,7 @@ export class FirebaseStorageEngine extends CloudStorageEngine {
 
       await uploadBytes(targetFileRef, blob);
     } catch (error) {
-      console.error('Error copying file:', error);
+      console.error("Error copying file:", error);
     }
   }
 }

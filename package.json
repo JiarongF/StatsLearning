@@ -4,6 +4,8 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "buildDocs": "yarn typedoc",
     "serve": "vite --host=0.0.0.0 --port=8080",
     "build": "tsc && vite build",
@@ -58,6 +60,7 @@
     "react-timer-hook": "^3.0.8",
     "react-vega": "^7.6.0",
     "rehype-raw": "^7.0.0",
+    "simple-statistics": "^7.8.8",
     "ts-json-schema-generator": "^2.3.0",
     "typedoc": "^0.27.6",
     "typedoc-plugin-frontmatter": "^1.1.2",
@@ -66,6 +69,7 @@
     "uuid": "^11.0.5",
     "vega": "^5.32.0",
     "vega-lite": "^5.23.0",
+    "victory": "^37.3.6",
     "wavesurfer-react": "^3.0.4",
     "wavesurfer.js": "^7.8.16",
     "yaml": "^2.8.0"
@@ -87,6 +91,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "gh-pages": "^6.3.0",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.1",

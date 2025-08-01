@@ -1,9 +1,9 @@
-import * as d3 from 'd3';
-import { DotMarks } from './chartcomponents/DotMarks';
-import { NumericAxisH } from './chartcomponents/NumericAxisH';
-import { NumericAxisV } from './chartcomponents/NumericAxisV';
-import { StackedBars } from './chartcomponents/StackedBars';
-import { useChartDimensions } from './hooks/useChartDimensions';
+import * as d3 from "d3";
+import { DotMarks } from "./chartcomponents/DotMarks";
+import { NumericAxisH } from "./chartcomponents/NumericAxisH";
+import { NumericAxisV } from "./chartcomponents/NumericAxisV";
+import { StackedBars } from "./chartcomponents/StackedBars";
+import { useChartDimensions } from "./hooks/useChartDimensions";
 
 const chartSettings = {
   marginBottom: 40,
@@ -21,22 +21,26 @@ function StackedBarChart({ parameters }: { parameters: any }) {
 
   const xScale = d3
     .scaleBand()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .domain(parameters.data.map((d: { name: any }) => d.name))
     .range([0, dms.boundedWidth])
     .padding(0.2);
   const yScale = d3.scaleLinear().domain([100, 0]).range([0, dms.boundedWidth]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const yAxisTickFilter = (ticks: any[]) => ticks.filter((t, i) => i === 0 || i === ticks.length - 1);
+  const yAxisTickFilter = (ticks: any[]) =>
+    ticks.filter((t, i) => i === 0 || i === ticks.length - 1);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const xAxisTickFilter = (ticks: any[]) => ticks.filter((t, i) => parameters.selectedIndices.includes(i));
+  const xAxisTickFilter = (ticks: any[]) =>
+    ticks.filter((t, i) => parameters.selectedIndices.includes(i));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const createSeries = (seriesData: any[]) => {
     const dataArr = seriesData.map((d) => +d.value);
-    const sumOfData = dataArr.reduce((curSum, val) => Number(curSum) + Number(val));
+    const sumOfData = dataArr.reduce(
+      (curSum, val) => Number(curSum) + Number(val),
+    );
     const dividend = sumOfData / 100;
     const obj1: { [key: string]: number } = {};
     dataArr.forEach((d, i) => {
@@ -67,14 +71,14 @@ function StackedBarChart({ parameters }: { parameters: any }) {
   );
 
   return (
-    <div className="Chart__wrapper" ref={ref} style={{ height: '400' }}>
+    <div className="Chart__wrapper" ref={ref} style={{ height: "400" }}>
       <svg width={dms.width} height={dms.height}>
         <g
-          transform={`translate(${[dms.marginLeft, dms.marginTop].join(',')})`}
+          transform={`translate(${[dms.marginLeft, dms.marginTop].join(",")})`}
         >
           <g
             transform={`translate(${[tickLength, dms.boundedHeight].join(
-              ',',
+              ",",
             )})`}
           >
             <NumericAxisH

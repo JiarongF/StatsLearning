@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import { useMemo } from 'react';
+import * as d3 from "d3";
+import { useMemo } from "react";
 
 export function NumericAxisH({
   domain = [0, 100],
@@ -34,31 +34,31 @@ export function NumericAxisH({
     <g>
       <path
         d={[
-          'M',
+          "M",
           range[0],
           tickLen,
-          'v',
+          "v",
           -tickLen,
-          'H',
+          "H",
           range[1],
-          'v',
+          "v",
           tickLen,
-        ].join(' ')}
+        ].join(" ")}
         fill="none"
         stroke="currentColor"
       />
 
-      {withTick
+      {withTick &&
         // eslint-disable-next-line react/no-unused-prop-types
-        && ticks.map(({ value, xOffset }: { value: string; xOffset: number }) => (
+        ticks.map(({ value, xOffset }: { value: string; xOffset: number }) => (
           <g key={value} transform={`translate(${xOffset}, 0)`}>
             <line y2={`${tickLen}`} stroke="currentColor" />
             <text
               key={value}
               style={{
-                fontSize: '10px',
-                textAnchor: 'middle',
-                transform: 'translateY(20px)',
+                fontSize: "10px",
+                textAnchor: "middle",
+                transform: "translateY(20px)",
               }}
             >
               {value}

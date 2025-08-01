@@ -7,12 +7,7 @@ export function Slices({
   return (
     <g>
       {arcs.map((arc, i) => (
-        <path
-          key={i}
-          d={arc()}
-          fill="transparent"
-          stroke="currentColor"
-        />
+        <path key={i} d={arc()} fill="transparent" stroke="currentColor" />
       ))}
     </g>
   );

@@ -1,8 +1,8 @@
-import * as d3 from 'd3';
-import { useMemo } from 'react';
+import * as d3 from "d3";
+import { useMemo } from "react";
 
 export function OrdinalAxisHWithDotMarks({
-  domain = ['A', 'B', 'C', 'D', 'E'],
+  domain = ["A", "B", "C", "D", "E"],
   range = [10, 100],
   withTick = true,
   tickLen = 5,
@@ -22,22 +22,22 @@ export function OrdinalAxisHWithDotMarks({
     <g>
       <path
         d={[
-          'M',
+          "M",
           range[0],
           tickLen,
-          'v',
+          "v",
           -tickLen,
-          'H',
+          "H",
           range[1],
-          'v',
+          "v",
           tickLen,
-        ].join(' ')}
+        ].join(" ")}
         fill="none"
         stroke="currentColor"
       />
-      {withTick
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        && ticks.map(({ value, xOffset }: any) => (
+      {withTick &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ticks.map(({ value, xOffset }: any) => (
           <g key={value} transform={`translate(${xOffset}, 10)`}>
             <circle key={value} r={2} cx={0} cy={0}>
               {value}

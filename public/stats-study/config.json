@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/main/src/parser/StudyConfigSchema.json",
+  "studyMetadata": {
+    "title": "Stats Study",
+    "version": "pilot",
+    "authors": ["The reVISit Team"],
+    "date": "2024-03-19",
+    "description": "A simple stats study",
+    "organizations": ["WPI"]
+  },
+  "uiConfig": {
+    "contactEmail": "contact@revisit.dev",
+    "helpTextPath": "stats-study/assets/help.md",
+    "logoPath": "revisitAssets/revisitLogoSquare.svg",
+    "withProgressBar": true,
+    "autoDownloadStudy": false,
+    "withSidebar": true
+  },
+  "components": {
+    "introduction": {
+      "type": "markdown",
+      "path": "stats-study/assets/introduction.md",
+      "response": []
+    },
+    "linkedGraph": {
+      "type": "react-component",
+      "instruction": "You can add the data, and see basic statistics and distribution.",
+      "instructionLocation": "sidebar",
+      "path": "stats-study/assets/LinkedGraph.tsx",
+      "parameters": { "taskid": "linkedGraph" },
+      "response": [
+        {
+          "id": "linkedGraph",
+          "prompt": "",
+          "location": "sidebar",
+          "type": "reactive"
+        }
+      ]
+    },
+    "correlation": {
+      "type": "react-component",
+      "instruction": "Explore correlation: adjust the relationship strength, add points, and observe how the Pearson correlation coefficient changes.",
+      "instructionLocation": "sidebar",
+      "path": "stats-study/assets/CorrelationExplorer.tsx",
+      "parameters": { "taskid": "correlation" },
+      "response": [
+        {
+          "id": "correlation",
+          "prompt": "",
+          "location": "sidebar",
+          "type": "reactive"
+        }
+      ]
+    },
+    "linearRegression": {
+      "type": "react-component",
+      "instruction": "Explore linear regression: click to add points, toggle residuals and step-by-step mode, and observe the regression line, SSE, and prediction table.",
+      "instructionLocation": "sidebar",
+      "path": "stats-study/assets/LinearReg.tsx",
+      "parameters": { "taskid": "linearRegression" },
+      "response": [
+        {
+          "id": "linearRegression",
+          "prompt": "",
+          "location": "sidebar",
+          "type": "reactive"
+        }
+      ]
+    },
+    "samplingSimulator": {
+      "type": "react-component",
+      "instruction": "Simulate sampling distributions: choose a population shape, set sample size & number of samples, then run to see both the population histogram and the sampling‐distribution histogram with means.",
+      "instructionLocation": "sidebar",
+      "path": "stats-study/assets/SamplingSimulator.tsx",
+      "parameters": { "taskid": "samplingSimulator" },
+      "response": [
+        {
+          "id": "samplingSimulator",
+          "prompt": "",
+          "location": "sidebar",
+          "type": "reactive"
+        }
+      ]
+    }
+  },
+  "sequence": {
+    "order": "fixed",
+    "components": [
+      "introduction",
+      "linkedGraph",
+      "correlation",
+      "linearRegression",
+      "samplingSimulator"
+    ]
+  }
+}

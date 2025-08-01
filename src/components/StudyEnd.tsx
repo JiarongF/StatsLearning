@@ -1,17 +1,13 @@
-import {
-  Center, Flex, Loader, Space, Text,
-} from '@mantine/core';
-import {
-  useEffect, useState, useCallback, useMemo,
-} from 'react';
-import { useStudyConfig } from '../store/hooks/useStudyConfig';
-import { ReactMarkdownWrapper } from './ReactMarkdownWrapper';
-import { useDisableBrowserBack } from '../utils/useDisableBrowserBack';
-import { useStorageEngine } from '../storage/storageEngineHooks';
-import { ParticipantData } from '../storage/types';
-import { download } from './downloader/DownloadTidy';
-import { useStudyId } from '../routes/utils';
-import { useIsAnalysis } from '../store/hooks/useIsAnalysis';
+import { Center, Flex, Loader, Space, Text } from "@mantine/core";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { useStudyConfig } from "../store/hooks/useStudyConfig";
+import { ReactMarkdownWrapper } from "./ReactMarkdownWrapper";
+import { useDisableBrowserBack } from "../utils/useDisableBrowserBack";
+import { useStorageEngine } from "../storage/storageEngineHooks";
+import { ParticipantData } from "../storage/types";
+import { download } from "./downloader/DownloadTidy";
+import { useStudyId } from "../routes/utils";
+import { useIsAnalysis } from "../store/hooks/useIsAnalysis";
 
 export function StudyEnd() {
   const studyConfig = useStudyConfig();
@@ -42,9 +38,10 @@ export function StudyEnd() {
   // Disable browser back button on study end
   useDisableBrowserBack();
 
-  const [participantData, setParticipantData] = useState<ParticipantData | null>();
-  const [participantId, setParticipantId] = useState('');
-  const baseFilename = studyConfig.studyMetadata.title.replace(' ', '_');
+  const [participantData, setParticipantData] =
+    useState<ParticipantData | null>();
+  const [participantId, setParticipantId] = useState("");
+  const baseFilename = studyConfig.studyMetadata.title.replace(" ", "_");
   useEffect(() => {
     async function fetchParticipantId() {
       if (storageEngine) {
@@ -58,7 +55,10 @@ export function StudyEnd() {
     fetchParticipantId();
   }, [storageEngine]);
   const downloadParticipant = useCallback(async () => {
-    download(JSON.stringify(participantData, null, 2), `${baseFilename}_${participantId}.json`);
+    download(
+      JSON.stringify(participantData, null, 2),
+      `${baseFilename}_${participantId}.json`,
+    );
   }, [baseFilename, participantData, participantId]);
 
   const autoDownload = studyConfig.uiConfig.autoDownloadStudy || false;
@@ -86,7 +86,7 @@ export function StudyEnd() {
 
       return () => clearInterval(interval);
     }
-    return () => { };
+    return () => {};
   }, [autoDownload, completed, delayCounter, downloadParticipant]);
 
   const studyId = useStudyId();
@@ -104,7 +104,7 @@ export function StudyEnd() {
   const processedStudyEndMsg = useMemo(() => {
     const { studyEndMsg, urlParticipantIdParam } = studyConfig.uiConfig;
 
-    if (!urlParticipantIdParam || !studyEndMsg?.includes('{PARTICIPANT_ID}')) {
+    if (!urlParticipantIdParam || !studyEndMsg?.includes("{PARTICIPANT_ID}")) {
       return studyEndMsg;
     }
 
@@ -113,21 +113,27 @@ export function StudyEnd() {
   }, [studyConfig, participantId]);
 
   return (
-    <Center style={{ height: '100%' }}>
+    <Center style={{ height: "100%" }}>
       <Flex direction="column">
-        {completed || !dataCollectionEnabled
-          ? (processedStudyEndMsg
-            ? <ReactMarkdownWrapper text={processedStudyEndMsg} />
-            : <Text size="xl" display="block">Thank you for completing the study. You may close this window now.</Text>)
-          : (
-            <>
-              <Text size="xl" display="block">Please wait while your answers are uploaded.</Text>
-              <Space h="lg" />
-              <Center>
-                <Loader color="blue" />
-              </Center>
-            </>
-          )}
+        {completed || !dataCollectionEnabled ? (
+          processedStudyEndMsg ? (
+            <ReactMarkdownWrapper text={processedStudyEndMsg} />
+          ) : (
+            <Text size="xl" display="block">
+              Thank you for completing the study. You may close this window now.
+            </Text>
+          )
+        ) : (
+          <>
+            <Text size="xl" display="block">
+              Please wait while your answers are uploaded.
+            </Text>
+            <Space h="lg" />
+            <Center>
+              <Loader color="blue" />
+            </Center>
+          </>
+        )}
       </Flex>
     </Center>
   );

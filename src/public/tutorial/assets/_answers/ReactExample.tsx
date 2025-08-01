@@ -1,17 +1,24 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { initializeTrrack, Registry } from '@trrack/core';
-import BrushPlotWrapper from '../BrushPlotWrapper';
-import { StimulusParams } from '../../../../store/types';
-import { BrushParams, BrushState } from '../../../example-brush-interactions/assets/types';
+import React, { useCallback, useMemo, useState } from "react";
+import { initializeTrrack, Registry } from "@trrack/core";
+import BrushPlotWrapper from "../BrushPlotWrapper";
+import { StimulusParams } from "../../../../store/types";
+import {
+  BrushParams,
+  BrushState,
+} from "../../../example-brush-interactions/assets/types";
 
-export default function ReactExample({ parameters, setAnswer, provenanceState } : StimulusParams<BrushParams, BrushState>) {
+export default function ReactExample({
+  parameters,
+  setAnswer,
+  provenanceState,
+}: StimulusParams<BrushParams, BrushState>) {
   const [brushState, setBrushState] = useState<BrushState>();
 
   // creating provenance tracking
   const { actions, trrack } = useMemo(() => {
     const reg = Registry.create();
 
-    const brush = reg.register('brush', (state, currBrush: BrushState) => {
+    const brush = reg.register("brush", (state, currBrush: BrushState) => {
       state.brush = currBrush;
       return state;
     });
@@ -20,7 +27,12 @@ export default function ReactExample({ parameters, setAnswer, provenanceState } 
       registry: reg,
       initialState: {
         brush: {
-          hasBrush: false, x1: null, x2: null, y1: null, y2: null, ids: [],
+          hasBrush: false,
+          x1: null,
+          x2: null,
+          y1: null,
+          y2: null,
+          ids: [],
         },
       },
     });
@@ -33,18 +45,26 @@ export default function ReactExample({ parameters, setAnswer, provenanceState } 
     };
   }, []);
 
-  const onStateChange = useCallback((b: BrushState) => {
-    setBrushState(b);
-    trrack.apply('Brush', actions.brush(b));
+  const onStateChange = useCallback(
+    (b: BrushState) => {
+      setBrushState(b);
+      trrack.apply("Brush", actions.brush(b));
 
-    setAnswer({
-      answers: {},
-      status: true,
-      provenanceGraph: trrack.graph.backend,
-    });
-  }, [actions, setAnswer, trrack]);
+      setAnswer({
+        answers: {},
+        status: true,
+        provenanceGraph: trrack.graph.backend,
+      });
+    },
+    [actions, setAnswer, trrack],
+  );
 
   return (
-    <BrushPlotWrapper params={parameters} state={provenanceState || brushState} onStateChange={onStateChange} answers={{}} />
+    <BrushPlotWrapper
+      params={parameters}
+      state={provenanceState || brushState}
+      onStateChange={onStateChange}
+      answers={{}}
+    />
   );
 }

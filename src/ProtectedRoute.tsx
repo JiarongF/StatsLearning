@@ -1,17 +1,21 @@
-import { LoadingOverlay } from '@mantine/core';
-import { ReactNode, useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router';
-import { useAuth } from './store/hooks/useAuth';
-import { useStorageEngine } from './storage/storageEngineHooks';
+import { LoadingOverlay } from "@mantine/core";
+import { ReactNode, useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router";
+import { useAuth } from "./store/hooks/useAuth";
+import { useStorageEngine } from "./storage/storageEngineHooks";
 
 interface ProtectedRouteProps {
   children: ReactNode;
   paramToCheck?: string;
-  paramCallback?: (paramToCheck:string) => Promise<boolean>;
+  paramCallback?: (paramToCheck: string) => Promise<boolean>;
 }
 
 // Wrapper component which only allows users who are authenticated and admins to access its child components.
-export function ProtectedRoute({ children, paramToCheck, paramCallback }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  paramToCheck,
+  paramCallback,
+}: ProtectedRouteProps) {
   const { user, verifyAdminStatus, logout } = useAuth();
   const { storageEngine } = useStorageEngine();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
@@ -29,7 +33,7 @@ export function ProtectedRoute({ children, paramToCheck, paramCallback }: Protec
           if (currIsEnabled) {
             setIsEnabled(currIsEnabled);
           }
-        // Otherwise, isEnabled was set to false by external user state manipulation
+          // Otherwise, isEnabled was set to false by external user state manipulation
         } else {
           setIsEnabled(true);
         }
@@ -52,11 +56,15 @@ export function ProtectedRoute({ children, paramToCheck, paramCallback }: Protec
     };
 
     verifyUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.isAdmin, isEnabled]);
 
   if (user.determiningStatus || !storageEngine) {
-    return <LoadingOverlay visible={user.determiningStatus || !storageEngine?.getEngine()} />;
+    return (
+      <LoadingOverlay
+        visible={user.determiningStatus || !storageEngine?.getEngine()}
+      />
+    );
   }
 
   if (isEnabled && !user.isAdmin && !user.determiningStatus) {

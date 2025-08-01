@@ -1,5 +1,5 @@
-import { LikertResponse, RadioResponse } from '../../parser/types';
-import { RadioInput } from './RadioInput';
+import { LikertResponse, RadioResponse } from "../../parser/types";
+import { RadioInput } from "./RadioInput";
 
 export function LikertInput({
   response,
@@ -24,7 +24,7 @@ export function LikertInput({
 
   const radioResponse: RadioResponse = {
     ...response,
-    type: 'radio',
+    type: "radio",
     options,
     horizontal: true,
   };

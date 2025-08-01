@@ -1,22 +1,33 @@
-import {
-  Button, Group, Tooltip,
-} from '@mantine/core';
-import { IconDatabaseExport, IconTableExport } from '@tabler/icons-react';
-import { useState } from 'react';
-import { useDisclosure } from '@mantine/hooks';
-import { DownloadTidy, download } from './DownloadTidy';
-import { ParticipantData } from '../../storage/types';
+import { Button, Group, Tooltip } from "@mantine/core";
+import { IconDatabaseExport, IconTableExport } from "@tabler/icons-react";
+import { useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import { DownloadTidy, download } from "./DownloadTidy";
+import { ParticipantData } from "../../storage/types";
 
-type ParticipantDataFetcher = ParticipantData[] | (() => Promise<ParticipantData[]>);
+type ParticipantDataFetcher =
+  | ParticipantData[]
+  | (() => Promise<ParticipantData[]>);
 
 export function DownloadButtons({
-  visibleParticipants, studyId, gap, fileName,
-}: { visibleParticipants: ParticipantDataFetcher; studyId: string, gap?: string, fileName?: string | null }) {
+  visibleParticipants,
+  studyId,
+  gap,
+  fileName,
+}: {
+  visibleParticipants: ParticipantDataFetcher;
+  studyId: string;
+  gap?: string;
+  fileName?: string | null;
+}) {
   const [openDownload, { open, close }] = useDisclosure(false);
   const [participants, setParticipants] = useState<ParticipantData[]>([]);
 
   const fetchParticipants = async () => {
-    const currParticipants = typeof visibleParticipants === 'function' ? await visibleParticipants() : visibleParticipants;
+    const currParticipants =
+      typeof visibleParticipants === "function"
+        ? await visibleParticipants()
+        : visibleParticipants;
     return currParticipants;
   };
 
@@ -38,7 +49,10 @@ export function DownloadButtons({
         <Tooltip label="Download all participants data as JSON">
           <Button
             variant="light"
-            disabled={visibleParticipants.length === 0 && typeof visibleParticipants !== 'function'}
+            disabled={
+              visibleParticipants.length === 0 &&
+              typeof visibleParticipants !== "function"
+            }
             onClick={handleDownloadJSON}
             px={4}
           >
@@ -48,7 +62,10 @@ export function DownloadButtons({
         <Tooltip label="Download all participants data as a tidy CSV">
           <Button
             variant="light"
-            disabled={visibleParticipants.length === 0 && typeof visibleParticipants !== 'function'}
+            disabled={
+              visibleParticipants.length === 0 &&
+              typeof visibleParticipants !== "function"
+            }
             onClick={handleOpenTidy}
             px={4}
           >
@@ -61,7 +78,9 @@ export function DownloadButtons({
         <DownloadTidy
           opened={openDownload}
           close={close}
-          filename={fileName ? `${fileName}_tidy.csv` : `${studyId}_all_tidy.csv`}
+          filename={
+            fileName ? `${fileName}_tidy.csv` : `${studyId}_all_tidy.csv`
+          }
           data={participants}
           studyId={studyId}
         />

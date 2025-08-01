@@ -1,12 +1,10 @@
-import {
-  Modal, Text, Title, Stack,
-} from '@mantine/core';
-import { useEffect, useState, useRef } from 'react';
-import { IconAlertTriangle } from '@tabler/icons-react';
-import { useNavigate } from 'react-router';
-import { useStorageEngine } from '../../storage/storageEngineHooks';
-import { useStudyId } from '../../routes/utils';
-import { useStudyConfig } from '../../store/hooks/useStudyConfig';
+import { Modal, Text, Title, Stack } from "@mantine/core";
+import { useEffect, useState, useRef } from "react";
+import { IconAlertTriangle } from "@tabler/icons-react";
+import { useNavigate } from "react-router";
+import { useStorageEngine } from "../../storage/storageEngineHooks";
+import { useStudyId } from "../../routes/utils";
+import { useStudyConfig } from "../../store/hooks/useStudyConfig";
 
 export function ResolutionWarning() {
   const studyConfig = useStudyConfig();
@@ -51,9 +49,12 @@ export function ResolutionWarning() {
               if (storageEngine && !isRejected) {
                 setIsRejected(true);
                 setIsTimedOut(true);
-                storageEngine.rejectCurrentParticipant('Screen resolution too small')
+                storageEngine
+                  .rejectCurrentParticipant("Screen resolution too small")
                   .catch(() => {
-                    console.error('Failed to reject participant who failed training');
+                    console.error(
+                      "Failed to reject participant who failed training",
+                    );
                   });
               }
               return 0;
@@ -78,9 +79,9 @@ export function ResolutionWarning() {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       if (countdownIntervalRef.current) {
         clearInterval(countdownIntervalRef.current);
       }
@@ -92,14 +93,20 @@ export function ResolutionWarning() {
   }
 
   return (
-    <Modal opened={showWarning} onClose={() => {}} fullScreen withCloseButton={false}>
+    <Modal
+      opened={showWarning}
+      onClose={() => {}}
+      fullScreen
+      withCloseButton={false}
+    >
       <Stack align="center" justify="center">
         <IconAlertTriangle size={64} color="orange" />
         <Title order={3}> Screen Resolution Warning </Title>
         <Text size="md" ta="center">
           {isTimedOut ? (
             <>
-              Thank you for participating in this study. You have been timed out and will not be able to continue.
+              Thank you for participating in this study. You have been timed out
+              and will not be able to continue.
               <br />
               You may now close this page.
             </>
@@ -110,11 +117,8 @@ export function ResolutionWarning() {
               {minWidth !== undefined && ` Width: ${minWidth}px`}
               {minHeight !== undefined && ` Height: ${minHeight}px`}
               <br />
-              Please resize your browser window to the minimum required size within
-              {' '}
-              {timeLeft}
-              {' '}
-              seconds.
+              Please resize your browser window to the minimum required size
+              within {timeLeft} seconds.
             </>
           )}
         </Text>

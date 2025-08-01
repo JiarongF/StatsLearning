@@ -1,7 +1,7 @@
-import * as d3 from 'd3';
-import { Slices } from './chartcomponents/Slices';
-import { SlicesDotMarks } from './chartcomponents/SlicesDotMarks';
-import { useChartDimensions } from './hooks/useChartDimensions';
+import * as d3 from "d3";
+import { Slices } from "./chartcomponents/Slices";
+import { SlicesDotMarks } from "./chartcomponents/SlicesDotMarks";
+import { useChartDimensions } from "./hooks/useChartDimensions";
 
 const chartSettings = {
   marginBottom: 40,
@@ -26,20 +26,24 @@ function PieChart({
   const [ref, dms] = useChartDimensions(chartSettings);
 
   const angles = angleGen(data.data);
-  const arcsGen = angles.map((angle) => d3
-    .arc()
-    .innerRadius(0)
-    .outerRadius(radius)
-    .startAngle(angle.startAngle)
-    .endAngle(angle.endAngle));
+  const arcsGen = angles.map((angle) =>
+    d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(radius)
+      .startAngle(angle.startAngle)
+      .endAngle(angle.endAngle),
+  );
 
   const labelArcs = angles
-    .map((angle) => d3
-      .arc()
-      .outerRadius(radius + 10)
-      .innerRadius(radius + 10)
-      .startAngle(angle.startAngle)
-      .endAngle(angle.endAngle))
+    .map((angle) =>
+      d3
+        .arc()
+        .outerRadius(radius + 10)
+        .innerRadius(radius + 10)
+        .startAngle(angle.startAngle)
+        .endAngle(angle.endAngle),
+    )
     .filter((arc, i) => data.selectedIndices.includes(i));
 
   return (
@@ -49,7 +53,7 @@ function PieChart({
           transform={`translate(${[
             dms.marginLeft + radius,
             dms.marginTop + radius,
-          ].join(',')})`}
+          ].join(",")})`}
         >
           <Slices arcs={arcsGen} />
           <SlicesDotMarks positions={labelArcs} />

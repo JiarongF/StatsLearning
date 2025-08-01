@@ -22,10 +22,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "id",
-        "answer"
-      ],
+      "required": ["id", "answer"],
       "type": "object"
     },
     "BaseComponents": {
@@ -169,10 +166,7 @@
           },
           "responseOrder": {
             "description": "The order of the responses. Defaults to 'fixed'.",
-            "enum": [
-              "fixed",
-              "random"
-            ],
+            "enum": ["fixed", "random"],
             "type": "string"
           },
           "showTitle": {
@@ -255,10 +249,7 @@
         },
         "optionOrder": {
           "description": "The order in which the buttons are displayed. Defaults to fixed.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "options": {
@@ -318,12 +309,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "options",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "options", "prompt", "type"],
       "type": "object"
     },
     "CheckboxResponse": {
@@ -356,10 +342,7 @@
         },
         "optionOrder": {
           "description": "The order in which the checkboxes are displayed. Defaults to fixed.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "options": {
@@ -424,12 +407,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "options",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "options", "prompt", "type"],
       "type": "object"
     },
     "ComponentBlock": {
@@ -470,11 +448,7 @@
         },
         "order": {
           "description": "The type of order. This can be random (pure random), latinSquare (random with some guarantees), or fixed.",
-          "enum": [
-            "random",
-            "latinSquare",
-            "fixed"
-          ],
+          "enum": ["random", "latinSquare", "fixed"],
           "type": "string"
         },
         "skip": {
@@ -482,10 +456,7 @@
           "description": "The skip conditions for the block."
         }
       },
-      "required": [
-        "order",
-        "components"
-      ],
+      "required": ["order", "components"],
       "type": "object"
     },
     "ComponentBlockCondition": {
@@ -499,10 +470,7 @@
         },
         "condition": {
           "description": "The condition to check.",
-          "enum": [
-            "numCorrect",
-            "numIncorrect"
-          ],
+          "enum": ["numCorrect", "numIncorrect"],
           "type": "string"
         },
         "to": {
@@ -514,20 +482,11 @@
           "type": "number"
         }
       },
-      "required": [
-        "check",
-        "condition",
-        "value",
-        "to"
-      ],
+      "required": ["check", "condition", "value", "to"],
       "type": "object"
     },
     "ConfigResponseBlockLocation": {
-      "enum": [
-        "sidebar",
-        "aboveStimulus",
-        "belowStimulus"
-      ],
+      "enum": ["sidebar", "aboveStimulus", "belowStimulus"],
       "type": "string"
     },
     "DeterministicInterruption": {
@@ -550,11 +509,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "firstLocation",
-        "spacing",
-        "components"
-      ],
+      "required": ["firstLocation", "spacing", "components"],
       "type": "object"
     },
     "DropdownResponse": {
@@ -635,12 +590,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "options",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "options", "prompt", "type"],
       "type": "object"
     },
     "DynamicBlock": {
@@ -666,11 +616,7 @@
           "type": "object"
         }
       },
-      "required": [
-        "id",
-        "order",
-        "functionPath"
-      ],
+      "required": ["id", "order", "functionPath"],
       "type": "object"
     },
     "ImageComponent": {
@@ -766,10 +712,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -813,11 +756,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "path",
-        "response",
-        "type"
-      ],
+      "required": ["path", "response", "type"],
       "type": "object"
     },
     "IndividualComponent": {
@@ -863,11 +802,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "name",
-        "check",
-        "to"
-      ],
+      "required": ["name", "check", "to"],
       "type": "object"
     },
     "IndividualComponentSingleResponseCondition": {
@@ -881,10 +816,7 @@
         },
         "comparison": {
           "description": "The comparison to use.",
-          "enum": [
-            "equal",
-            "notEqual"
-          ],
+          "enum": ["equal", "notEqual"],
           "type": "string"
         },
         "name": {
@@ -901,20 +833,10 @@
         },
         "value": {
           "description": "The value to check.",
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": ["string", "number"]
         }
       },
-      "required": [
-        "name",
-        "check",
-        "responseId",
-        "value",
-        "comparison",
-        "to"
-      ],
+      "required": ["name", "check", "responseId", "value", "comparison", "to"],
       "type": "object"
     },
     "InheritedComponent": {
@@ -1061,10 +983,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -1124,9 +1043,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "baseComponent"
-      ],
+      "required": ["baseComponent"],
       "type": "object"
     },
     "InterruptionBlock": {
@@ -1202,12 +1119,7 @@
           "type": "object"
         }
       },
-      "required": [
-        "$schema",
-        "description",
-        "components",
-        "sequences"
-      ],
+      "required": ["$schema", "description", "components", "sequences"],
       "type": "object"
     },
     "LikertResponse": {
@@ -1282,12 +1194,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "numItems",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "numItems", "prompt", "type"],
       "type": "object"
     },
     "LongTextResponse": {
@@ -1354,11 +1261,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "prompt", "type"],
       "type": "object"
     },
     "MarkdownComponent": {
@@ -1454,10 +1357,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -1501,11 +1401,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "path",
-        "response",
-        "type"
-      ],
+      "required": ["path", "response", "type"],
       "type": "object"
     },
     "MatrixResponse": {
@@ -1568,10 +1464,7 @@
         },
         "questionOrder": {
           "description": "The order in which the questions are displayed. Defaults to fixed.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "required": {
@@ -1598,10 +1491,7 @@
           "type": "string"
         },
         "type": {
-          "enum": [
-            "matrix-radio",
-            "matrix-checkbox"
-          ],
+          "enum": ["matrix-radio", "matrix-checkbox"],
           "type": "string"
         },
         "withDivider": {
@@ -1613,13 +1503,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "answerOptions",
-        "id",
-        "prompt",
-        "questionOptions",
-        "type"
-      ],
+      "required": ["answerOptions", "id", "prompt", "questionOptions", "type"],
       "type": "object"
     },
     "NumberOption": {
@@ -1635,10 +1519,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "label",
-        "value"
-      ],
+      "required": ["label", "value"],
       "type": "object"
     },
     "NumericalResponse": {
@@ -1713,11 +1594,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "prompt", "type"],
       "type": "object"
     },
     "QuestionnaireComponent": {
@@ -1809,10 +1686,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -1856,10 +1730,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "response",
-        "type"
-      ],
+      "required": ["response", "type"],
       "type": "object"
     },
     "RadioResponse": {
@@ -1888,10 +1759,7 @@
         },
         "optionOrder": {
           "description": "The order in which the radio buttons are displayed. Defaults to fixed.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "options": {
@@ -1960,12 +1828,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "options",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "options", "prompt", "type"],
       "type": "object"
     },
     "RandomInterruption": {
@@ -1989,11 +1852,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "spacing",
-        "numInterruptions",
-        "components"
-      ],
+      "required": ["spacing", "numInterruptions", "components"],
       "type": "object"
     },
     "ReactComponent": {
@@ -2094,10 +1953,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -2141,11 +1997,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "path",
-        "response",
-        "type"
-      ],
+      "required": ["path", "response", "type"],
       "type": "object"
     },
     "ReactiveResponse": {
@@ -2208,11 +2060,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "prompt", "type"],
       "type": "object"
     },
     "RepeatedComponentBlockCondition": {
@@ -2226,10 +2074,7 @@
         },
         "condition": {
           "description": "The condition to check.",
-          "enum": [
-            "numCorrect",
-            "numIncorrect"
-          ],
+          "enum": ["numCorrect", "numIncorrect"],
           "type": "string"
         },
         "name": {
@@ -2245,13 +2090,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "name",
-        "check",
-        "condition",
-        "value",
-        "to"
-      ],
+      "required": ["name", "check", "condition", "value", "to"],
       "type": "object"
     },
     "Response": {
@@ -2358,11 +2197,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "prompt", "type"],
       "type": "object"
     },
     "SkipConditions": {
@@ -2472,12 +2307,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "id",
-        "options",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "options", "prompt", "type"],
       "type": "object"
     },
     "StringOption": {
@@ -2493,10 +2323,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "label",
-        "value"
-      ],
+      "required": ["label", "value"],
       "type": "object"
     },
     "Styles": {
@@ -2546,18 +2373,11 @@
           "type": "string"
         },
         "fontStyle": {
-          "enum": [
-            "normal",
-            "italic",
-            "oblique"
-          ],
+          "enum": ["normal", "italic", "oblique"],
           "type": "string"
         },
         "fontWeight": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": ["string", "number"]
         },
         "height": {
           "description": "Sizing",
@@ -2570,10 +2390,7 @@
           "type": "string"
         },
         "lineHeight": {
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": ["string", "number"]
         },
         "margin": {
           "description": "Spacing",
@@ -2584,13 +2401,7 @@
         },
         "position": {
           "description": "Positioning",
-          "enum": [
-            "static",
-            "relative",
-            "absolute",
-            "fixed",
-            "sticky"
-          ],
+          "enum": ["static", "relative", "absolute", "fixed", "sticky"],
           "type": "string"
         },
         "right": {
@@ -2619,12 +2430,7 @@
           "type": "string"
         },
         "textTransform": {
-          "enum": [
-            "capitalize",
-            "lowercase",
-            "none",
-            "uppercase"
-          ],
+          "enum": ["capitalize", "lowercase", "none", "uppercase"],
           "type": "string"
         },
         "top": {
@@ -2701,11 +2507,7 @@
           "not": {}
         }
       },
-      "required": [
-        "id",
-        "prompt",
-        "type"
-      ],
+      "required": ["id", "prompt", "type"],
       "type": "object"
     },
     "VegaComponent": {
@@ -2811,10 +2613,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -2862,11 +2661,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "config",
-        "response",
-        "type"
-      ],
+      "required": ["config", "response", "type"],
       "type": "object"
     },
     "VegaComponentPath": {
@@ -2962,10 +2757,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -3013,11 +2805,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "path",
-        "response",
-        "type"
-      ],
+      "required": ["path", "response", "type"],
       "type": "object"
     },
     "VideoComponent": {
@@ -3117,10 +2905,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -3168,11 +2953,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "path",
-        "response",
-        "type"
-      ],
+      "required": ["path", "response", "type"],
       "type": "object"
     },
     "WebsiteComponent": {
@@ -3273,10 +3054,7 @@
         },
         "responseOrder": {
           "description": "The order of the responses. Defaults to 'fixed'.",
-          "enum": [
-            "fixed",
-            "random"
-          ],
+          "enum": ["fixed", "random"],
           "type": "string"
         },
         "showTitle": {
@@ -3320,11 +3098,7 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "path",
-        "response",
-        "type"
-      ],
+      "required": ["path", "response", "type"],
       "type": "object"
     }
   }

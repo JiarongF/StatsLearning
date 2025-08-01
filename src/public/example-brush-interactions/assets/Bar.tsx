@@ -1,12 +1,12 @@
-import { useResizeObserver } from '@mantine/hooks';
-import { useMemo } from 'react';
-import ColumnTable from 'arquero/dist/types/table/column-table';
+import { useResizeObserver } from "@mantine/hooks";
+import { useMemo } from "react";
+import ColumnTable from "arquero/dist/types/table/column-table";
 
-import * as d3 from 'd3';
-import { Loader } from '@mantine/core';
-import { XAxisBar } from './XAxisBar';
-import { YAxisBar } from './YAxisBar';
-import { BrushParams } from './types';
+import * as d3 from "d3";
+import { Loader } from "@mantine/core";
+import { XAxisBar } from "./XAxisBar";
+import { YAxisBar } from "./YAxisBar";
+import { BrushParams } from "./types";
 
 const margin = {
   top: 15,
@@ -15,15 +15,32 @@ const margin = {
   bottom: 50,
 };
 
-export function Bar({ barsTable, parameters, data } : {barsTable: ColumnTable | null, parameters: BrushParams, data: Record<string, string>[]}) {
-  const [ref, { height: originalHeight, width: originalWidth }] = useResizeObserver();
+export function Bar({
+  barsTable,
+  parameters,
+  data,
+}: {
+  barsTable: ColumnTable | null;
+  parameters: BrushParams;
+  data: Record<string, string>[];
+}) {
+  const [ref, { height: originalHeight, width: originalWidth }] =
+    useResizeObserver();
 
-  const width = useMemo(() => originalWidth - margin.left - margin.right, [originalWidth]);
+  const width = useMemo(
+    () => originalWidth - margin.left - margin.right,
+    [originalWidth],
+  );
 
-  const height = useMemo(() => originalHeight - margin.top - margin.bottom, [originalHeight]);
+  const height = useMemo(
+    () => originalHeight - margin.top - margin.bottom,
+    [originalHeight],
+  );
 
   const colorScale = useMemo(() => {
-    const categories = Array.from(new Set(data.map((car) => car[parameters.category])));
+    const categories = Array.from(
+      new Set(data.map((car) => car[parameters.category])),
+    );
     return d3.scaleOrdinal(d3.schemeTableau10).domain(categories);
   }, [data, parameters.category]);
 
@@ -32,7 +49,13 @@ export function Bar({ barsTable, parameters, data } : {barsTable: ColumnTable | 
       return null;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return d3.scaleLinear([margin.left, width + margin.left]).domain([0, d3.max(barsTable.objects().map((obj: any) => obj.count)) as any]).nice();
+    return d3
+      .scaleLinear([margin.left, width + margin.left])
+      .domain([
+        0,
+        d3.max(barsTable.objects().map((obj: any) => obj.count)) as any,
+      ])
+      .nice();
   }, [barsTable, width]);
 
   const yScale = useMemo(() => {
@@ -40,7 +63,10 @@ export function Bar({ barsTable, parameters, data } : {barsTable: ColumnTable | 
       return null;
     }
 
-    return d3.scaleBand([margin.top, height + margin.top]).domain(barsTable.array(parameters.category).sort() as never).paddingInner(0.1);
+    return d3
+      .scaleBand([margin.top, height + margin.top])
+      .domain(barsTable.array(parameters.category).sort() as never)
+      .paddingInner(0.1);
   }, [barsTable, height, parameters.category]);
 
   const rects = useMemo(() => {
@@ -56,15 +82,40 @@ export function Bar({ barsTable, parameters, data } : {barsTable: ColumnTable | 
 
       return (
         <g key={i}>
-          <rect key={i} x={margin.left} y={yScale(car[parameters.category])} fill={colorScale(car[parameters.category])} height={yScale.bandwidth()} width={xScale(car.count) - margin.left} />
-          <text x={xScale(car.count) + 5} y={yScale(car[parameters.category])! + (yScale.bandwidth() / 2)} style={{ textAlign: 'center', dominantBaseline: 'middle', fontSize: 14 }}>{car.count}</text>
+          <rect
+            key={i}
+            x={margin.left}
+            y={yScale(car[parameters.category])}
+            fill={colorScale(car[parameters.category])}
+            height={yScale.bandwidth()}
+            width={xScale(car.count) - margin.left}
+          />
+          <text
+            x={xScale(car.count) + 5}
+            y={yScale(car[parameters.category])! + yScale.bandwidth() / 2}
+            style={{
+              textAlign: "center",
+              dominantBaseline: "middle",
+              fontSize: 14,
+            }}
+          >
+            {car.count}
+          </text>
         </g>
       );
     });
   }, [barsTable, colorScale, parameters.category, xScale, yScale]);
 
   return yScale && xScale ? (
-    <svg ref={ref} style={{ height: '200px', width: '550px', fontFamily: 'BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif' }}>
+    <svg
+      ref={ref}
+      style={{
+        height: "200px",
+        width: "550px",
+        fontFamily:
+          'BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif',
+      }}
+    >
       <XAxisBar
         xScale={xScale}
         yRange={yScale.range() as [number, number]}
@@ -88,10 +139,12 @@ export function Bar({ barsTable, parameters, data } : {barsTable: ColumnTable | 
             offset: yScale(country)! + yScale.bandwidth() / 2,
           }))}
         />
-      ) : null }
-      { rects }
+      ) : null}
+      {rects}
     </svg>
-  ) : <Loader />;
+  ) : (
+    <Loader />
+  );
 }
 
 export default Bar;

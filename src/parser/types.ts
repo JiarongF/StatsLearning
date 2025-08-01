@@ -1,10 +1,10 @@
-export type { ParticipantData } from '../storage/types';
-export type { StoredAnswer, ParticipantMetadata } from '../store/types';
+export type { ParticipantData } from "../storage/types";
+export type { StoredAnswer, ParticipantMetadata } from "../store/types";
 
 /**
  * The GlobalConfig is used to generate the list of available studies in the UI.
  * This list is displayed on the landing page when running the app.
-*/
+ */
 export interface GlobalConfig {
   /** A required json schema property. This should point to the github link for the version of the schema you would like. See examples in the public folder for more information */
   $schema: string;
@@ -62,8 +62,15 @@ export interface StudyMetadata {
 /**
  * @ignore
  */
-export type ResponseBlockLocation = 'sidebar' | 'aboveStimulus' | 'belowStimulus' | 'stimulus';
-export type ConfigResponseBlockLocation = Exclude<ResponseBlockLocation, 'stimulus'>;
+export type ResponseBlockLocation =
+  | "sidebar"
+  | "aboveStimulus"
+  | "belowStimulus"
+  | "stimulus";
+export type ConfigResponseBlockLocation = Exclude<
+  ResponseBlockLocation,
+  "stimulus"
+>;
 
 export type Styles = {
   /** Sizing */
@@ -71,7 +78,7 @@ export type Styles = {
   width?: string;
 
   /** Positioning */
-  position?: 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
+  position?: "static" | "relative" | "absolute" | "fixed" | "sticky";
   top?: string;
   bottom?: string;
   left?: string;
@@ -100,11 +107,23 @@ export type Styles = {
   font?: string;
   fontFamily?: string;
   fontSize?: string;
-  fontStyle?: 'normal' | 'italic' | 'oblique';
+  fontStyle?: "normal" | "italic" | "oblique";
   fontWeight?: string | number;
-  textAlign?: 'start' | 'center' | 'end' | 'justify' | 'left' | 'right' | 'match-parent';
-  textDecoration?: 'none' | 'underline' | 'overline' | 'line-through' | 'underline-overline';
-  textTransform?: 'capitalize' | 'lowercase' | 'none' | 'uppercase';
+  textAlign?:
+    | "start"
+    | "center"
+    | "end"
+    | "justify"
+    | "left"
+    | "right"
+    | "match-parent";
+  textDecoration?:
+    | "none"
+    | "underline"
+    | "overline"
+    | "line-through"
+    | "underline-overline";
+  textTransform?: "capitalize" | "lowercase" | "none" | "uppercase";
   letterSpacing?: string;
   wordSpacing?: string;
   lineHeight?: string | number;
@@ -278,7 +297,7 @@ export interface BaseResponse {
 ```
  */
 export interface NumericalResponse extends BaseResponse {
-  type: 'numerical';
+  type: "numerical";
   /** The placeholder text that is displayed in the input. */
   placeholder?: string;
   /** The minimum value that is accepted in the input. */
@@ -303,7 +322,7 @@ export interface NumericalResponse extends BaseResponse {
  *
  */
 export interface ShortTextResponse extends BaseResponse {
-  type: 'shortText';
+  type: "shortText";
   /** The placeholder text that is displayed in the input. */
   placeholder?: string;
 }
@@ -323,7 +342,7 @@ export interface ShortTextResponse extends BaseResponse {
  *
  */
 export interface LongTextResponse extends BaseResponse {
-  type: 'longText';
+  type: "longText";
   /** The placeholder text that is displayed in the input. */
   placeholder?: string;
 }
@@ -349,7 +368,7 @@ export interface LongTextResponse extends BaseResponse {
 ```
  */
 export interface LikertResponse extends BaseResponse {
-  type: 'likert';
+  type: "likert";
   /** The number of options to render. */
   numItems: number;
   /** The left label of the likert scale. E.g Strongly Disagree */
@@ -405,13 +424,13 @@ Here's an example using custom columns (answerOptions):
 ```
  */
 export interface MatrixResponse extends BaseResponse {
-  type: 'matrix-radio' | 'matrix-checkbox';
+  type: "matrix-radio" | "matrix-checkbox";
   /** The answer options (columns). We provide some shortcuts for a likelihood scale (ranging from highly unlikely to highly likely) and a satisfaction scale (ranging from highly unsatisfied to highly satisfied) with either 5 or 7 options to choose from. */
   answerOptions: string[] | `likely${5 | 7}` | `satisfaction${5 | 7}`;
   /** The question options (rows) are the prompts for each response you'd like to record. */
   questionOptions: string[];
   /** The order in which the questions are displayed. Defaults to fixed. */
-  questionOrder?: 'fixed' | 'random';
+  questionOrder?: "fixed" | "random";
 }
 
 /**
@@ -433,7 +452,7 @@ export interface MatrixResponse extends BaseResponse {
  *
  */
 export interface DropdownResponse extends BaseResponse {
-  type: 'dropdown';
+  type: "dropdown";
   /** The placeholder text that is displayed in the input. */
   placeholder?: string;
   /** The options that are displayed in the dropdown. */
@@ -470,7 +489,7 @@ export interface DropdownResponse extends BaseResponse {
  *
  */
 export interface SliderResponse extends BaseResponse {
-  type: 'slider';
+  type: "slider";
   /** This defines the steps in the slider and the extent of the slider as an array of objects that have a label and a value. */
   options: NumberOption[];
   /** The starting value of the slider. Defaults to the minimum value. */
@@ -502,11 +521,11 @@ export interface SliderResponse extends BaseResponse {
  *
  */
 export interface RadioResponse extends BaseResponse {
-  type: 'radio';
+  type: "radio";
   /** The options that are displayed as checkboxes, provided as an array of objects, with label and value fields. */
   options: (StringOption | string)[];
   /** The order in which the radio buttons are displayed. Defaults to fixed. */
-  optionOrder?: 'fixed' | 'random';
+  optionOrder?: "fixed" | "random";
   /** The left label of the radio group. Used in Likert scales for example */
   leftLabel?: string;
   /** The right label of the radio group. Used in Likert scales for example */
@@ -532,11 +551,11 @@ export interface RadioResponse extends BaseResponse {
 ```
  */
 export interface CheckboxResponse extends BaseResponse {
-  type: 'checkbox';
+  type: "checkbox";
   /** The options that are displayed as checkboxes, provided as an array of objects, with label and value fields. */
   options: (StringOption | string)[];
   /** The order in which the checkboxes are displayed. Defaults to fixed. */
-  optionOrder?: 'fixed' | 'random';
+  optionOrder?: "fixed" | "random";
   /** The minimum number of selections that are required. */
   minSelections?: number;
   /** The maximum number of selections that are required. */
@@ -561,7 +580,7 @@ export interface CheckboxResponse extends BaseResponse {
 ```
  */
 export interface ReactiveResponse extends BaseResponse {
-  type: 'reactive';
+  type: "reactive";
 }
 
 /**
@@ -586,10 +605,10 @@ export interface ReactiveResponse extends BaseResponse {
  * In this example, the participant can click one of the buttons labeled "Option 1", "Option 2", or "Option 3".
  */
 export interface ButtonsResponse extends BaseResponse {
-  type: 'buttons';
+  type: "buttons";
   options: (StringOption | string)[];
   /** The order in which the buttons are displayed. Defaults to fixed. */
-  optionOrder?: 'fixed' | 'random';
+  optionOrder?: "fixed" | "random";
 }
 
 /**
@@ -610,8 +629,18 @@ export interface ButtonsResponse extends BaseResponse {
  *
  * In this example, the text only response is displayed below the stimulus and the enumeration of the questions is restarted.
  */
-export interface TextOnlyResponse extends Omit<BaseResponse, 'secondaryText' | 'required' | 'requiredValue' | 'requiredLabel' | 'paramCapture' | 'hidden' | 'withDontKnow'> {
-  type: 'textOnly';
+export interface TextOnlyResponse
+  extends Omit<
+    BaseResponse,
+    | "secondaryText"
+    | "required"
+    | "requiredValue"
+    | "requiredLabel"
+    | "paramCapture"
+    | "hidden"
+    | "withDontKnow"
+  > {
+  type: "textOnly";
   /** The markdown text that is displayed to the user. */
   prompt: string;
   /** Whether to restart the enumeration of the questions. Defaults to false. */
@@ -626,7 +655,19 @@ export interface TextOnlyResponse extends Omit<BaseResponse, 'secondaryText' | '
   withDontKnow?: undefined;
 }
 
-export type Response = NumericalResponse | ShortTextResponse | LongTextResponse | LikertResponse | DropdownResponse | SliderResponse | RadioResponse | CheckboxResponse | ReactiveResponse | MatrixResponse | ButtonsResponse | TextOnlyResponse;
+export type Response =
+  | NumericalResponse
+  | ShortTextResponse
+  | LongTextResponse
+  | LikertResponse
+  | DropdownResponse
+  | SliderResponse
+  | RadioResponse
+  | CheckboxResponse
+  | ReactiveResponse
+  | MatrixResponse
+  | ButtonsResponse
+  | TextOnlyResponse;
 
 /**
  * The Answer interface is used to define the properties of an answer. Answers are used to define the correct answer for a task. These are generally used in training tasks or if skip logic is required based on the answer.
@@ -716,7 +757,7 @@ export interface BaseIndividualComponent {
   /** Whether to show the previous button. If present, will override the previous button setting in the uiConfig. */
   previousButton?: boolean;
   /** The text that is displayed on the previous button. If present, will override the previous button text setting in the uiConfig. */
-  previousButtonText?:string;
+  previousButtonText?: string;
   /** Controls whether the component should provide feedback to the participant, such as in a training trial. If present, will override the provide feedback setting in the uiConfig. */
   provideFeedback?: boolean;
   /** The number of training attempts allowed for the component. If present, will override the training attempts setting in the uiConfig. */
@@ -732,7 +773,7 @@ export interface BaseIndividualComponent {
   /** Debounce time in milliseconds for automatically tracked window events. If present, will override the window event debounce time setting in the uiConfig. */
   windowEventDebounceTime?: number;
   /** The order of the responses. Defaults to 'fixed'. */
-  responseOrder?: 'fixed' | 'random';
+  responseOrder?: "fixed" | "random";
   /** The path to the external stylesheet file. */
   stylesheetPath?: string;
   /**  You can set styles here, using React CSSProperties, for example: {"width": 100} or {"width": "50%"} */
@@ -751,7 +792,7 @@ export interface BaseIndividualComponent {
 ```
  */
 export interface MarkdownComponent extends BaseIndividualComponent {
-  type: 'markdown';
+  type: "markdown";
   /** The path to the markdown file. This should be a relative path from the public folder. */
   path: string;
 }
@@ -800,7 +841,7 @@ export default function CoolComponent({ parameters, setAnswer }: StimulusParams<
  * https://revisit.dev/study/example-brush-interactions (https://github.com/revisit-studies/study/tree/v2.1.1/src/public/example-brush-interactions/assets)
  */
 export interface ReactComponent extends BaseIndividualComponent {
-  type: 'react-component';
+  type: "react-component";
   /** The path to the react component. This should be a relative path from the src/public folder. */
   path: string;
   /** The parameters that are passed to the react component. These can be used within your react component to render different things. */
@@ -822,7 +863,7 @@ export interface ReactComponent extends BaseIndividualComponent {
 ```
  */
 export interface ImageComponent extends BaseIndividualComponent {
-  type: 'image';
+  type: "image";
   /** The path to the image. This could be a relative path from the public folder or a url to an external image. */
   path: string;
 }
@@ -885,7 +926,7 @@ Revisit.postProvenance(trrack.graph.backend);
 
  */
 export interface WebsiteComponent extends BaseIndividualComponent {
-  type: 'website';
+  type: "website";
   /** The path to the website. This should be a relative path from the public folder or could be an external website. */
   path: string;
   /** The parameters that are passed to the website (iframe). These can be used within your website to render different things. */
@@ -911,7 +952,7 @@ export interface WebsiteComponent extends BaseIndividualComponent {
 ```
  */
 export interface QuestionnaireComponent extends BaseIndividualComponent {
-  type: 'questionnaire';
+  type: "questionnaire";
 }
 
 /**
@@ -945,7 +986,7 @@ In this example, when a user clicks on a rectangle in the Vega chart, the `revis
 ```
 */
 export interface VegaComponentPath extends BaseIndividualComponent {
-  type: 'vega';
+  type: "vega";
   /** The path to the vega file. This should be a relative path from the public folder. */
   path: string;
   /** Whether to include vega actions. Defaults to true. */
@@ -982,7 +1023,7 @@ In this example, when a user clicks on a rectangle in the Vega chart, the `revis
 ```
 */
 export interface VegaComponentConfig extends BaseIndividualComponent {
-  type: 'vega';
+  type: "vega";
   /** The vega or vega-lite configuration. */
   config: object;
   /** Whether to include vega actions. Defaults to true. */
@@ -1008,7 +1049,7 @@ export type VegaComponent = VegaComponentPath | VegaComponentConfig;
  * */
 
 export interface VideoComponent extends BaseIndividualComponent {
-  type: 'video';
+  type: "video";
   /** The path to the video. This could be a relative path from the public folder or might be a url to an external website. */
   path: string;
   /** Whether to force the video to play until the end. Defaults to true. */
@@ -1017,7 +1058,14 @@ export interface VideoComponent extends BaseIndividualComponent {
   withTimeline?: boolean;
 }
 
-export type IndividualComponent = MarkdownComponent | ReactComponent | ImageComponent | WebsiteComponent | QuestionnaireComponent | VegaComponent | VideoComponent;
+export type IndividualComponent =
+  | MarkdownComponent
+  | ReactComponent
+  | ImageComponent
+  | WebsiteComponent
+  | QuestionnaireComponent
+  | VegaComponent
+  | VideoComponent;
 
 /** The DeterministicInterruption interface is used to define an interruption that will be shown at a specific location in the block.
  *
@@ -1068,7 +1116,7 @@ export interface DeterministicInterruption {
   /** The number of components between breaks. */
   spacing: number;
   /** The components that are included in the interruption. These reference components in the StudyConfig.components section of the config. */
-  components: (string)[]
+  components: string[];
 }
 
 /** The RandomInterruption interface is used to define an interruption that will be shown randomly in the block.
@@ -1116,11 +1164,11 @@ export interface DeterministicInterruption {
 */
 export interface RandomInterruption {
   /** If spacing is set to random, reVISit will add interruptions randomly. These interruptions will not ever be displayed as the first component in the block. */
-  spacing: 'random';
+  spacing: "random";
   /** The number of times the interruption will be randomly added */
   numInterruptions: number;
   /** The components that are included in the interruption. These reference components in the StudyConfig.components section of the config. */
-  components: (string)[];
+  components: string[];
 }
 
 /**  The InterruptionBlock interface is used to define interruptions in a block. These can be used for breaks or attention checks. Interruptions can be deterministic or random. */
@@ -1159,13 +1207,13 @@ export interface IndividualComponentSingleResponseCondition {
   /** The name of the component to check. */
   name: string;
   /** The check we'll perform. */
-  check: 'response';
+  check: "response";
   /** The response id to check. */
   responseId: string;
   /** The value to check. */
   value: string | number;
   /** The comparison to use. */
-  comparison: 'equal' | 'notEqual';
+  comparison: "equal" | "notEqual";
   /** The id of the component or block to skip to */
   to: string;
 }
@@ -1201,7 +1249,7 @@ export interface IndividualComponentAllResponsesCondition {
   /** The name of the component to check. */
   name: string;
   /** The check we'll perform. */
-  check: 'responses';
+  check: "responses";
   /** The id of the component or block to skip to */
   to: string;
 }
@@ -1233,9 +1281,9 @@ export interface IndividualComponentAllResponsesCondition {
 */
 export interface ComponentBlockCondition {
   /** The check we'll perform. */
-  check: 'block';
+  check: "block";
   /** The condition to check. */
-  condition: 'numCorrect' | 'numIncorrect';
+  condition: "numCorrect" | "numIncorrect";
   /** The number of correct or incorrect responses to check for. */
   value: number;
   /** The id of the component or block to skip to */
@@ -1268,9 +1316,9 @@ export interface RepeatedComponentBlockCondition {
   /** The name of the repeated component to check (e.g. attentionCheck). */
   name: string;
   /** The check we'll perform. */
-  check: 'repeatedComponent';
+  check: "repeatedComponent";
   /** The condition to check. */
-  condition: 'numCorrect' | 'numIncorrect';
+  condition: "numCorrect" | "numIncorrect";
   /** The number of correct or incorrect responses to check for. */
   value: number;
   /** The id of the component or block to skip to */
@@ -1284,8 +1332,13 @@ export interface RepeatedComponentBlockCondition {
  * Skip conditions allow you to jump to a different component or block. If you intend to skip to a block, you should specify a block id in the sequence. If you intend to skip to a component, you should specify a component id. Skipping backwards is not supported. Skipping to a repeated component will skip to the first instance of the component after the component that triggered the skip.
  *
  * Please see the interface definitions for more specific information on the different types of skip conditions.
-*/
-export type SkipConditions = (IndividualComponentSingleResponseCondition | IndividualComponentAllResponsesCondition | ComponentBlockCondition | RepeatedComponentBlockCondition)[];
+ */
+export type SkipConditions = (
+  | IndividualComponentSingleResponseCondition
+  | IndividualComponentAllResponsesCondition
+  | ComponentBlockCondition
+  | RepeatedComponentBlockCondition
+)[];
 
 /**
  * The DynamicBlock interface is used to define a block where displayed components are controlled by a function. This is useful when you want to generate the sequence based on answers to previous questions or other factors.
@@ -1308,9 +1361,9 @@ export type SkipConditions = (IndividualComponentSingleResponseCondition | Indiv
  */
 export interface DynamicBlock {
   /** The id of the block. This is used to identify the block in the SkipConditions and is only required if you want to refer to the whole block in the condition.to property. */
-  id: string
+  id: string;
   /** The type of order. This can be random (pure random), latinSquare (random with some guarantees), or fixed. */
-  order: 'dynamic';
+  order: "dynamic";
   /** The path to the function that generates the components. This should be a relative path from the src/public folder. */
   functionPath: string;
   /** The parameters that are passed to the function. These can be used within your function to render different things. */
@@ -1423,9 +1476,9 @@ export interface DynamicBlock {
 */
 export interface ComponentBlock {
   /** The id of the block. This is used to identify the block in the SkipConditions and is only required if you want to refer to the whole block in the condition.to property. */
-  id?: string
+  id?: string;
   /** The type of order. This can be random (pure random), latinSquare (random with some guarantees), or fixed. */
-  order: 'random' | 'latinSquare' | 'fixed';
+  order: "random" | "latinSquare" | "fixed";
   /** The components that are included in the order. */
   components: (string | ComponentBlock | DynamicBlock)[];
   /** The number of samples to use for the random assignments. This means you can randomize across 3 components while only showing a participant 2 at a time. */
@@ -1437,7 +1490,9 @@ export interface ComponentBlock {
 }
 
 /** An InheritedComponent is a component that inherits properties from a baseComponent. This is used to avoid repeating properties in components. This also means that components in the baseComponents object can be partially defined, while components in the components object can inherit from them and must be fully defined and include all properties (after potentially merging with a base component). */
-export type InheritedComponent = (Partial<IndividualComponent> & { baseComponent: string })
+export type InheritedComponent = Partial<IndividualComponent> & {
+  baseComponent: string;
+};
 
 /** The baseComponents is an optional set of components which can help template other components. For example, suppose you have a single HTML file that you want to display to the user several times. Instead of having the same component twice in the `components` list, you can have a single baseComponent with all the information that the two HTML components will share. A great example is showing the same HTML component but with two different questions;
 
@@ -1524,7 +1579,7 @@ export interface StudyConfig {
   /** The base components that are used in the study. These components can be used to template other components. See [BaseComponents](../../type-aliases/BaseComponents) for more information. */
   baseComponents?: BaseComponents;
   /** The components that are used in the study. They must be fully defined here with all properties. Some properties may be inherited from baseComponents. */
-  components: Record<string, IndividualComponent | InheritedComponent>
+  components: Record<string, IndividualComponent | InheritedComponent>;
   /** The order of the components in the study. This might include some randomness. */
   sequence: ComponentBlock | DynamicBlock;
 }
@@ -1554,9 +1609,9 @@ export interface LibraryConfig {
   /** A description of the library. */
   description: string;
   /** The components that are used in the study. They must be fully defined here with all properties. Some properties may be inherited from baseComponents. */
-  components: Record<string, IndividualComponent | InheritedComponent>
+  components: Record<string, IndividualComponent | InheritedComponent>;
   /** The order of the components in the study. This might include some randomness. */
-  sequences: Record<string, StudyConfig['sequence']>;
+  sequences: Record<string, StudyConfig["sequence"]>;
   /** Additional description of the library. It accepts markdown formatting. */
   additionalDescription?: string;
   /** The reference to the paper where the content of the library is based on. */
@@ -1577,16 +1632,16 @@ export type ParserErrorWarning = {
   instancePath: string;
   message?: string;
   params: object;
-}
+};
 
 /**
  * @ignore
  * Helper type to write the study config with with errors key
  */
 export type ParsedConfig<T> = T & {
-  errors: ParserErrorWarning[]
-  warnings: ParserErrorWarning[]
-}
+  errors: ParserErrorWarning[];
+  warnings: ParserErrorWarning[];
+};
 
 /**
  * @ignore
@@ -1607,5 +1662,4 @@ export type ValueOf<T> = T[keyof T];
  */
 export type Prettify<T> = {
   [K in keyof T]: T[K];
-
 } & {};

@@ -1,46 +1,44 @@
-import {
-  ReactNode,
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
-import { Provider } from 'react-redux';
-import { RouteObject, useRoutes, useSearchParams } from 'react-router';
-import { LoadingOverlay, Title } from '@mantine/core';
+import { ReactNode, useEffect, useState, useMemo } from "react";
+import { Provider } from "react-redux";
+import { RouteObject, useRoutes, useSearchParams } from "react-router";
+import { LoadingOverlay, Title } from "@mantine/core";
 import {
   GlobalConfig,
   Nullable,
   ParsedConfig,
   StudyConfig,
-} from '../parser/types';
-import { useStudyId } from '../routes/utils';
+} from "../parser/types";
+import { useStudyId } from "../routes/utils";
 import {
   StudyStoreContext,
   StudyStore,
   studyStoreCreator,
-} from '../store/store';
+} from "../store/store";
 
-import { ComponentController } from '../controllers/ComponentController';
-import { NavigateWithParams } from '../utils/NavigateWithParams';
-import { StepRenderer } from './StepRenderer';
-import { useStorageEngine } from '../storage/storageEngineHooks';
-import { generateSequenceArray } from '../utils/handleRandomSequences';
-import { getStudyConfig } from '../utils/fetchConfig';
-import { ParticipantMetadata } from '../store/types';
-import { ErrorLoadingConfig } from './ErrorLoadingConfig';
-import { ResourceNotFound } from '../ResourceNotFound';
-import { encryptIndex } from '../utils/encryptDecryptIndex';
-import { parseStudyConfig } from '../parser/parser';
-import { hash } from '../storage/engines/utils';
+import { ComponentController } from "../controllers/ComponentController";
+import { NavigateWithParams } from "../utils/NavigateWithParams";
+import { StepRenderer } from "./StepRenderer";
+import { useStorageEngine } from "../storage/storageEngineHooks";
+import { generateSequenceArray } from "../utils/handleRandomSequences";
+import { getStudyConfig } from "../utils/fetchConfig";
+import { ParticipantMetadata } from "../store/types";
+import { ErrorLoadingConfig } from "./ErrorLoadingConfig";
+import { ResourceNotFound } from "../ResourceNotFound";
+import { encryptIndex } from "../utils/encryptDecryptIndex";
+import { parseStudyConfig } from "../parser/parser";
+import { hash } from "../storage/engines/utils";
 
 export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
   // Pull study config
   const studyId = useStudyId();
-  const [activeConfig, setActiveConfig] = useState<ParsedConfig<StudyConfig> | null>(null);
-  const isValidStudyId = globalConfig.configsList.includes(studyId) || studyId === '__revisit-widget';
+  const [activeConfig, setActiveConfig] =
+    useState<ParsedConfig<StudyConfig> | null>(null);
+  const isValidStudyId =
+    globalConfig.configsList.includes(studyId) ||
+    studyId === "__revisit-widget";
 
   useEffect(() => {
-    if (studyId !== '__revisit-widget') {
+    if (studyId !== "__revisit-widget") {
       getStudyConfig(studyId, globalConfig).then((config) => {
         setActiveConfig(config);
       });
@@ -48,21 +46,24 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
     }
     if (globalConfig && studyId) {
       const messageListener = (event: MessageEvent) => {
-        if (event.data.type === 'revisitWidget/CONFIG') {
+        if (event.data.type === "revisitWidget/CONFIG") {
           parseStudyConfig(event.data.payload).then(async (config) => {
             setActiveConfig(config);
             const sequenceArray = await generateSequenceArray(config);
-            window.parent.postMessage({ type: 'revisitWidget/SEQUENCE_ARRAY', payload: sequenceArray }, '*');
+            window.parent.postMessage(
+              { type: "revisitWidget/SEQUENCE_ARRAY", payload: sequenceArray },
+              "*",
+            );
           });
         }
       };
 
-      window.addEventListener('message', messageListener);
+      window.addEventListener("message", messageListener);
 
-      window.parent.postMessage({ type: 'revisitWidget/READY' }, '*');
+      window.parent.postMessage({ type: "revisitWidget/READY" }, "*");
 
       return () => {
-        window.removeEventListener('message', messageListener);
+        window.removeEventListener("message", messageListener);
       };
     }
     return () => {};
@@ -73,7 +74,10 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
   const { storageEngine } = useStorageEngine();
   const [searchParams] = useSearchParams();
 
-  const participantId = useMemo(() => searchParams.get('participantId'), [searchParams]);
+  const participantId = useMemo(
+    () => searchParams.get("participantId"),
+    [searchParams],
+  );
 
   useEffect(() => {
     async function initializeUserStoreRouting() {
@@ -93,15 +97,16 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
 
       // Get or generate participant session
       const urlParticipantId = activeConfig.uiConfig.urlParticipantIdParam
-        ? searchParams.get(activeConfig.uiConfig.urlParticipantIdParam)
-          || undefined
+        ? searchParams.get(activeConfig.uiConfig.urlParticipantIdParam) ||
+          undefined
         : undefined;
       const searchParamsObject = Object.fromEntries(searchParams.entries());
 
-      const ipRes = await fetch('https://api.ipify.org?format=json').catch(
-        (_) => '',
+      const ipRes = await fetch("https://api.ipify.org?format=json").catch(
+        (_) => "",
       );
-      const ip: { ip: string } = ipRes instanceof Response ? await ipRes.json() : { ip: '' };
+      const ip: { ip: string } =
+        ipRes instanceof Response ? await ipRes.json() : { ip: "" };
 
       const metadata: ParticipantMetadata = {
         language: navigator.language,
@@ -118,12 +123,13 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
         ip: ip.ip,
       };
 
-      const participantSession = await storageEngine.initializeParticipantSession(
-        searchParamsObject,
-        activeConfig,
-        metadata,
-        participantId || urlParticipantId,
-      );
+      const participantSession =
+        await storageEngine.initializeParticipantSession(
+          searchParamsObject,
+          activeConfig,
+          metadata,
+          participantId || urlParticipantId,
+        );
 
       const modes = await storageEngine.getModes(studyId);
       const activeHash = await hash(JSON.stringify(activeConfig));
@@ -131,7 +137,14 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
       let participantConfig = activeConfig;
 
       if (participantSession.participantConfigHash !== activeHash) {
-        participantConfig = (await storageEngine.getAllConfigsFromHash([participantSession.participantConfigHash], studyId))[participantSession.participantConfigHash] as ParsedConfig<StudyConfig>;
+        participantConfig = (
+          await storageEngine.getAllConfigsFromHash(
+            [participantSession.participantConfigHash],
+            studyId,
+          )
+        )[
+          participantSession.participantConfigHash
+        ] as ParsedConfig<StudyConfig>;
       }
 
       // Initialize the redux stores
@@ -152,11 +165,11 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
           element: <StepRenderer />,
           children: [
             {
-              path: '/',
+              path: "/",
               element: <NavigateWithParams to={encryptIndex(0)} replace />,
             },
             {
-              path: '/:index/:funcIndex?',
+              path: "/:index/:funcIndex?",
               element:
                 activeConfig.errors.length > 0 ? (
                   <>
@@ -190,13 +203,14 @@ export function Shell({ globalConfig }: { globalConfig: GlobalConfig }) {
     toRender = <LoadingOverlay visible />;
   } else {
     // If routing is null, we didn't match any routes
-    toRender = routing && store ? (
-      <StudyStoreContext.Provider value={store}>
-        <Provider store={store.store}>{routing}</Provider>
-      </StudyStoreContext.Provider>
-    ) : (
-      <ResourceNotFound />
-    );
+    toRender =
+      routing && store ? (
+        <StudyStoreContext.Provider value={store}>
+          <Provider store={store.store}>{routing}</Provider>
+        </StudyStoreContext.Provider>
+      ) : (
+        <ResourceNotFound />
+      );
   }
   return toRender;
 }

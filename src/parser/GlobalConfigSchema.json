@@ -24,9 +24,7 @@
                 "type": "boolean"
               }
             },
-            "required": [
-              "path"
-            ],
+            "required": ["path"],
             "type": "object"
           },
           "description": "A required property that specifies the options for the configList property.",
@@ -40,11 +38,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "$schema",
-        "configs",
-        "configsList"
-      ],
+      "required": ["$schema", "configs", "configsList"],
       "type": "object"
     }
   }

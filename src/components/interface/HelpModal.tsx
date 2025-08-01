@@ -1,12 +1,16 @@
-import { Modal } from '@mantine/core';
-import { useEffect, useMemo, useState } from 'react';
-import { ReactMarkdownWrapper } from '../ReactMarkdownWrapper';
-import { useStoreDispatch, useStoreSelector, useStoreActions } from '../../store/store';
-import { getStaticAssetByPath } from '../../utils/getStaticAsset';
-import { ResourceNotFound } from '../../ResourceNotFound';
-import { PREFIX } from '../../utils/Prefix';
-import { useCurrentComponent } from '../../routes/utils';
-import { studyComponentToIndividualComponent } from '../../utils/handleComponentInheritance';
+import { Modal } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
+import { ReactMarkdownWrapper } from "../ReactMarkdownWrapper";
+import {
+  useStoreDispatch,
+  useStoreSelector,
+  useStoreActions,
+} from "../../store/store";
+import { getStaticAssetByPath } from "../../utils/getStaticAsset";
+import { ResourceNotFound } from "../../ResourceNotFound";
+import { PREFIX } from "../../utils/Prefix";
+import { useCurrentComponent } from "../../routes/utils";
+import { studyComponentToIndividualComponent } from "../../utils/handleComponentInheritance";
 
 export function HelpModal() {
   const showHelpText = useStoreSelector((state) => state.showHelpText);
@@ -15,14 +19,24 @@ export function HelpModal() {
   const storeDispatch = useStoreDispatch();
   const { toggleShowHelpText } = useStoreActions();
 
-  const [helpText, setHelpText] = useState('');
+  const [helpText, setHelpText] = useState("");
 
   const [loading, setLoading] = useState(true);
   const component = useCurrentComponent();
 
-  const componentConfig = useMemo(() => studyComponentToIndividualComponent(config.components[component] || {}, config), [component, config]);
+  const componentConfig = useMemo(
+    () =>
+      studyComponentToIndividualComponent(
+        config.components[component] || {},
+        config,
+      ),
+    [component, config],
+  );
 
-  const helpTextPath = useMemo(() => componentConfig.helpTextPath ?? config.uiConfig.helpTextPath, [componentConfig.helpTextPath, config.uiConfig.helpTextPath]);
+  const helpTextPath = useMemo(
+    () => componentConfig.helpTextPath ?? config.uiConfig.helpTextPath,
+    [componentConfig.helpTextPath, config.uiConfig.helpTextPath],
+  );
 
   useEffect(() => {
     async function fetchText() {
@@ -41,10 +55,18 @@ export function HelpModal() {
   }, [helpTextPath]);
 
   return (
-    <Modal className="helpModal" size="70%" opened={showHelpText} withCloseButton={false} onClose={() => storeDispatch(toggleShowHelpText())}>
-      {loading || helpText
-        ? <ReactMarkdownWrapper text={helpText} />
-        : <ResourceNotFound path={config.uiConfig.helpTextPath} />}
+    <Modal
+      className="helpModal"
+      size="70%"
+      opened={showHelpText}
+      withCloseButton={false}
+      onClose={() => storeDispatch(toggleShowHelpText())}
+    >
+      {loading || helpText ? (
+        <ReactMarkdownWrapper text={helpText} />
+      ) : (
+        <ResourceNotFound path={config.uiConfig.helpTextPath} />
+      )}
     </Modal>
   );
 }

@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import { useMemo } from 'react';
+import * as d3 from "d3";
+import { useMemo } from "react";
 
 type Props = {
   domain?: number[];
@@ -33,24 +33,24 @@ export function NumericAxisV({
   return (
     <g>
       <path
-        d={['M', 0, range[0], 'h', tickLen, 'V', range[1], 'h', -tickLen].join(
-          ' ',
+        d={["M", 0, range[0], "h", tickLen, "V", range[1], "h", -tickLen].join(
+          " ",
         )}
         fill="none"
         stroke="currentColor"
       />
 
-      {withTick
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, react/no-unused-prop-types
-        && ticks.map(({ value, xOffset }: { value: any; xOffset: any }) => (
+      {withTick &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, react/no-unused-prop-types
+        ticks.map(({ value, xOffset }: { value: any; xOffset: any }) => (
           <g key={value} transform={`translate(0,${xOffset})`}>
             <line x2={`${tickLen}`} stroke="currentColor" />
             <text
               key={value}
               style={{
-                fontSize: '10px',
-                textAnchor: 'middle',
-                transform: 'translateX(-10px)',
+                fontSize: "10px",
+                textAnchor: "middle",
+                transform: "translateX(-10px)",
               }}
             >
               {value}

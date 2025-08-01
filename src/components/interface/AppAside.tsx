@@ -8,26 +8,40 @@ import {
   Text,
   AppShell,
   Tooltip,
-} from '@mantine/core';
-import { useMemo, useState } from 'react';
+} from "@mantine/core";
+import { useMemo, useState } from "react";
 import {
-  IconDatabase, IconFlame, IconGraph, IconGraphOff, IconInfoCircle, IconUserPlus,
-} from '@tabler/icons-react';
-import { useHref } from 'react-router';
-import { ComponentBlockWithOrderPath, StepsPanel } from './StepsPanel';
-import { useStudyConfig } from '../../store/hooks/useStudyConfig';
+  IconDatabase,
+  IconFlame,
+  IconGraph,
+  IconGraphOff,
+  IconInfoCircle,
+  IconUserPlus,
+} from "@tabler/icons-react";
+import { useHref } from "react-router";
+import { ComponentBlockWithOrderPath, StepsPanel } from "./StepsPanel";
+import { useStudyConfig } from "../../store/hooks/useStudyConfig";
 import {
-  useStoreActions, useStoreDispatch, useStoreSelector,
-} from '../../store/store';
-import { useStudyId } from '../../routes/utils';
-import { getNewParticipant } from '../../utils/nextParticipant';
-import { useStorageEngine } from '../../storage/storageEngineHooks';
-import { addPathToComponentBlock } from '../../utils/getSequenceFlatMap';
-import { useIsAnalysis } from '../../store/hooks/useIsAnalysis';
+  useStoreActions,
+  useStoreDispatch,
+  useStoreSelector,
+} from "../../store/store";
+import { useStudyId } from "../../routes/utils";
+import { getNewParticipant } from "../../utils/nextParticipant";
+import { useStorageEngine } from "../../storage/storageEngineHooks";
+import { addPathToComponentBlock } from "../../utils/getSequenceFlatMap";
+import { useIsAnalysis } from "../../store/hooks/useIsAnalysis";
 
 function InfoHover({ text }: { text: string }) {
   return (
-    <Tooltip label={text} multiline w={200} style={{ whiteSpace: 'normal' }} withinPortal position="bottom">
+    <Tooltip
+      label={text}
+      multiline
+      w={200}
+      style={{ whiteSpace: "normal" }}
+      withinPortal
+      position="bottom"
+    >
       <IconInfoCircle size={16} style={{ marginBottom: -3, marginLeft: 4 }} />
     </Tooltip>
   );
@@ -48,29 +62,36 @@ export function AppAside() {
   const isAnalysis = useIsAnalysis();
 
   const fullOrder = useMemo(() => {
-    let r = structuredClone(studyConfig.sequence) as ComponentBlockWithOrderPath;
-    r = addPathToComponentBlock(r, 'root') as ComponentBlockWithOrderPath;
-    r.components.push('end');
+    let r = structuredClone(
+      studyConfig.sequence,
+    ) as ComponentBlockWithOrderPath;
+    r = addPathToComponentBlock(r, "root") as ComponentBlockWithOrderPath;
+    r.components.push("end");
     return r;
   }, [studyConfig.sequence]);
 
-  const [activeTab, setActiveTab] = useState<string | null>('participant');
+  const [activeTab, setActiveTab] = useState<string | null>("participant");
 
-  const nextParticipantDisabled = useMemo(() => activeTab === 'allTrials' || isAnalysis, [activeTab, isAnalysis]);
+  const nextParticipantDisabled = useMemo(
+    () => activeTab === "allTrials" || isAnalysis,
+    [activeTab, isAnalysis],
+  );
 
   const modes = useStoreSelector((state) => state.modes);
 
   return (
     <AppShell.Aside className="studyBrowser" p="0">
-      <AppShell.Section
-        p="sm"
-        pb={0}
-      >
+      <AppShell.Section p="sm" pb={0}>
         <Flex direction="row" justify="space-between">
           <Text size="md" fw={700} pt={3}>
             Study Browser
           </Text>
-          <Tooltip label="Go to the sequence of the next participant in the experiment. Sequences can be different between participants due to randomization, etc." w={280} multiline disabled={nextParticipantDisabled}>
+          <Tooltip
+            label="Go to the sequence of the next participant in the experiment. Sequences can be different between participants due to randomization, etc."
+            w={280}
+            multiline
+            disabled={nextParticipantDisabled}
+          >
             <Button
               variant="light"
               leftSection={<IconUserPlus size={14} />}
@@ -102,34 +123,61 @@ export function AppAside() {
         </Flex>
         <Flex direction="row" justify="space-between" mt="xs" opacity={0.7}>
           <Text size="sm">
-            Study Status:
-            {' '}
-            {modes?.dataCollectionEnabled ? 'Collecting Data' : 'Data Collection Disabled'}
+            Study Status:{" "}
+            {modes?.dataCollectionEnabled
+              ? "Collecting Data"
+              : "Data Collection Disabled"}
           </Text>
           <Flex gap="sm">
-            {modes?.analyticsInterfacePubliclyAccessible
-              ? <Tooltip label="Analytics interface publicly accessible" multiline w={200} style={{ whiteSpace: 'normal' }} withinPortal position="bottom"><IconGraph size={16} color="green" /></Tooltip>
-              : <Tooltip label="Analytics interface not publicly accessible" multiline w={200} style={{ whiteSpace: 'normal' }} withinPortal position="bottom"><IconGraphOff size={16} color="red" /></Tooltip>}
-            {storageEngine?.getEngine() === 'localStorage'
-              ? <Tooltip label="Local storage enabled" withinPortal position="bottom"><IconDatabase size={16} color="green" /></Tooltip>
-              : <Tooltip label="Firebase enabled" withinPortal position="bottom"><IconFlame size={16} color="green" /></Tooltip>}
+            {modes?.analyticsInterfacePubliclyAccessible ? (
+              <Tooltip
+                label="Analytics interface publicly accessible"
+                multiline
+                w={200}
+                style={{ whiteSpace: "normal" }}
+                withinPortal
+                position="bottom"
+              >
+                <IconGraph size={16} color="green" />
+              </Tooltip>
+            ) : (
+              <Tooltip
+                label="Analytics interface not publicly accessible"
+                multiline
+                w={200}
+                style={{ whiteSpace: "normal" }}
+                withinPortal
+                position="bottom"
+              >
+                <IconGraphOff size={16} color="red" />
+              </Tooltip>
+            )}
+            {storageEngine?.getEngine() === "localStorage" ? (
+              <Tooltip
+                label="Local storage enabled"
+                withinPortal
+                position="bottom"
+              >
+                <IconDatabase size={16} color="green" />
+              </Tooltip>
+            ) : (
+              <Tooltip label="Firebase enabled" withinPortal position="bottom">
+                <IconFlame size={16} color="green" />
+              </Tooltip>
+            )}
           </Flex>
         </Flex>
       </AppShell.Section>
 
-      <AppShell.Section
-        grow
-        component={ScrollArea}
-        p="xs"
-        pt={8}
-      >
+      <AppShell.Section grow component={ScrollArea} p="xs" pt={8}>
         <Tabs value={activeTab} onChange={setActiveTab}>
-          <Box style={{
-            position: 'sticky',
-            top: 0,
-            backgroundColor: 'white',
-            zIndex: 1,
-          }}
+          <Box
+            style={{
+              position: "sticky",
+              top: 0,
+              backgroundColor: "white",
+              zIndex: 1,
+            }}
           >
             <Tabs.List grow>
               <Tabs.Tab value="participant">
@@ -144,10 +192,22 @@ export function AppAside() {
           </Box>
 
           <Tabs.Panel value="participant">
-            <StepsPanel configSequence={fullOrder} participantSequence={sequence} fullSequence={sequence} participantView studyConfig={studyConfig} />
+            <StepsPanel
+              configSequence={fullOrder}
+              participantSequence={sequence}
+              fullSequence={sequence}
+              participantView
+              studyConfig={studyConfig}
+            />
           </Tabs.Panel>
           <Tabs.Panel value="allTrials">
-            <StepsPanel configSequence={fullOrder} participantSequence={sequence} fullSequence={sequence} participantView={false} studyConfig={studyConfig} />
+            <StepsPanel
+              configSequence={fullOrder}
+              participantSequence={sequence}
+              fullSequence={sequence}
+              participantView={false}
+              studyConfig={studyConfig}
+            />
           </Tabs.Panel>
         </Tabs>
       </AppShell.Section>

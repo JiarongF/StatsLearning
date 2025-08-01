@@ -1,8 +1,6 @@
-import {
-  ReactNode, createContext, useContext, useMemo, useState,
-} from 'react';
+import { ReactNode, createContext, useContext, useMemo, useState } from "react";
 
-import { StorageEngine } from './engines/types';
+import { StorageEngine } from "./engines/types";
 
 interface StorageContextValue {
   storageEngine: StorageEngine | undefined;
@@ -16,13 +14,22 @@ const StorageEngineContext = createContext<StorageContextValue>({
 
 export const useStorageEngine = () => useContext(StorageEngineContext);
 
-export function StorageEngineProvider({ children }: { children: ReactNode}) {
-  const [storageEngine, setStorageEngine] = useState<StorageEngine | undefined>(undefined);
+export function StorageEngineProvider({ children }: { children: ReactNode }) {
+  const [storageEngine, setStorageEngine] = useState<StorageEngine | undefined>(
+    undefined,
+  );
 
-  const value = useMemo(() => ({
-    storageEngine,
-    setStorageEngine,
-  }), [storageEngine]);
+  const value = useMemo(
+    () => ({
+      storageEngine,
+      setStorageEngine,
+    }),
+    [storageEngine],
+  );
 
-  return <StorageEngineContext.Provider value={value}>{children}</StorageEngineContext.Provider>;
+  return (
+    <StorageEngineContext.Provider value={value}>
+      {children}
+    </StorageEngineContext.Provider>
+  );
 }

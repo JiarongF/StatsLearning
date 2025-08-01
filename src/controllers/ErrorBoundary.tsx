@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
-import { Text } from '@mantine/core';
+import React from "react";
+import { Text } from "@mantine/core";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -11,7 +11,10 @@ interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
 
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: any) {
     super(props);
     this.state = { hasError: false, error: null };

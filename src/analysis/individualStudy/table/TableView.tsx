@@ -1,46 +1,70 @@
 import {
-  Box, Spoiler, Stack, Table, Text, Flex, Checkbox, Button, Tooltip, LoadingOverlay, Group, Select, Space, Modal, TextInput,
-} from '@mantine/core';
+  Box,
+  Spoiler,
+  Stack,
+  Table,
+  Text,
+  Flex,
+  Checkbox,
+  Button,
+  Tooltip,
+  LoadingOverlay,
+  Group,
+  Select,
+  Space,
+  Modal,
+  TextInput,
+} from "@mantine/core";
 import {
-  IconCheck, IconProgress, IconSearch, IconX,
-} from '@tabler/icons-react';
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
-import { ParticipantData, StoredAnswer, StudyConfig } from '../../../parser/types';
-import { EventType, ParticipantMetadata } from '../../../store/types';
-import { configSequenceToUniqueTrials, findBlockForStep, getSequenceFlatMap } from '../../../utils/getSequenceFlatMap';
-import { useStorageEngine } from '../../../storage/storageEngineHooks';
-import { DownloadButtons } from '../../../components/downloader/DownloadButtons';
-import { useAuth } from '../../../store/hooks/useAuth';
-import { getCleanedDuration } from '../../../utils/getCleanedDuration';
-import { participantName } from '../../../utils/participantName';
+  IconCheck,
+  IconProgress,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
+import React, { useState } from "react";
+import { useParams } from "react-router";
+import {
+  ParticipantData,
+  StoredAnswer,
+  StudyConfig,
+} from "../../../parser/types";
+import { EventType, ParticipantMetadata } from "../../../store/types";
+import {
+  configSequenceToUniqueTrials,
+  findBlockForStep,
+  getSequenceFlatMap,
+} from "../../../utils/getSequenceFlatMap";
+import { useStorageEngine } from "../../../storage/storageEngineHooks";
+import { DownloadButtons } from "../../../components/downloader/DownloadButtons";
+import { useAuth } from "../../../store/hooks/useAuth";
+import { getCleanedDuration } from "../../../utils/getCleanedDuration";
+import { participantName } from "../../../utils/participantName";
 
 function AnswerCell({ cellData }: { cellData: StoredAnswer }) {
-  return Number.isFinite(cellData.endTime) && Number.isFinite(cellData.startTime) ? (
+  return Number.isFinite(cellData.endTime) &&
+    Number.isFinite(cellData.startTime) ? (
     <Table.Td>
       <Stack miw={100}>
-        {cellData.timedOut
-          ? <Text>Timed out</Text>
-          : Object.entries(cellData.answer).map(([key, storedAnswer]) => (
+        {cellData.timedOut ? (
+          <Text>Timed out</Text>
+        ) : (
+          Object.entries(cellData.answer).map(([key, storedAnswer]) => (
             <Box key={`cell-${key}`}>
               <Text fw={700} span>
-                {' '}
+                {" "}
                 {`${key}: `}
               </Text>
               {/* Checks for stored answer being an object (which is answer type of Matrix responses) */}
-              {typeof storedAnswer === 'object'
-                ? (
-                  <Text size="xs" component="pre" span>
-                    {`${JSON.stringify(storedAnswer, null, 2)}`}
-                  </Text>
-                )
-                : (
-                  <Text span>
-                    {storedAnswer}
-                  </Text>
-                )}
+              {typeof storedAnswer === "object" ? (
+                <Text size="xs" component="pre" span>
+                  {`${JSON.stringify(storedAnswer, null, 2)}`}
+                </Text>
+              ) : (
+                <Text span>{storedAnswer}</Text>
+              )}
             </Box>
-          ))}
+          ))
+        )}
       </Stack>
     </Table.Td>
   ) : (
@@ -48,22 +72,26 @@ function AnswerCell({ cellData }: { cellData: StoredAnswer }) {
   );
 }
 
-function DurationCell({ cellData }: { cellData: { startTime?: number; endTime?: number; windowEvents: EventType[] } }) {
-  const duration = cellData.endTime && cellData.startTime ? (cellData.endTime - cellData.startTime) / 1000 : NaN;
-  const cleanedDuration = cellData.endTime && cellData.startTime ? getCleanedDuration(cellData as never) : NaN;
-  return Number.isFinite(cellData.endTime) && Number.isFinite(cellData.startTime) ? (
+function DurationCell({
+  cellData,
+}: {
+  cellData: { startTime?: number; endTime?: number; windowEvents: EventType[] };
+}) {
+  const duration =
+    cellData.endTime && cellData.startTime
+      ? (cellData.endTime - cellData.startTime) / 1000
+      : NaN;
+  const cleanedDuration =
+    cellData.endTime && cellData.startTime
+      ? getCleanedDuration(cellData as never)
+      : NaN;
+  return Number.isFinite(cellData.endTime) &&
+    Number.isFinite(cellData.startTime) ? (
     <Table.Td>
-      {duration.toFixed(1)}
-      {' '}
-      s
+      {duration.toFixed(1)} s
       {cleanedDuration && (
         <>
-          <br />
-          {' '}
-          (
-          {(cleanedDuration / 1000).toFixed(1)}
-          {' '}
-          s)
+          <br /> ({(cleanedDuration / 1000).toFixed(1)} s)
         </>
       )}
     </Table.Td>
@@ -78,26 +106,10 @@ function MetaCell(props: { metaData: ParticipantMetadata }) {
     <Table.Td>
       <Spoiler w={200} hideLabel="hide" maxHeight={50} showLabel="more">
         <Stack gap="xs">
-          <Box>
-            IP:
-            {' '}
-            {metaData.ip}
-          </Box>
-          <Box>
-            Language:
-            {' '}
-            {metaData.language}
-          </Box>
-          <Box>
-            Resolution:
-            {' '}
-            {JSON.stringify(metaData.resolution)}
-          </Box>
-          <Box>
-            User Agent:
-            {' '}
-            {metaData.userAgent}
-          </Box>
+          <Box>IP: {metaData.ip}</Box>
+          <Box>Language: {metaData.language}</Box>
+          <Box>Resolution: {JSON.stringify(metaData.resolution)}</Box>
+          <Box>User Agent: {metaData.userAgent}</Box>
         </Stack>
       </Spoiler>
     </Table.Td>
@@ -118,23 +130,32 @@ export function TableView({
   const rejectParticipant = async (participantId: string, reason: string) => {
     if (storageEngine && studyId) {
       if (user.isAdmin) {
-        const finalReason = reason === '' ? 'Rejected by admin' : reason;
-        await storageEngine.rejectParticipant(participantId, finalReason, studyId);
+        const finalReason = reason === "" ? "Rejected by admin" : reason;
+        await storageEngine.rejectParticipant(
+          participantId,
+          finalReason,
+          studyId,
+        );
         await refresh();
       } else {
-        console.warn('You are not authorized to perform this action.');
+        console.warn("You are not authorized to perform this action.");
       }
     }
   };
   const [checked, setChecked] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [modalRejectParticipantsOpened, setModalRejectParticipantsOpened] = useState<boolean>(false);
-  const [rejectParticipantsMessage, setRejectParticipantsMessage] = useState<string>('');
+  const [modalRejectParticipantsOpened, setModalRejectParticipantsOpened] =
+    useState<boolean>(false);
+  const [rejectParticipantsMessage, setRejectParticipantsMessage] =
+    useState<string>("");
 
   const handleRejectParticipants = async () => {
     setLoading(true);
     setModalRejectParticipantsOpened(false);
-    const promises = checked.map(async (participantId) => await rejectParticipant(participantId, rejectParticipantsMessage));
+    const promises = checked.map(
+      async (participantId) =>
+        await rejectParticipant(participantId, rejectParticipantsMessage),
+    );
     await Promise.all(promises);
     setChecked([]);
     await refresh();
@@ -142,7 +163,7 @@ export function TableView({
   };
 
   function handleSelect(value: string) {
-    if (value === 'all') {
+    if (value === "all") {
       if (checked.length === visibleParticipants.length) {
         setChecked([]);
       } else {
@@ -158,7 +179,11 @@ export function TableView({
   const headers = [
     <Table.Th key="action">
       <Flex justify="center">
-        <Checkbox mb={-4} checked={checked.length === visibleParticipants.length} onChange={() => handleSelect('all')} />
+        <Checkbox
+          mb={-4}
+          checked={checked.length === visibleParticipants.length}
+          onChange={() => handleSelect("all")}
+        />
       </Flex>
     </Table.Th>,
     <Table.Th key="index">Index</Table.Th>,
@@ -171,10 +196,13 @@ export function TableView({
     <Table.Th key="tags">Tags</Table.Th>,
     <Table.Th key="meta">Meta</Table.Th>,
     ...uniqueTrials.flatMap((trial) => [
-      <Table.Th key={`header-${trial.componentName}-${trial.timesSeenInBlock}`}>{trial.componentName}</Table.Th>,
-      <Table.Th key={`header-${trial.componentName}-${trial.timesSeenInBlock}-duration`}>
-        <span style={{ whiteSpace: 'nowrap' }}>{trial.componentName}</span>
-        {' '}
+      <Table.Th key={`header-${trial.componentName}-${trial.timesSeenInBlock}`}>
+        {trial.componentName}
+      </Table.Th>,
+      <Table.Th
+        key={`header-${trial.componentName}-${trial.timesSeenInBlock}-duration`}
+      >
+        <span style={{ whiteSpace: "nowrap" }}>{trial.componentName}</span>{" "}
         Duration (clean)
       </Table.Th>,
     ]),
@@ -182,51 +210,91 @@ export function TableView({
 
   const rows = visibleParticipants.map((record) => {
     const partName = participantName(record, studyConfig);
-    const times = record.answers && Object.values(record.answers).filter((data) => data.startTime).sort((a, b) => a.startTime - b.startTime);
-    const startTime = times && times.length > 0 ? times[0].startTime : undefined;
-    const endTime = times && times.length > 0 ? times[times.length - 1].endTime : undefined;
+    const times =
+      record.answers &&
+      Object.values(record.answers)
+        .filter((data) => data.startTime)
+        .sort((a, b) => a.startTime - b.startTime);
+    const startTime =
+      times && times.length > 0 ? times[0].startTime : undefined;
+    const endTime =
+      times && times.length > 0 ? times[times.length - 1].endTime : undefined;
     return (
       <Table.Tr key={record.participantId}>
         <Table.Td>
           <Flex justify="center">
-            <Checkbox mb={-4} checked={checked.includes(record.participantId)} onChange={() => handleSelect(record.participantId)} />
+            <Checkbox
+              mb={-4}
+              checked={checked.includes(record.participantId)}
+              onChange={() => handleSelect(record.participantId)}
+            />
           </Flex>
         </Table.Td>
-        <Table.Td>{`P-${record.participantIndex.toString().padStart(3, '0')}`}</Table.Td>
+        <Table.Td>{`P-${record.participantIndex.toString().padStart(3, "0")}`}</Table.Td>
         <Table.Td>{partName}</Table.Td>
-        <Table.Td style={{ whiteSpace: 'nowrap' }}>
+        <Table.Td style={{ whiteSpace: "nowrap" }}>
           {record.participantId}
         </Table.Td>
-        <Table.Td miw={110}>{startTime ? new Date(startTime).toLocaleString() : 'N/A'}</Table.Td>
-        <Table.Td miw={110}>{record.completed && endTime ? new Date(endTime).toLocaleString() : 'N/A'}</Table.Td>
+        <Table.Td miw={110}>
+          {startTime ? new Date(startTime).toLocaleString() : "N/A"}
+        </Table.Td>
+        <Table.Td miw={110}>
+          {record.completed && endTime
+            ? new Date(endTime).toLocaleString()
+            : "N/A"}
+        </Table.Td>
         <DurationCell
           cellData={{
             startTime,
             endTime,
-            windowEvents: Object.values(record.answers).flatMap((a) => a.windowEvents),
+            windowEvents: Object.values(record.answers).flatMap(
+              (a) => a.windowEvents,
+            ),
           }}
           key={`cell-${record.participantId}-total-duration`}
         />
         <Table.Td>
           <Flex direction="column" miw={100}>
             <Flex direction="row" align="center">
-              {
-              record.rejected ? <Tooltip label="Rejected"><IconX size={16} color="red" style={{ marginBottom: -3 }} /></Tooltip>
-                : record.completed
-                  ? <Tooltip label="Completed"><IconCheck size={16} color="teal" style={{ marginBottom: -3 }} /></Tooltip>
-                  : <Tooltip label="In Progress"><IconProgress size={16} color="orange" style={{ marginBottom: -3 }} /></Tooltip>
-            }
-              {(!record.completed) && (
-              <Text size="sm" mb={-1} ml={4}>
-                {((Object.entries(record.answers).filter(([_, entry]) => entry.endTime !== -1 && entry.endTime !== undefined).length / (getSequenceFlatMap(record.sequence).length - 1)) * 100).toFixed(2)}
-                %
-              </Text>
+              {record.rejected ? (
+                <Tooltip label="Rejected">
+                  <IconX size={16} color="red" style={{ marginBottom: -3 }} />
+                </Tooltip>
+              ) : record.completed ? (
+                <Tooltip label="Completed">
+                  <IconCheck
+                    size={16}
+                    color="teal"
+                    style={{ marginBottom: -3 }}
+                  />
+                </Tooltip>
+              ) : (
+                <Tooltip label="In Progress">
+                  <IconProgress
+                    size={16}
+                    color="orange"
+                    style={{ marginBottom: -3 }}
+                  />
+                </Tooltip>
+              )}
+              {!record.completed && (
+                <Text size="sm" mb={-1} ml={4}>
+                  {(
+                    (Object.entries(record.answers).filter(
+                      ([_, entry]) =>
+                        entry.endTime !== -1 && entry.endTime !== undefined,
+                    ).length /
+                      (getSequenceFlatMap(record.sequence).length - 1)) *
+                    100
+                  ).toFixed(2)}
+                  %
+                </Text>
               )}
             </Flex>
             {record.rejected && (
-            <Text mt={5} fz={10}>
-              {record.rejected.reason}
-            </Text>
+              <Text mt={5} fz={10}>
+                {record.rejected.reason}
+              </Text>
             )}
           </Flex>
         </Table.Td>
@@ -235,110 +303,142 @@ export function TableView({
           <Flex direction="column" miw={100}>
             {(record.participantTags || []).map((tag) => (
               <Text key={`tag-${tag}`} fz={10}>
-                -
-                {' '}
-                {tag}
+                - {tag}
               </Text>
             ))}
           </Flex>
         </Table.Td>
-        {record.metadata ? <MetaCell metaData={record.metadata} /> : <Table.Td>N/A</Table.Td>}
+        {record.metadata ? (
+          <MetaCell metaData={record.metadata} />
+        ) : (
+          <Table.Td>N/A</Table.Td>
+        )}
         {uniqueTrials.map((trial) => {
-          const sequenceBlock = findBlockForStep(record.sequence, trial.orderPath);
-          const trialData = sequenceBlock && Object.entries(record.answers)
-            .sort((a, b) => {
-              const aIndex = parseInt(a[0].slice(a[0].lastIndexOf('_') + 1), 10);
-              const bIndex = parseInt(b[0].slice(b[0].lastIndexOf('_') + 1), 10);
-              return aIndex - bIndex;
-            })
-            .filter(([trialId]) => {
-              const trialName = trialId.slice(0, trialId.lastIndexOf('_'));
-              const trialIndex = parseInt(trialId.slice(trialId.lastIndexOf('_') + 1), 10);
-              return trialName === trial.componentName && trialIndex <= sequenceBlock[0].lastIndex && trialIndex >= sequenceBlock[0].firstIndex;
-            });
-          return (trialData !== null && trialData.length >= trial.timesSeenInBlock + 1 && trialData[trial.timesSeenInBlock][1].endTime !== -1 ? (
-            <React.Fragment key={`cellgroup-${record.participantId}-${trial.componentName}-${trial.timesSeenInBlock}`}>
+          const sequenceBlock = findBlockForStep(
+            record.sequence,
+            trial.orderPath,
+          );
+          const trialData =
+            sequenceBlock &&
+            Object.entries(record.answers)
+              .sort((a, b) => {
+                const aIndex = parseInt(
+                  a[0].slice(a[0].lastIndexOf("_") + 1),
+                  10,
+                );
+                const bIndex = parseInt(
+                  b[0].slice(b[0].lastIndexOf("_") + 1),
+                  10,
+                );
+                return aIndex - bIndex;
+              })
+              .filter(([trialId]) => {
+                const trialName = trialId.slice(0, trialId.lastIndexOf("_"));
+                const trialIndex = parseInt(
+                  trialId.slice(trialId.lastIndexOf("_") + 1),
+                  10,
+                );
+                return (
+                  trialName === trial.componentName &&
+                  trialIndex <= sequenceBlock[0].lastIndex &&
+                  trialIndex >= sequenceBlock[0].firstIndex
+                );
+              });
+          return trialData !== null &&
+            trialData.length >= trial.timesSeenInBlock + 1 &&
+            trialData[trial.timesSeenInBlock][1].endTime !== -1 ? (
+            <React.Fragment
+              key={`cellgroup-${record.participantId}-${trial.componentName}-${trial.timesSeenInBlock}`}
+            >
               <AnswerCell cellData={trialData[trial.timesSeenInBlock][1]} />
               <DurationCell cellData={trialData[trial.timesSeenInBlock][1]} />
             </React.Fragment>
           ) : (
-            <React.Fragment key={`cellgroup-${record.participantId}-${trial.componentName}-${trial.timesSeenInBlock}`}>
+            <React.Fragment
+              key={`cellgroup-${record.participantId}-${trial.componentName}-${trial.timesSeenInBlock}`}
+            >
               <Table.Td>N/A</Table.Td>
               <Table.Td>N/A</Table.Td>
             </React.Fragment>
-          ));
+          );
         })}
       </Table.Tr>
     );
   });
 
-  return (
-    visibleParticipants.length > 0 ? (
-      <>
-        <LoadingOverlay visible={loading} overlayProps={{ blur: 2 }} />
-        <Flex justify="space-between" mb={8} p={8}>
-          <Group>
-            <Select
-              w={350}
-              variant="filled"
-              placeholder="Search for a participant ID"
-              data={[...new Set(visibleParticipants.map((part) => part.participantId))]}
-              searchable
-              value={null}
-              leftSection={<IconSearch size={14} />}
-              onChange={(value) => value && handleSelect(value)}
-            />
-          </Group>
-          <Group>
-            <DownloadButtons visibleParticipants={visibleParticipants} studyId={studyId || ''} />
-            <Button disabled={checked.length === 0 || !user.isAdmin} onClick={() => setModalRejectParticipantsOpened(true)} color="red">
-              Reject Participants (
-              {checked.length}
-              )
-            </Button>
-          </Group>
-        </Flex>
-        <Flex direction="column" style={{ width: '100%', overflow: 'auto' }}>
-          <Table striped withTableBorder>
-            <Table.Thead>
-              <Table.Tr>{headers}</Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-        </Flex>
-        <Modal
-          opened={modalRejectParticipantsOpened}
-          onClose={() => setModalRejectParticipantsOpened(false)}
-          title={(
-            <Text>
-              Reject Participants (
-              {checked.length}
-              )
-            </Text>
-          )}
-        >
-          <TextInput
-            label="Please enter the reason for rejection."
-            onChange={(event) => setRejectParticipantsMessage(event.target.value)}
+  return visibleParticipants.length > 0 ? (
+    <>
+      <LoadingOverlay visible={loading} overlayProps={{ blur: 2 }} />
+      <Flex justify="space-between" mb={8} p={8}>
+        <Group>
+          <Select
+            w={350}
+            variant="filled"
+            placeholder="Search for a participant ID"
+            data={[
+              ...new Set(visibleParticipants.map((part) => part.participantId)),
+            ]}
+            searchable
+            value={null}
+            leftSection={<IconSearch size={14} />}
+            onChange={(value) => value && handleSelect(value)}
           />
-          <Flex mt="sm" justify="right">
-            <Button mr={5} variant="subtle" color="dark" onClick={() => { setModalRejectParticipantsOpened(false); setRejectParticipantsMessage(''); }}>
-              Cancel
-            </Button>
-            <Button color="red" onClick={() => handleRejectParticipants()}>
-              Reject Participants
-            </Button>
-          </Flex>
-        </Modal>
-      </>
-
-    ) : (
-      <>
-        <Space h="xl" />
-        <Flex justify="center" align="center">
-          <Text>No data available</Text>
+        </Group>
+        <Group>
+          <DownloadButtons
+            visibleParticipants={visibleParticipants}
+            studyId={studyId || ""}
+          />
+          <Button
+            disabled={checked.length === 0 || !user.isAdmin}
+            onClick={() => setModalRejectParticipantsOpened(true)}
+            color="red"
+          >
+            Reject Participants ({checked.length})
+          </Button>
+        </Group>
+      </Flex>
+      <Flex direction="column" style={{ width: "100%", overflow: "auto" }}>
+        <Table striped withTableBorder>
+          <Table.Thead>
+            <Table.Tr>{headers}</Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Flex>
+      <Modal
+        opened={modalRejectParticipantsOpened}
+        onClose={() => setModalRejectParticipantsOpened(false)}
+        title={<Text>Reject Participants ({checked.length})</Text>}
+      >
+        <TextInput
+          label="Please enter the reason for rejection."
+          onChange={(event) => setRejectParticipantsMessage(event.target.value)}
+        />
+        <Flex mt="sm" justify="right">
+          <Button
+            mr={5}
+            variant="subtle"
+            color="dark"
+            onClick={() => {
+              setModalRejectParticipantsOpened(false);
+              setRejectParticipantsMessage("");
+            }}
+          >
+            Cancel
+          </Button>
+          <Button color="red" onClick={() => handleRejectParticipants()}>
+            Reject Participants
+          </Button>
         </Flex>
-      </>
-    )
+      </Modal>
+    </>
+  ) : (
+    <>
+      <Space h="xl" />
+      <Flex justify="center" align="center">
+        <Text>No data available</Text>
+      </Flex>
+    </>
   );
 }
