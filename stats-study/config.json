@@ -15,9 +15,30 @@
     "withProgressBar": true,
     "autoDownloadStudy": false,
     "withSidebar": true,
-    "recordAudio": true
+    "recordAudio": true,
+    "studyEndMsg": "Thank you for completing the study."
   },
+  "importedLibraries": ["demographics", "mic-check"],
   "components": {
+    "consent": {
+      "type": "markdown",
+      "path": "stats-study/assets/consent.md",
+      "nextButtonText": "Agree",
+      "response": [
+        {
+          "id": "accept",
+          "prompt": "Do you consent to the study and wish to continue?",
+          "requiredValue": "Accept",
+          "location": "belowStimulus",
+          "type": "radio",
+          "options": [
+            "Decline",
+            "Accept"
+          ]
+        }
+      ],
+      "recordAudio": false
+    },
     "introduction": {
       "type": "markdown",
       "path": "stats-study/assets/introduction.md",
@@ -30,13 +51,8 @@
       "path": "stats-study/assets/LinkedGraph.tsx",
       "parameters": { "taskid": "linkedGraph" },
       "response": [
-        {
-          "id": "linkedGraph",
-          "prompt": "",
-          "location": "sidebar",
-          "type": "reactive"
-        }
-      ]
+      ],
+      "recordAudio": true
     },
     "correlation": {
       "type": "react-component",
@@ -45,13 +61,8 @@
       "path": "stats-study/assets/CorrelationExplorer.tsx",
       "parameters": { "taskid": "correlation" },
       "response": [
-        {
-          "id": "correlation",
-          "prompt": "",
-          "location": "sidebar",
-          "type": "reactive"
-        }
-      ]
+      ],
+      "recordAudio": true
     },
     "linearRegression": {
       "type": "react-component",
@@ -60,13 +71,8 @@
       "path": "stats-study/assets/LinearReg.tsx",
       "parameters": { "taskid": "linearRegression" },
       "response": [
-        {
-          "id": "linearRegression",
-          "prompt": "",
-          "location": "sidebar",
-          "type": "reactive"
-        }
-      ]
+      ],
+      "recordAudio": true
     },
     "samplingSimulator": {
       "type": "react-component",
@@ -75,18 +81,14 @@
       "path": "stats-study/assets/SamplingSimulator.tsx",
       "parameters": { "taskid": "samplingSimulator" },
       "response": [
-        {
-          "id": "samplingSimulator",
-          "prompt": "",
-          "location": "sidebar",
-          "type": "reactive"
-        }
-      ]
+      ],
+      "recordAudio": true
     }
   },
   "sequence": {
     "order": "fixed",
     "components": [
+      "consent",
       "introduction",
       "linkedGraph",
       "correlation",
