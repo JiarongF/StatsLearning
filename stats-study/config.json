@@ -20,30 +20,6 @@
   },
   "importedLibraries": ["demographics", "mic-check"],
   "components": {
-    "consent": {
-      "type": "markdown",
-      "path": "stats-study/assets/consent.md",
-      "nextButtonText": "Agree",
-      "response": [
-        {
-          "id": "accept",
-          "prompt": "Do you consent to the study and wish to continue?",
-          "requiredValue": "Accept",
-          "location": "belowStimulus",
-          "type": "radio",
-          "options": [
-            "Decline",
-            "Accept"
-          ]
-        }
-      ],
-      "recordAudio": false
-    },
-    "introduction": {
-      "type": "markdown",
-      "path": "stats-study/assets/introduction.md",
-      "response": []
-    },
     "correlation": {
       "type": "react-component",
       "instruction": "Explore correlation: adjust the relationship strength, add points, and observe how the Pearson correlation coefficient changes.",
@@ -58,8 +34,6 @@
   "sequence": {
     "order": "fixed",
     "components": [
-      "consent",
-      "introduction",
       "correlation"
     ]
   }
