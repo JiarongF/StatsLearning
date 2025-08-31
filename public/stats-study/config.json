@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/main/src/parser/StudyConfigSchema.json",
+  "studyMetadata": {
+    "title": "Stats Study",
+    "version": "pilot",
+    "authors": ["The reVISit Team"],
+    "date": "2024-03-19",
+    "description": "A simple stats study",
+    "organizations": ["WPI"]
+  },
+  "uiConfig": {
+    "contactEmail": "contact@revisit.dev",
+    "helpTextPath": "stats-study/assets/help.md",
+    "logoPath": "revisitAssets/revisitLogoSquare.svg",
+    "withProgressBar": true,
+    "autoDownloadStudy": false,
+    "withSidebar": true,
+    "recordAudio": true,
+    "studyEndMsg": "Thank you for completing the study."
+  },
+  "importedLibraries": ["demographics", "mic-check"],
+  "components": {
+    "consent": {
+      "type": "markdown",
+      "path": "stats-study/assets/consent.md",
+      "nextButtonText": "Agree",
+      "response": [
+        {
+          "id": "accept",
+          "prompt": "Do you consent to the study and wish to continue?",
+          "requiredValue": "Accept",
+          "location": "belowStimulus",
+          "type": "radio",
+          "options": [
+            "Decline",
+            "Accept"
+          ]
+        }
+      ],
+      "recordAudio": false
+    },
+    "introduction": {
+      "type": "markdown",
+      "path": "stats-study/assets/introduction.md",
+      "response": []
+    },
+    "correlation": {
+      "type": "react-component",
+      "instruction": "Explore correlation: adjust the relationship strength, add points, and observe how the Pearson correlation coefficient changes.",
+      "instructionLocation": "sidebar",
+      "path": "stats-study/assets/CorrelationExplorer.tsx",
+      "parameters": { "taskid": "correlation" },
+      "response": [
+      ],
+      "recordAudio": true
+    }
+  },
+  "sequence": {
+    "order": "fixed",
+    "components": [
+      "consent",
+      "introduction",
+      "correlation"
+    ]
+  }
+}
+

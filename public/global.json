@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/revisit-studies/study/dev/src/parser/GlobalConfigSchema.json",
   "configsList": [
     "tutorial",
+    "stats-study",
     "example-brush-interactions",
     "example-cleveland",
     "example-mvnv",
@@ -42,6 +43,9 @@
   "configs": {
     "tutorial": {
       "path": "tutorial/config.json"
+    },
+    "stats-study" : {
+      "path": "stats-study/config.json"
     },
     "example-brush-interactions": {
       "path": "example-brush-interactions/config.json"
