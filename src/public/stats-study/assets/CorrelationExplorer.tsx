@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import {
+  useEffect, useMemo, useRef, useState, useCallback,
+} from 'react';
 import {
   Card,
   Title,
@@ -8,27 +10,61 @@ import {
   Group,
   Divider,
   Button,
-  ScrollArea,
-} from "@mantine/core";
-import * as d3 from "d3";
-import { initializeTrrack, Registry } from "@trrack/core";
-import type { StimulusParams } from "../../../store/types";
+} from '@mantine/core';
+import * as d3 from 'd3';
+import { initializeTrrack, Registry } from '@trrack/core';
+import type { StimulusParams } from '../../../store/types';
 
 interface Point {
   x: number;
   y: number;
 }
 
-interface ProvenanceState {
-  correlationStrength: number;
-  userPoints: Point[];
+function generateCorrelatedData(strength: number, n = 30): Point[] {
+  const randNorm = d3.randomNormal.source(d3.randomLcg(123))(0, 1);
+
+  // 1) draw (Z1, Z2) ~ iid N(0,1)
+  const raw = Array.from({ length: n }, () => {
+    const z1 = randNorm();
+    const z2 = randNorm();
+    // 2) mix so Corr(Z1, Y') = strength
+    const yPrime = strength * z1 + Math.sqrt(1 - strength * strength) * z2;
+    return { x: z1, y: yPrime };
+  });
+
+  // 3) rescale both to [0,10] without changing Corr
+  const xs = raw.map((d) => d.x);
+  const ys = raw.map((d) => d.y);
+  const [minX, maxX] = [d3.min(xs)!, d3.max(xs)!];
+  const [minY, maxY] = [d3.min(ys)!, d3.max(ys)!];
+
+  return raw.map(({ x, y }) => ({
+    x: ((x - minX) / (maxX - minX)) * 10,
+    y: ((y - minY) / (maxY - minY)) * 10,
+  }));
 }
 
-interface CorrelationParams extends StimulusParams<any> {
-  // No additional props needed - using parameters.taskid
+function computePearsonR(data: Point[]): number | null {
+  if (data.length < 2) return null;
+  const xs = data.map((d) => d.x);
+  const ys = data.map((d) => d.y);
+  const meanX = d3.mean(xs);
+  const meanY = d3.mean(ys);
+  if (meanX === undefined || meanY === undefined) return null;
+  const numerator = d3.sum(xs.map((x, i) => (x - meanX) * (ys[i] - meanY)));
+  const denominator = Math.sqrt(d3.sum(xs.map((x) => (x - meanX) ** 2)))
+    * Math.sqrt(d3.sum(ys.map((y) => (y - meanY) ** 2)));
+  return denominator === 0 ? null : numerator / denominator;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function interpretCorrelation(r: number): string {
+  if (r >= 0.7) return 'Strong Positive';
+  if (r >= 0.3) return 'Moderate Positive';
+  if (r > -0.3) return 'No Clear Correlation';
+  if (r > -0.7) return 'Moderate Negative';
+  return 'Strong Negative';
+}
+
 export default function CorrelationExplorer({
   parameters,
   setAnswer,
@@ -42,27 +78,23 @@ export default function CorrelationExplorer({
   const animationRef = useRef<number | null>(null);
   const { taskid } = parameters;
 
-  // Check if there's replay state in parameters
-  console.log("Parameters received:", parameters);
-  console.log("Provenance state received:", provenanceState);
-
   const { actions, trrack } = useMemo(() => {
     const reg = Registry.create();
 
     const sliderChange = reg.register(
-      "sliderChange",
+      'sliderChange',
       (state, value: number) => {
         state.correlationStrength = value;
         return state;
       },
     );
 
-    const addUserPoint = reg.register("addPoint", (state, point: Point) => {
+    const addUserPoint = reg.register('addPoint', (state, point: Point) => {
       state.userPoints = [...(state.userPoints || []), point];
       return state;
     });
 
-    const clearPoints = reg.register("clearPoints", (state, _: void) => {
+    const clearPoints = reg.register('clearPoints', (state, _: void) => {
       state.userPoints = [];
       return state;
     });
@@ -87,7 +119,6 @@ export default function CorrelationExplorer({
       status: true,
       provenanceGraph: trrack.graph.backend,
       answers: {
-        // [taskid]: "initialized",
       },
     });
   }, [setAnswer, taskid, trrack]);
@@ -97,14 +128,13 @@ export default function CorrelationExplorer({
       status: true,
       provenanceGraph: trrack.graph.backend,
       answers: {
-        // [taskid]: `correlation:${correlationStrength},points:${userPoints.length}`,
       },
     });
   }, [setAnswer, taskid, trrack, correlationStrength, userPoints]);
 
   useEffect(() => {
     if (provenanceState) {
-      console.log("Syncing with provenance state:", provenanceState);
+      console.log('Syncing with provenance state:', provenanceState);
       if (provenanceState.correlationStrength !== undefined) {
         setCorrelationStrength(provenanceState.correlationStrength);
         setDisplayCorrelation(provenanceState.correlationStrength);
@@ -164,7 +194,7 @@ export default function CorrelationExplorer({
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove();
+    svg.selectAll('*').remove();
 
     const width = 400;
     const height = 300;
@@ -181,95 +211,95 @@ export default function CorrelationExplorer({
     const yScale = d3.scaleLinear().domain([0, 10]).range([innerHeight, 0]);
 
     const g = svg
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    g.append("g")
-      .attr("transform", `translate(0,${innerHeight})`)
+    g.append('g')
+      .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale));
-    g.append("g").call(d3.axisLeft(yScale));
+    g.append('g').call(d3.axisLeft(yScale));
 
     svg
-      .append("text")
-      .attr("x", margin.left + innerWidth / 2)
-      .attr("y", height - 5)
-      .attr("text-anchor", "middle")
-      .text("X");
+      .append('text')
+      .attr('x', margin.left + innerWidth / 2)
+      .attr('y', height - 5)
+      .attr('text-anchor', 'middle')
+      .text('X');
 
     svg
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("x", -height / 2)
-      .attr("y", 15)
-      .attr("text-anchor", "middle")
-      .text("Y");
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('x', -height / 2)
+      .attr('y', 15)
+      .attr('text-anchor', 'middle')
+      .text('Y');
 
     // Animated points with smooth transitions
     const genPointsSelection = g
-      .selectAll(".gen-point")
+      .selectAll('.gen-point')
       .data(generatedPoints, (d: any, i: number) => i);
 
     // Enter selection - appear at full size
     genPointsSelection
       .enter()
-      .append("circle")
-      .attr("class", "gen-point")
-      .attr("cx", (d) => xScale(d.x))
-      .attr("cy", (d) => yScale(d.y))
-      .attr("r", 4) // Full size immediately
-      .attr("fill", "#2f9e44")
-      .attr("opacity", 0)
+      .append('circle')
+      .attr('class', 'gen-point')
+      .attr('cx', (d) => xScale(d.x))
+      .attr('cy', (d) => yScale(d.y))
+      .attr('r', 4) // Full size immediately
+      .attr('fill', '#2f9e44')
+      .attr('opacity', 0)
       .transition()
       .duration(150)
-      .attr("opacity", 1);
+      .attr('opacity', 1);
 
     // Update selection - snappy movement
     genPointsSelection
       .transition()
       .duration(150)
-      .attr("cx", (d) => xScale(d.x))
-      .attr("cy", (d) => yScale(d.y));
+      .attr('cx', (d) => xScale(d.x))
+      .attr('cy', (d) => yScale(d.y));
 
     // Exit selection - fade out only
     genPointsSelection
       .exit()
       .transition()
       .duration(100)
-      .attr("opacity", 0)
+      .attr('opacity', 0)
       .remove();
 
     // User points with fade-in only
     const userPointsSelection = g
-      .selectAll(".user-point")
+      .selectAll('.user-point')
       .data(userPoints, (d: any, i: number) => `user-${i}`);
 
     userPointsSelection
       .enter()
-      .append("circle")
-      .attr("class", "user-point")
-      .attr("cx", (d) => xScale(d.x))
-      .attr("cy", (d) => yScale(d.y))
-      .attr("r", 5) // Full size immediately
-      .attr("fill", "#1c7ed6")
-      .attr("opacity", 0)
+      .append('circle')
+      .attr('class', 'user-point')
+      .attr('cx', (d) => xScale(d.x))
+      .attr('cy', (d) => yScale(d.y))
+      .attr('r', 5) // Full size immediately
+      .attr('fill', '#1c7ed6')
+      .attr('opacity', 0)
       .transition()
       .duration(200)
-      .attr("opacity", 1);
+      .attr('opacity', 1);
 
     userPointsSelection
       .transition()
       .duration(150)
-      .attr("cx", (d) => xScale(d.x))
-      .attr("cy", (d) => yScale(d.y));
+      .attr('cx', (d) => xScale(d.x))
+      .attr('cy', (d) => yScale(d.y));
 
     userPointsSelection
       .exit()
       .transition()
       .duration(150)
-      .attr("opacity", 0)
+      .attr('opacity', 0)
       .remove();
 
-    svg.on("click", (event) => {
+    svg.on('click', (event) => {
       const [mouseX, mouseY] = d3.pointer(event);
       const chartX = mouseX - margin.left;
       const chartY = mouseY - margin.top;
@@ -277,7 +307,7 @@ export default function CorrelationExplorer({
       const yVal = yScale.invert(chartY);
       if (xVal >= 0 && xVal <= 10 && yVal >= 0 && yVal <= 10) {
         const newPoint = { x: xVal, y: yVal };
-        trrack.apply("User Point Added", actions.addUserPoint(newPoint));
+        trrack.apply('User Point Added', actions.addUserPoint(newPoint));
         setUserPoints((prev) => [...prev, newPoint]);
         updateAnswer();
       }
@@ -289,7 +319,7 @@ export default function CorrelationExplorer({
 
   const handleSliderChange = useCallback(
     (val: number) => {
-      trrack.apply("Slider Changed", actions.sliderChange(val));
+      trrack.apply('Slider Changed', actions.sliderChange(val));
       setCorrelationStrength(val);
       updateAnswer();
     },
@@ -297,7 +327,7 @@ export default function CorrelationExplorer({
   );
 
   const handleClearPoints = useCallback(() => {
-    trrack.apply("Points Cleared", actions.clearPoints(undefined));
+    trrack.apply('Points Cleared', actions.clearPoints(undefined));
     setUserPoints([]);
     updateAnswer();
   }, [trrack, actions, updateAnswer]);
@@ -307,14 +337,20 @@ export default function CorrelationExplorer({
       <Stack gap="sm">
         <Title order={3}>Correlation</Title>
         <Text size="sm">
-          <strong>Step 1:</strong> Use the slider to adjust the strength and
+          <strong>Step 1:</strong>
+          {' '}
+          Use the slider to adjust the strength and
           direction of the relationship.
         </Text>
         <Text size="sm">
-          <strong>Step 2:</strong> Click on the chart to add your own points.
+          <strong>Step 2:</strong>
+          {' '}
+          Click on the chart to add your own points.
         </Text>
         <Text size="sm">
-          <strong>Step 3:</strong> Observe how the correlation changes.
+          <strong>Step 3:</strong>
+          {' '}
+          Observe how the correlation changes.
         </Text>
 
         <Divider my="sm" />
@@ -332,10 +368,10 @@ export default function CorrelationExplorer({
           }))}
           styles={{
             track: {
-              transition: "all 0.1s ease",
+              transition: 'all 0.1s ease',
             },
             thumb: {
-              transition: "all 0.1s ease",
+              transition: 'all 0.1s ease',
             },
           }}
         />
@@ -352,12 +388,17 @@ export default function CorrelationExplorer({
             {r !== null && (
               <Text
                 fw={500}
-                c={Math.abs(r) > 0.6 ? "green" : "orange"}
+                c={Math.abs(r) > 0.6 ? 'green' : 'orange'}
                 style={{
-                  transition: "color 0.15s ease",
+                  transition: 'color 0.15s ease',
                 }}
               >
-                r = {r.toFixed(2)} →<em>{interpretCorrelation(r)}</em>
+                r =
+                {' '}
+                {r.toFixed(2)}
+                {' '}
+                →
+                <em>{interpretCorrelation(r)}</em>
               </Text>
             )}
 
@@ -367,7 +408,7 @@ export default function CorrelationExplorer({
                 color="red"
                 onClick={handleClearPoints}
                 style={{
-                  transition: "all 0.1s ease",
+                  transition: 'all 0.1s ease',
                 }}
               >
                 Clear My Points
@@ -378,7 +419,10 @@ export default function CorrelationExplorer({
 
         <Text size="sm" c="dimmed">
           Hint: Try setting the slider to 0 and adding points in a straight
-          line. What happens to <em>r</em>?
+          line. What happens to
+          {' '}
+          <em>r</em>
+          ?
         </Text>
 
         <svg
@@ -386,57 +430,11 @@ export default function CorrelationExplorer({
           width={400}
           height={300}
           style={{
-            border: "1px solid #ccc",
-            transition: "all 0.1s ease",
+            border: '1px solid #ccc',
+            transition: 'all 0.1s ease',
           }}
         />
       </Stack>
     </Card>
   );
-}
-
-function generateCorrelatedData(strength: number, n = 30): Point[] {
-  const randNorm = d3.randomNormal.source(d3.randomLcg(123))(0, 1);
-
-  // 1) draw (Z1, Z2) ~ iid N(0,1)
-  const raw = Array.from({ length: n }, () => {
-    const z1 = randNorm();
-    const z2 = randNorm();
-    // 2) mix so Corr(Z1, Y') = strength
-    const yPrime = strength * z1 + Math.sqrt(1 - strength * strength) * z2;
-    return { x: z1, y: yPrime };
-  });
-
-  // 3) rescale both to [0,10] without changing Corr
-  const xs = raw.map((d) => d.x);
-  const ys = raw.map((d) => d.y);
-  const [minX, maxX] = [d3.min(xs)!, d3.max(xs)!];
-  const [minY, maxY] = [d3.min(ys)!, d3.max(ys)!];
-
-  return raw.map(({ x, y }) => ({
-    x: ((x - minX) / (maxX - minX)) * 10,
-    y: ((y - minY) / (maxY - minY)) * 10,
-  }));
-}
-
-function computePearsonR(data: Point[]): number | null {
-  if (data.length < 2) return null;
-  const xs = data.map((d) => d.x);
-  const ys = data.map((d) => d.y);
-  const meanX = d3.mean(xs);
-  const meanY = d3.mean(ys);
-  if (meanX === undefined || meanY === undefined) return null;
-  const numerator = d3.sum(xs.map((x, i) => (x - meanX) * (ys[i] - meanY)));
-  const denominator =
-    Math.sqrt(d3.sum(xs.map((x) => (x - meanX) ** 2))) *
-    Math.sqrt(d3.sum(ys.map((y) => (y - meanY) ** 2)));
-  return denominator === 0 ? null : numerator / denominator;
-}
-
-function interpretCorrelation(r: number): string {
-  if (r >= 0.7) return "Strong Positive";
-  if (r >= 0.3) return "Moderate Positive";
-  if (r > -0.3) return "No Clear Correlation";
-  if (r > -0.7) return "Moderate Negative";
-  return "Strong Negative";
 }
