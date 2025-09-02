@@ -103,6 +103,7 @@ export async function studyStoreCreator(
   const initialState: StoreState = {
     studyId,
     isRecording: false,
+    isScreenRecording: false,
     answers: Object.keys(answers).length > 0 ? answers : emptyAnswers,
     sequence,
     config,
@@ -121,7 +122,10 @@ export async function studyStoreCreator(
     },
     analysisIsPlaying: false,
     analysisHasAudio: false,
+    analysisHasScreenRecording: false,
+    analysisCanPlayScreenRecording: true,
     analysisHasProvenance: false,
+    provenanceJumpTime: 0,
     modes,
     matrixAnswers: {},
     participantId,
@@ -137,6 +141,9 @@ export async function studyStoreCreator(
       },
       setIsRecording(state, { payload }: PayloadAction<boolean>) {
         state.isRecording = payload;
+      },
+      setIsScreenRecording(state, { payload }: PayloadAction<boolean>) {
+        state.isScreenRecording = payload;
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       pushToFuncSequence(state, { payload }: PayloadAction<{ component: string, funcName: string, index: number, funcIndex: number, parameters: Record<string, any> | undefined, correctAnswer: Answer[] | undefined }>) {
@@ -211,8 +218,17 @@ export async function studyStoreCreator(
       setAnalysisHasAudio(state, { payload }: PayloadAction<boolean>) {
         state.analysisHasAudio = payload;
       },
+      setAnalysisHasScreenRecording(state, { payload }: PayloadAction<boolean>) {
+        state.analysisHasScreenRecording = payload;
+      },
+      setAnalysisCanPlayScreenRecording(state, { payload }: PayloadAction<boolean>) {
+        state.analysisCanPlayScreenRecording = payload;
+      },
       setAnalysisHasProvenance(state, { payload }: PayloadAction<boolean>) {
         state.analysisHasProvenance = payload;
+      },
+      setProvenanceJumpTime(state, { payload }: PayloadAction<number>) {
+        state.provenanceJumpTime = payload;
       },
       setMatrixAnswersRadio: (state, action: PayloadAction<{ questionKey: string, responseId: string, val: string } | null>) => {
         if (action.payload) {

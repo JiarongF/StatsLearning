@@ -97,6 +97,9 @@ export abstract class StorageEngine {
 
   protected participantData: ParticipantData | undefined;
 
+  // Ids of assets (eg. audio/screen recording) being uploaded. Set to true when uploading, false when done.
+  protected uploadingAssetIds: {[key:string]: boolean} = {};
+
   constructor(engine: typeof this.engine, testing: boolean) {
     this.engine = engine;
     this.testing = testing;
@@ -172,6 +175,9 @@ export abstract class StorageEngine {
 
   // Gets the audio URL for the given task and participantId. This method is used to fetch the audio file from the storage engine.
   protected abstract _getAudioUrl(task: string, participantId?: string): Promise<string | null>;
+
+  // Gets the screen recording URL for the given task and participantId. This method is used to fetch the screen recording video file from the storage engine.
+  protected abstract _getScreenRecordingUrl(task: string, participantId?: string): Promise<string | null>;
 
   // Resets the entire study database for testing purposes. This is used to reset the study database to a clean state for testing.
   protected abstract _testingReset(studyId: string): Promise<void>;
@@ -448,10 +454,11 @@ export abstract class StorageEngine {
 
   // Gets all participant IDs for the given studyId
   async getAllParticipantIds(studyId?: string) {
-    if (!this.studyId) {
+    const studyIdToUse = this.studyId || studyId;
+    if (studyIdToUse === undefined) {
       throw new Error('Study ID is not set');
     }
-    const sequenceAssignments = await this._getAllSequenceAssignments(studyId || this.studyId);
+    const sequenceAssignments = await this._getAllSequenceAssignments(studyIdToUse);
     return sequenceAssignments.map((assignment) => assignment.participantId);
   }
 
@@ -559,8 +566,6 @@ export abstract class StorageEngine {
 
   // Gets all participant IDs for the current studyId or a provided studyId.
   async getAllParticipantsData(studyId: string) {
-    await this.verifyStudyDatabase();
-
     const participantIds = await this.getAllParticipantIds(studyId);
     const participantsData: ParticipantData[] = [];
 
@@ -648,6 +653,12 @@ export abstract class StorageEngine {
       throw new Error('Participant not initialized');
     }
 
+    // Check for remaining assets uploads
+    const hasUploadsRemaining = Object.keys(this.uploadingAssetIds).some((uploadId) => this.uploadingAssetIds[uploadId]);
+    if (hasUploadsRemaining) {
+      return false;
+    }
+
     if (participantData.completed) {
       return true;
     }
@@ -713,6 +724,8 @@ export abstract class StorageEngine {
   ) {
     let debounceTimeout: NodeJS.Timeout | null = null;
 
+    this.uploadingAssetIds[`audio/${taskName}`] = true;
+
     const listener = async (data: BlobEvent) => {
       if (debounceTimeout) {
         return;
@@ -721,6 +734,8 @@ export abstract class StorageEngine {
       debounceTimeout = setTimeout(async () => {
         await this._pushToStorage(`audio/${this.currentParticipantId}`, taskName, data.data);
         await this._cacheStorageObject(`audio/${this.currentParticipantId}`, taskName);
+
+        this.uploadingAssetIds[`audio/${taskName}`] = false;
       }, 500);
     };
 
@@ -728,6 +743,59 @@ export abstract class StorageEngine {
     audioStream.requestData();
 
     // Don't clean up the listener. The stream will be destroyed.
+  }
+
+  // Gets the screen recording for a specific task and participantId.
+  async getScreenRecording(
+    task: string,
+    participantId: string,
+  ) {
+    const url = await this._getScreenRecordingUrl(task, participantId);
+    if (!url) {
+      return null;
+    }
+
+    const allScreenRecordingList = new Promise<string>((resolve) => {
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'blob';
+      xhr.onload = () => {
+        const blob = xhr.response;
+
+        const _url = URL.createObjectURL(blob);
+
+        resolve(_url);
+      };
+      xhr.open('GET', url);
+      xhr.send();
+    });
+
+    return allScreenRecordingList;
+  }
+
+  // Saves the video stream to the storage engine. This method is used to save the screen recorded video data from a MediaRecorder stream.
+  async saveScreenRecording(
+    videoStream: MediaRecorder,
+    taskName: string,
+  ) {
+    let debounceTimeout: NodeJS.Timeout | null = null;
+
+    this.uploadingAssetIds[`screenRecording/${taskName}`] = true;
+
+    const listener = async (data: BlobEvent) => {
+      if (debounceTimeout) {
+        return;
+      }
+
+      debounceTimeout = setTimeout(async () => {
+        await this._pushToStorage(`screenRecording/${this.currentParticipantId}`, taskName, data.data);
+        await this._cacheStorageObject(`screenRecording/${this.currentParticipantId}`, taskName);
+
+        this.uploadingAssetIds[`screenRecording/${taskName}`] = false;
+      }, 500);
+    };
+
+    videoStream.addEventListener('dataavailable', listener);
+    videoStream.requestData();
   }
 
   // Gets the sequence array from the storage engine.

@@ -161,6 +161,7 @@ export interface StoreState {
   studyId: string;
   participantId: string;
   isRecording: boolean;
+  isScreenRecording: boolean;
   answers: ParticipantData['answers'];
   sequence: Sequence;
   config: StudyConfig;
@@ -173,6 +174,9 @@ export interface StoreState {
   analysisProvState: Record<ConfigResponseBlockLocation, FormElementProvenance | undefined> & { stimulus: unknown | undefined };
   analysisIsPlaying: boolean;
   analysisHasAudio: boolean;
+  analysisHasScreenRecording: boolean;
+  analysisCanPlayScreenRecording: boolean;
+  provenanceJumpTime: number;
   analysisHasProvenance: boolean;
   modes: Record<REVISIT_MODE, boolean>;
   matrixAnswers: Record<string, Record<string, string>>;

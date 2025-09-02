@@ -28,6 +28,7 @@ import { useIsAnalysis } from '../store/hooks/useIsAnalysis';
 import { VideoController } from './VideoController';
 import { studyComponentToIndividualComponent } from '../utils/handleComponentInheritance';
 import { useFetchStylesheet } from '../utils/fetchStylesheet';
+import { ScreenRecordingReplay } from '../components/screenRecording/ScreenRecordingReplay';
 
 // current active stimuli presented to the user
 export function ComponentController() {
@@ -41,8 +42,10 @@ export function ComponentController() {
 
   const answers = useStoreSelector((store) => store.answers);
   const audioStream = useRef<MediaRecorder | null>(null);
+  const analysisCanPlayScreenRecording = useStoreSelector((state) => state.analysisCanPlayScreenRecording);
+
   const [prevTrialName, setPrevTrialName] = useState<string | null>(null);
-  const { setIsRecording } = useStoreActions();
+  const { setIsRecording, setAnalysisCanPlayScreenRecording } = useStoreActions();
   const analysisProvState = useStoreSelector((state) => state.analysisProvState.stimulus);
 
   const isAnalysis = useIsAnalysis();
@@ -153,6 +156,12 @@ export function ComponentController() {
     return toReturn as unknown as IndividualComponent;
   }, [answers, currentComponent, currentIdentifier, stepConfig, studyConfig]);
 
+  useEffect(() => {
+    // Assume that screen recording video exists.
+    // The value is set to false from ScreenRecordingReplay component if video starts after stimulus start time.
+    storeDispatch(setAnalysisCanPlayScreenRecording(true));
+  }, [currentStep, setAnalysisCanPlayScreenRecording, storeDispatch]);
+
   useFetchStylesheet(currentConfig?.stylesheetPath);
 
   // We're not using hooks below here, so we can return early if we're at the end of the study.
@@ -190,6 +199,8 @@ export function ComponentController() {
   const instructionLocation = currentConfig.instructionLocation ?? studyConfig.uiConfig.instructionLocation ?? 'sidebar';
   const instructionInSideBar = instructionLocation === 'sidebar';
 
+  if (studyConfig.uiConfig.recordScreen && isAnalysis && analysisCanPlayScreenRecording) return <ScreenRecordingReplay key={`${currentStep}-stimulus`} />;
+
   return (
     <>
       {instructionLocation === 'aboveStimulus' && <ReactMarkdownWrapper text={instruction} />}
@@ -199,14 +210,26 @@ export function ComponentController() {
         config={currentConfig}
         location="aboveStimulus"
       />
-      <Box id={currentComponent} className={currentConfig.type} style={{ width: '100%', ...currentConfig.style }}>
+      <Box
+        id={currentComponent}
+        className={currentConfig.type}
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexGrow: currentConfig.type === 'website' ? 1 : undefined,
+          flexDirection: 'column',
+          ...currentConfig.style,
+        }}
+      >
         <Suspense key={`${currentStep}-stimulus`} fallback={<div>Loading...</div>}>
-          {currentConfig.type === 'markdown' && <MarkdownController currentConfig={currentConfig} />}
-          {currentConfig.type === 'website' && <IframeController currentConfig={currentConfig} provState={analysisProvState} answers={answers} />}
-          {currentConfig.type === 'image' && <ImageController currentConfig={currentConfig} />}
-          {currentConfig.type === 'react-component' && <ReactComponentController currentConfig={currentConfig} provState={analysisProvState} answers={answers} />}
-          {currentConfig.type === 'vega' && <VegaController currentConfig={currentConfig} provState={analysisProvState as VegaProvState} />}
-          {currentConfig.type === 'video' && <VideoController currentConfig={currentConfig} />}
+          <>
+            {currentConfig.type === 'markdown' && <MarkdownController currentConfig={currentConfig} />}
+            {currentConfig.type === 'website' && <IframeController currentConfig={currentConfig} provState={analysisProvState} answers={answers} />}
+            {currentConfig.type === 'image' && <ImageController currentConfig={currentConfig} />}
+            {currentConfig.type === 'react-component' && <ReactComponentController currentConfig={currentConfig} provState={analysisProvState} answers={answers} />}
+            {currentConfig.type === 'vega' && <VegaController currentConfig={currentConfig} provState={analysisProvState as VegaProvState} />}
+            {currentConfig.type === 'video' && <VideoController currentConfig={currentConfig} />}
+          </>
         </Suspense>
       </Box>
 
