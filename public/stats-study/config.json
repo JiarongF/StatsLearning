@@ -1,67 +1,149 @@
 {
-  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/main/src/parser/StudyConfigSchema.json",
-  "studyMetadata": {
-    "title": "Stats Study",
-    "version": "pilot",
-    "authors": ["The reVISit Team"],
-    "date": "2024-03-19",
-    "description": "A simple stats study",
-    "organizations": ["WPI"]
-  },
-  "uiConfig": {
-    "contactEmail": "contact@revisit.dev",
-    "helpTextPath": "stats-study/assets/help.md",
-    "logoPath": "revisitAssets/revisitLogoSquare.svg",
-    "withProgressBar": true,
-    "autoDownloadStudy": false,
-    "withSidebar": true,
-    "recordAudio": true,
-    "studyEndMsg": "Thank you for completing the study."
-  },
-  "importedLibraries": ["demographics", "mic-check"],
-  "components": {
-    "consent": {
-      "type": "markdown",
-      "path": "stats-study/assets/consent.md",
-      "nextButtonText": "Agree",
-      "response": [
-        {
-          "id": "accept",
-          "prompt": "Do you consent to the study and wish to continue?",
-          "requiredValue": "Accept",
-          "location": "belowStimulus",
-          "type": "radio",
-          "options": [
-            "Decline",
-            "Accept"
-          ]
+    "$schema": "https://raw.githubusercontent.com/revisit-studies/study/main/src/parser/StudyConfigSchema.json",
+    "studyMetadata": {
+        "title": "Stats Study",
+        "version": "pilot",
+        "authors": [
+            "The reVISit Team"
+        ],
+        "date": "2024-03-19",
+        "description": "A simple stats study",
+        "organizations": [
+            "WPI"
+        ]
+    },
+    "uiConfig": {
+        "contactEmail": "contact@revisit.dev",
+        "helpTextPath": "stats-study/assets/help.md",
+        "logoPath": "revisitAssets/revisitLogoSquare.svg",
+        "withProgressBar": true,
+        "autoDownloadStudy": false,
+        "withSidebar": true,
+        "recordAudio": true,
+        "recordScreen": true,
+        "recordScreenFPS": 30,
+        "studyEndMsg": "Thank you for completing the study."
+    },
+    "importedLibraries": [
+        "demographics",
+        "mic-check",
+        "screen-recording"
+    ],
+    "components": {
+        "consent": {
+            "type": "markdown",
+            "path": "stats-study/assets/consent.md",
+            "nextButtonText": "Agree",
+            "response": [
+                {
+                    "id": "accept",
+                    "prompt": "Do you consent to the study and wish to continue?",
+                    "requiredValue": "Accept",
+                    "location": "belowStimulus",
+                    "type": "radio",
+                    "options": [
+                        "Decline",
+                        "Accept"
+                    ]
+                }
+            ],
+            "recordAudio": false
+        },
+        "introduction": {
+            "type": "markdown",
+            "path": "stats-study/assets/introduction.md",
+            "response": []
+        },
+        "pre questions part one": {
+            "type": "questionnaire",
+            "response": [
+                {
+                    "id": "q-correlation",
+                    "prompt": "What do you think a correlation is?",
+                    "location": "aboveStimulus",
+                    "type": "longText",
+                    "placeholder": "Enter your answer here"
+                },
+                {
+                    "id": "q-understanding-correlation",
+                    "prompt": "How would you rate your understanding of correlations?",
+                    "secondaryText": "1 (Very low) - 6 (Very high)",
+                    "location": "aboveStimulus",
+                    "type": "likert",
+                    "numItems": 6,
+                    "rightLabel": "Very low",
+                    "leftLabel": "Very high"
+                },
+                {
+                    "id": "q-slope",
+                    "prompt": "What do you think a slope is?",
+                    "location": "aboveStimulus",
+                    "type": "longText",
+                    "placeholder": "Enter your answer here"
+                },
+                {
+                    "id": "q-understanding-slope",
+                    "prompt": "How would you rate your understanding of slope?",
+                    "secondaryText": "1 (Very low) - 6 (Very high)",
+                    "location": "aboveStimulus",
+                    "type": "likert",
+                    "numItems": 6,
+                    "rightLabel": "Very low",
+                    "leftLabel": "Very high"
+                },
+                {
+                    "id": "q-class-taken",
+                    "prompt": "Have you ever taken a statistics class?",
+                    "location": "aboveStimulus",
+                    "type": "radio",
+                    "options": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                {
+                    "id": "q-comments",
+                    "prompt": "Any comments you have now: ",
+                    "location": "aboveStimulus",
+                    "type": "longText",
+                    "placeholder": "Enter your answer here"
+                }
+            ]
+        },
+        "pre questions part two": {
+            "type": "react-component",
+            "instruction": "",
+            "instructionLocation": "sidebar",
+            "path": "stats-study/assets/PreTest.tsx",
+            "parameters": {
+                "taskid": "pretest"
+            },
+            "response": [],
+            "recordAudio": false
+        },
+        
+        "correlation": {
+            "type": "react-component",
+            "instruction": "Explore correlation: adjust the relationship strength, add points, and observe how the Pearson correlation coefficient changes.",
+            "instructionLocation": "sidebar",
+            "path": "stats-study/assets/CorrelationExplorer.tsx",
+            "parameters": {
+                "taskid": "correlation"
+            },
+            "response": [],
+            "recordAudio": false
         }
-      ],
-      "recordAudio": false
-    },
-    "introduction": {
-      "type": "markdown",
-      "path": "stats-study/assets/introduction.md",
-      "response": []
-    },
-    "correlation": {
-      "type": "react-component",
-      "instruction": "Explore correlation: adjust the relationship strength, add points, and observe how the Pearson correlation coefficient changes.",
-      "instructionLocation": "sidebar",
-      "path": "stats-study/assets/CorrelationExplorer.tsx",
-      "parameters": { "taskid": "correlation" },
-      "response": [
-      ],
-      "recordAudio": true
-    }
-  },
-  "sequence": {
-    "order": "fixed",
-    "components": [
-      "consent",
-      "introduction",
-      "correlation"
-    ]
-  }
-}
 
+    },
+    "sequence": {
+        "order": "fixed",
+        "components": [
+            "consent",
+            "introduction",
+            "$screen-recording.co.screenRecordingPermission",
+            "pre questions part one",
+            "pre questions part two",
+            "correlation"
+        ]
+    }
+}
