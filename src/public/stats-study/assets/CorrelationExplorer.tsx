@@ -1,19 +1,18 @@
-import { 
-  useEffect, 
-  useMemo, 
-  useRef, 
-  useState, 
-  useCallback 
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
 } from 'react';
-import { 
-  Card, 
-  Title, 
-  Text, 
-  Slider, 
-  Stack, 
-  Group, 
-  Divider, 
-  Button 
+import {
+  Card,
+  Title,
+  Text,
+  Slider,
+  Stack,
+  Group,
+  Divider,
 } from '@mantine/core';
 import * as d3 from 'd3';
 import { initializeTrrack, Registry } from '@trrack/core';
@@ -40,7 +39,7 @@ function generateCorrelatedData(targetCorrelation: number, n = 30): Point[] {
     const randNorm = d3.randomNormal.source(rng)(0, 1);
     cachedBasePoints = Array.from({ length: n }, () => ({
       x: randNorm(),
-      y: randNorm()
+      y: randNorm(),
     }));
   }
 
@@ -69,8 +68,10 @@ function generateCorrelatedData(targetCorrelation: number, n = 30): Point[] {
   const yHat = yPerpC.map((v) => v / yPerpStd);
 
   // 5) Mix to achieve the exact sample correlation (up to floating error)
-  const yCorr = x.map((vx, i) => 
-    targetCorrelation * vx + Math.sqrt(1 - targetCorrelation * targetCorrelation) * yHat[i]
+  const yCorr = x.map(
+    (vx, i) =>
+      targetCorrelation * vx +
+      Math.sqrt(1 - targetCorrelation * targetCorrelation) * yHat[i],
   );
 
   // 6) Scale independently to [0.5, 9.5] (affine transforms preserve r)
@@ -81,87 +82,57 @@ function generateCorrelatedData(targetCorrelation: number, n = 30): Point[] {
 
   return x.map((vx, i) => ({
     x: sx(vx),
-    y: sy(yCorr[i])
+    y: sy(yCorr[i]),
   }));
 }
 
 function computePearsonR(data: Point[]): number | null {
   if (data.length < 2) return null;
-  
   const xs = data.map((d) => d.x);
   const ys = data.map((d) => d.y);
   const meanX = d3.mean(xs);
   const meanY = d3.mean(ys);
-  
   if (meanX === undefined || meanY === undefined) return null;
-  
   const num = d3.sum(xs.map((x, i) => (x - meanX) * (ys[i] - meanY)));
-  const den = Math.sqrt(d3.sum(xs.map((x) => (x - meanX) ** 2))) * 
-             Math.sqrt(d3.sum(ys.map((y) => (y - meanY) ** 2)));
-  
+  const den =
+    Math.sqrt(d3.sum(xs.map((x) => (x - meanX) ** 2))) *
+    Math.sqrt(d3.sum(ys.map((y) => (y - meanY) ** 2)));
   return den === 0 ? null : num / den;
 }
 
-function interpretCorrelation(r: number): string {
-  if (r >= 0.8) return 'Very Strong Positive';
-  if (r >= 0.6) return 'Strong Positive';
-  if (r >= 0.4) return 'Moderate Positive';
-  if (r >= 0.2) return 'Weak Positive';
-  if (r > 0) return 'Very Weak Positive';
-  if (r === 0) return 'No Correlation';
-  if (r > -0.2) return 'Very Weak Negative';
-  if (r > -0.4) return 'Weak Negative';
-  if (r > -0.6) return 'Moderate Negative';
-  if (r > -0.8) return 'Strong Negative';
-  return 'Very Strong Negative';
-}
-
-export default function CorrelationExplorer({ 
-  parameters, 
-  setAnswer, 
-  provenanceState 
+export default function CorrelationExplorer({
+  parameters,
+  setAnswer,
+  provenanceState,
 }: StimulusParams<any, any>) {
-  // Refs
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement | null>(null);
   const genGroupRef = useRef<SVGGElement | null>(null);
-  const userGroupRef = useRef<SVGGElement | null>(null);
   const animationRef = useRef<number | null>(null);
-  const rAnimationRef = useRef<number | null>(null);
 
-  // State
+  // State (no user points anymore)
   const [correlationStrength, setCorrelationStrength] = useState<number>(0.8);
   const [displayCorrelation, setDisplayCorrelation] = useState<number>(0.8);
-  const [displayedR, setDisplayedR] = useState<number | null>(null);
   const [generatedPoints, setGeneratedPoints] = useState<Point[]>([]);
-  const [userPoints, setUserPoints] = useState<Point[]>([]);
-
-  const { taskid } = parameters;
 
   // Chart dimensions
   const width = 400;
   const height = 300;
-  const margin = { 
-    top: 20, 
-    right: 20, 
-    bottom: 40, 
-    left: 40 
-  };
+  const margin = { top: 20, right: 20, bottom: 40, left: 40 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
   // Scales
   const xScale = useMemo(
     () => d3.scaleLinear().domain([0, 10]).range([0, innerWidth]),
-    [innerWidth]
+    [innerWidth],
   );
-
   const yScale = useMemo(
     () => d3.scaleLinear().domain([0, 10]).range([innerHeight, 0]),
-    [innerHeight]
+    [innerHeight],
   );
 
-  // Trrack setup
+  // Trrack (only slider changes now)
   const { actions, trrack } = useMemo(() => {
     const reg = Registry.create();
 
@@ -170,31 +141,20 @@ export default function CorrelationExplorer({
       return state;
     });
 
-    const addUserPoint = reg.register('addPoint', (state, point: Point) => {
-      state.userPoints = [...(state.userPoints || []), point];
-      return state;
-    });
-
-    const clearPoints = reg.register('clearPoints', (state, _: void) => {
-      state.userPoints = [];
-      return state;
-    });
-
     const trrackInst = initializeTrrack({
       registry: reg,
       initialState: {
         correlationStrength: 0.8,
-        userPoints: []
-      }
+      },
     });
 
     return {
-      actions: { sliderChange, addUserPoint, clearPoints },
-      trrack: trrackInst
+      actions: { sliderChange },
+      trrack: trrackInst,
     };
   }, []);
 
-  // Initialize SVG
+  // Initialize SVG (no click handler anymore)
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -202,89 +162,62 @@ export default function CorrelationExplorer({
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
-    
     gRef.current = g.node() as SVGGElement;
 
-    // Add axes
+    // Axes
     g.append('g')
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale));
+    g.append('g').attr('class', 'y-axis').call(d3.axisLeft(yScale));
 
-    g.append('g')
-      .attr('class', 'y-axis')
-      .call(d3.axisLeft(yScale));
-
-    // Add axis labels
-    svg.append('text')
+    // Axis labels
+    svg
+      .append('text')
       .attr('x', margin.left + innerWidth / 2)
       .attr('y', height - 5)
       .attr('text-anchor', 'middle')
       .text('X');
-
-    svg.append('text')
+    svg
+      .append('text')
       .attr('transform', 'rotate(-90)')
       .attr('x', -height / 2)
       .attr('y', 15)
       .attr('text-anchor', 'middle')
       .text('Y');
 
-    // Add point groups
+    // Point group
     const genG = g.append('g').attr('class', 'gen-points');
-    const userG = g.append('g').attr('class', 'user-points');
-    
     genGroupRef.current = genG.node() as SVGGElement;
-    userGroupRef.current = userG.node() as SVGGElement;
+  }, [height, innerHeight, innerWidth, margin.left, xScale, yScale]);
 
-    // Add click handler
-    svg.on('click', (event: MouseEvent) => {
-      const [mouseX, mouseY] = d3.pointer(event);
-      const chartX = mouseX - margin.left;
-      const chartY = mouseY - margin.top;
-      const xVal = xScale.invert(chartX);
-      const yVal = yScale.invert(chartY);
-
-      if (xVal >= 0 && xVal <= 10 && yVal >= 0 && yVal <= 10) {
-        const newPoint = { x: xVal, y: yVal };
-        trrack.apply('User Point Added', actions.addUserPoint(newPoint));
-        setUserPoints((prev) => [...prev, newPoint]);
-        updateAnswer();
-      }
-    });
-  }, []);
-
-  // Update answer callback
+  // Keep ReVISit answer updated (no userPoints now)
   const updateAnswer = useCallback(() => {
     setAnswer({
       status: true,
       provenanceGraph: trrack.graph.backend,
-      answers: {}
+      answers: {},
     });
-  }, [setAnswer, taskid, trrack, correlationStrength, userPoints]);
+  }, [setAnswer, trrack]);
 
   // Initialize answer
   useEffect(() => {
     setAnswer({
       status: true,
       provenanceGraph: trrack.graph.backend,
-      answers: {}
+      answers: {},
     });
-  }, [setAnswer, taskid, trrack]);
+  }, [setAnswer, trrack]);
 
-  // Handle provenance state updates
+  // Load provenance (only correlationStrength supported)
   useEffect(() => {
-    if (provenanceState) {
-      if (provenanceState.correlationStrength !== undefined) {
-        setCorrelationStrength(provenanceState.correlationStrength);
-        setDisplayCorrelation(provenanceState.correlationStrength);
-      }
-      if (provenanceState.userPoints !== undefined) {
-        setUserPoints(provenanceState.userPoints);
-      }
+    if (provenanceState && provenanceState.correlationStrength !== undefined) {
+      setCorrelationStrength(provenanceState.correlationStrength);
+      setDisplayCorrelation(provenanceState.correlationStrength);
     }
   }, [provenanceState]);
 
-  // Animate display correlation toward target
+  // Animate displayCorrelation to target (kept)
   useEffect(() => {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
 
@@ -298,7 +231,7 @@ export default function CorrelationExplorer({
       const eased = 1 - (1 - p) ** 4; // easeOutQuart
       const cur = startValue + (endValue - startValue) * eased;
       setDisplayCorrelation(cur);
-      
+
       if (p < 1) {
         animationRef.current = requestAnimationFrame(animate);
       }
@@ -315,143 +248,61 @@ export default function CorrelationExplorer({
     };
   }, [correlationStrength, displayCorrelation]);
 
-  // Regenerate points when display correlation changes
+  // Regenerate points when displayCorrelation changes
   useEffect(() => {
     setGeneratedPoints(generateCorrelatedData(displayCorrelation));
   }, [displayCorrelation]);
 
-  // Calculate correlations
-  const combinedPoints = [...generatedPoints, ...userPoints];
-  const r = computePearsonR(combinedPoints);
-  const generatedR = computePearsonR(generatedPoints);
-
-  // Animate displayed R value
-  useEffect(() => {
-    if (r === null) {
-      setDisplayedR(null);
-      return;
-    }
-
-    if (displayedR === null) {
-      setDisplayedR(r);
-      return;
-    }
-
-    if (rAnimationRef.current) cancelAnimationFrame(rAnimationRef.current);
-
-    const start = displayedR;
-    const end = r;
-    const duration = 200;
-    const t0 = performance.now();
-
-    const step = (t: number) => {
-      const p = Math.min((t - t0) / duration, 1);
-      const eased = 1 - (1 - p) ** 3;
-      setDisplayedR(start + (end - start) * eased);
-      
-      if (p < 1) {
-        rAnimationRef.current = requestAnimationFrame(step);
-      }
-    };
-
-    if (Math.abs(end - start) > 0.005) {
-      rAnimationRef.current = requestAnimationFrame(step);
-    } else {
-      setDisplayedR(end);
-    }
-
-    return () => {
-      if (rAnimationRef.current) cancelAnimationFrame(rAnimationRef.current);
-    };
-  }, [r, displayedR]);
-
-  // Draw and update circles
+  // Draw/update generated circles
   useEffect(() => {
     const genG = d3.select(genGroupRef.current);
-    const userG = d3.select(userGroupRef.current);
 
-    // Generated points
     const genSel = genG
       .selectAll<SVGCircleElement, Point>('circle')
       .data(generatedPoints, (_, i) => i as any);
 
     genSel.join(
-      (enter) => enter
-        .append('circle')
-        .attr('r', 4)
-        .attr('fill', '#2f9e44')
-        .attr('opacity', 0)
-        .attr('cx', (d) => xScale(d.x))
-        .attr('cy', (d) => yScale(d.y))
-        .transition()
-        .duration(150)
-        .attr('opacity', 1),
-      (update) => update
-        .transition()
-        .duration(150)
-        .ease(d3.easeQuadInOut)
-        .attr('cx', (d) => xScale(d.x))
-        .attr('cy', (d) => yScale(d.y)),
-      (exit) => exit
-        .transition()
-        .duration(100)
-        .attr('opacity', 0)
-        .remove()
+      (enter) =>
+        enter
+          .append('circle')
+          .attr('r', 4)
+          .attr('fill', '#2f9e44')
+          .attr('opacity', 0)
+          .attr('cx', (d) => xScale(d.x))
+          .attr('cy', (d) => yScale(d.y))
+          .transition()
+          .duration(150)
+          .attr('opacity', 1),
+      (update) =>
+        update
+          .transition()
+          .duration(150)
+          .ease(d3.easeQuadInOut)
+          .attr('cx', (d) => xScale(d.x))
+          .attr('cy', (d) => yScale(d.y)),
+      (exit) =>
+        exit.transition().duration(100).attr('opacity', 0).remove(),
     );
+  }, [generatedPoints, xScale, yScale]);
 
-    // User points
-    const userSel = userG
-      .selectAll<SVGCircleElement, Point>('circle')
-      .data(userPoints, (_, i) => `user-${i}`);
+  const generatedR = computePearsonR(generatedPoints);
 
-    userSel.join(
-      (enter) => enter
-        .append('circle')
-        .attr('r', 5)
-        .attr('fill', '#1c7ed6')
-        .attr('opacity', 0)
-        .attr('cx', (d) => xScale(d.x))
-        .attr('cy', (d) => yScale(d.y))
-        .transition()
-        .duration(200)
-        .attr('opacity', 1),
-      (update) => update
-        .transition()
-        .duration(150)
-        .ease(d3.easeCubicOut)
-        .attr('cx', (d) => xScale(d.x))
-        .attr('cy', (d) => yScale(d.y)),
-      (exit) => exit
-        .transition()
-        .duration(150)
-        .attr('opacity', 0)
-        .remove()
-    );
-  }, [generatedPoints, userPoints, xScale, yScale]);
-
-  const smoothR = displayedR !== null ? displayedR : r;
-
-  // Event handlers
-  const handleSliderChange = useCallback((val: number) => {
-    setCorrelationStrength(val);
-    trrack.apply('Slider Changed', actions.sliderChange(val));
-    updateAnswer();
-  }, [trrack, actions, updateAnswer]);
-
-  const handleClearPoints = useCallback(() => {
-    trrack.apply('Points Cleared', actions.clearPoints(undefined));
-    setUserPoints([]);
-    updateAnswer();
-  }, [trrack, actions, updateAnswer]);
+  // Slider handler
+  const handleSliderChange = useCallback(
+    (val: number) => {
+      setCorrelationStrength(val);
+      trrack.apply('Slider Changed', actions.sliderChange(val));
+      updateAnswer();
+    },
+    [trrack, actions, updateAnswer],
+  );
 
   return (
     <Card padding="md" radius="md">
       <Stack gap="sm">
         <Title order={3}>Positive Correlation</Title>
-        <Text size="sm">
-          Slide the bar to decrease or increase the correlation.
-        </Text>
-        
+        <Text size="sm">Slide the bar to decrease or increase the correlation.</Text>
+
         <Divider my="sm" />
 
         {/* CHART */}
@@ -459,10 +310,7 @@ export default function CorrelationExplorer({
           ref={svgRef}
           width={width}
           height={height}
-          style={{
-            border: '1px solid #ccc',
-            transition: 'all 0.1s ease'
-          }}
+          style={{ border: '1px solid #ccc', transition: 'all 0.1s ease' }}
         />
 
         {/* SLIDER */}
@@ -474,49 +322,24 @@ export default function CorrelationExplorer({
           max={1}
           marks={Array.from({ length: 11 }, (_, i) => ({
             value: i / 10,
-            label: (i / 10).toFixed(1)
+            label: (i / 10).toFixed(1),
           }))}
           styles={{
             track: { transition: 'all 0.1s ease' },
-            thumb: { transition: 'all 0.1s ease' }
+            thumb: { transition: 'all 0.1s ease' },
           }}
         />
 
+        {/* Info row (no "Overall r..." and no clear button) */}
         <Group justify="space-between" align="flex-start" mt="sm">
           <Stack gap="xs">
-            <Text fw={500}>
-              Total points: {generatedPoints.length + userPoints.length}
-            </Text>
+            <Text fw={500}>Total points: {generatedPoints.length}</Text>
             {generatedR !== null && (
               <Text size="sm" c="green">
                 Generated points r = {generatedR.toFixed(2)}
               </Text>
             )}
           </Stack>
-
-          <Group gap="xs" align="center">
-            {smoothR !== null && (
-              <Text
-                fw={500}
-                c={
-                  Math.abs(smoothR) > 0.6
-                    ? 'green'
-                    : Math.abs(smoothR) > 0.3
-                    ? 'orange'
-                    : 'red'
-                }
-                style={{ transition: 'color 0.15s ease' }}
-              >
-                Overall r = {smoothR.toFixed(2)} → {' '}
-                <em>{interpretCorrelation(smoothR)}</em>
-              </Text>
-            )}
-            {userPoints.length > 0 && (
-              <Button size="xs" color="red" onClick={handleClearPoints}>
-                Clear My Points
-              </Button>
-            )}
-          </Group>
         </Group>
       </Stack>
     </Card>

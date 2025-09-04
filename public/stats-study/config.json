@@ -18,11 +18,11 @@
         "logoPath": "revisitAssets/revisitLogoSquare.svg",
         "withProgressBar": true,
         "autoDownloadStudy": false,
-        "withSidebar": true,
+        "withSidebar": false,
         "recordAudio": true,
         "recordScreen": true,
         "recordScreenFPS": 30,
-        "studyEndMsg": "Thank you for completing the study."
+        "studyEndMsg": "**Thank you for completing the study. You may click this link and return to Prolific**: [https://app.prolific.com/submissions/complete?cc=CB9Y2414](https://app.prolific.com/submissions/complete?cc=CB9Y2414)"
     },
     "importedLibraries": [
         "demographics",
@@ -233,12 +233,14 @@
                 "taskid": "correlation"
             },
             "response": [],
+            "nextButtonEnableTime": 60000,
             "recordAudio": false
         },
         "CorrelationImages": {
             "type": "react-component",
             "path": "stats-study/assets/CorrelationImages.tsx",
             "response": [],
+            "nextButtonEnableTime": 60000,
             "recordAudio": false
         },
         "instruction": {
@@ -564,7 +566,7 @@
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
             "parameters": {
-                "imagePath": "assets/post-test-images/post-img-3.png"
+                "imagePath": "assets/post-test-images/post-img-4.png"
             },
             "response": [
                 {
@@ -582,29 +584,11 @@
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
             "parameters": {
-                "imagePath": "assets/post-test-images/post-img-4.png"
-            },
-            "response": [
-                {
-                    "id": "poss-guess-13",
-                    "prompt": "Answer (r, 0–1):",
-                    "location": "belowStimulus",
-                    "type": "numerical",
-                    "min": 0,
-                    "max": 1
-                }
-            ]
-        },
-        "post-guess-14": {
-            "description": "Scatterplot image 14 for correlation estimation",
-            "type": "react-component",
-            "path": "stats-study/assets/PostRGuess.tsx",
-            "parameters": {
                 "imagePath": "assets/post-test-images/post-img-5.png"
             },
             "response": [
                 {
-                    "id": "poss-guess-14",
+                    "id": "poss-guess-13",
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
@@ -698,6 +682,7 @@
                     "type": "shortText",
                     "prompt": "What is your native language? (optional)",
                     "placeholder": "e.g., English",
+                    "required": false,
                     "withDivider": true
                 },
                 {
@@ -815,7 +800,6 @@
             "post-guess-11",
             "post-guess-12",
             "post-guess-13",
-            "post-guess-14",
             "free-draw",
             "post-transfer-add-points-1",
             "post-transfer-add-points-2",

@@ -107,7 +107,7 @@ export async function studyStoreCreator(
     answers: Object.keys(answers).length > 0 ? answers : emptyAnswers,
     sequence,
     config,
-    showStudyBrowser: true,
+    showStudyBrowser: false,
     showHelpText: false,
     alertModal: { show: false, message: '' },
     trialValidation: Object.keys(answers).length > 0 ? allValid : emptyValidation,

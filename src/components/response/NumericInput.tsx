@@ -36,6 +36,7 @@ export function NumericInput({
       size="md"
       min={min}
       max={max}
+      step={0.1}
       {...answer}
       error={generateErrorMessage(response, answer)}
       classNames={{ input: classes.fixDisabled }}
