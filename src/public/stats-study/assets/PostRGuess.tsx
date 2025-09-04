@@ -3,7 +3,7 @@ import React from "react";
 function PostRGuess({ parameters }: { parameters: { imagePath: string } }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <p style={{ marginBottom: "12px", fontWeight: "500" }}>
+      <p style={{ marginLeft: "-10px", marginBottom: "12px", fontWeight: "500", fontSize: "20px"}}>
         Please guess the correlation of the graph.
       </p>
       <img

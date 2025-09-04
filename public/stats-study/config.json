@@ -18,7 +18,7 @@
         "logoPath": "revisitAssets/revisitLogoSquare.svg",
         "withProgressBar": true,
         "autoDownloadStudy": false,
-        "withSidebar": false,
+        "withSidebar": true,
         "recordAudio": true,
         "recordScreen": true,
         "recordScreenFPS": 30,
@@ -49,9 +49,11 @@
             ],
             "recordAudio": false
         },
-        "introduction": {
+        
+        "about-study": {
             "type": "markdown",
-            "path": "stats-study/assets/introduction.md",
+            "path": "stats-study/assets/about-study.md",
+            "style": {"width": "1000px"},
             "response": []
         },
         "pre questions part one": {
@@ -59,55 +61,62 @@
             "response": [
                 {
                     "id": "q-correlation",
-                    "prompt": "1.What do you think a correlation is?",
+                    "prompt": "1. What do you think a correlation is?",
                     "location": "aboveStimulus",
                     "type": "longText",
-                    "placeholder": "Enter your answer here"
+                    "placeholder": "Enter your answer here",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "q-understanding-correlation",
-                    "prompt": "2.How would you rate your understanding of correlations?",
+                    "prompt": "2. How would you rate your understanding of correlations?",
                     "secondaryText": "1 (Very low) - 6 (Very high)",
                     "location": "aboveStimulus",
                     "type": "likert",
                     "numItems": 6,
                     "leftLabel": "Very low",
-                    "rightLabel": "Very high"
+                    "rightLabel": "Very high",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "q-slope",
-                    "prompt": "3.What do you think a slope is?",
+                    "prompt": "3. What do you think a slope is?",
                     "location": "aboveStimulus",
                     "type": "longText",
-                    "placeholder": "Enter your answer here"
+                    "placeholder": "Enter your answer here",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "q-understanding-slope",
-                    "prompt": "4.How would you rate your understanding of slope?",
+                    "prompt": "4. How would you rate your understanding of slope?",
                     "secondaryText": "1 (Very low) - 6 (Very high)",
                     "location": "aboveStimulus",
                     "type": "likert",
                     "numItems": 6,
                     "leftLabel": "Very low",
-                    "rightLabel": "Very high"
+                    "rightLabel": "Very high",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "q-class-taken",
-                    "prompt": "5.Have you ever taken a statistics class?",
+                    "prompt": "5. Have you ever taken a statistics class?",
                     "location": "aboveStimulus",
                     "type": "radio",
                     "options": [
                         "Yes",
                         "No"
-                    ]
+                    ],
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "q-comments",
-                    "prompt": "6.Any comments you have now: ",
+                    "prompt": "6. Any comments you have now: ",
                     "location": "aboveStimulus",
                     "type": "longText",
-                    "placeholder": "Enter your answer here"
+                    "placeholder": "Enter your answer here",
+                    "style": {"width": "800px"}
                 }
+                
             ]
         },
         "pre questions part two": {
@@ -130,7 +139,12 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "min": 0,
-                    "max": 1
+                    "max": 1,
+                    "required": true,
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    }
                 }
             ]
         },
@@ -147,8 +161,13 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
                     "min": 0,
-                    "max": 1
+                    "max": 1,
+                    "required": true
                 }
             ]
         },
@@ -165,6 +184,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -183,6 +207,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -201,6 +230,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -219,6 +253,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -262,6 +301,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -280,6 +324,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -298,6 +347,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -316,6 +370,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -334,6 +393,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -352,6 +416,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -370,6 +439,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -388,6 +462,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -412,6 +491,11 @@
                     "prompt": "Answer (r, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": -1,
                     "max": 0
                 }
@@ -430,6 +514,11 @@
                     "prompt": "Answer (r, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": -1,
                     "max": 0
                 }
@@ -448,6 +537,11 @@
                     "prompt": "Answer (r, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": -1,
                     "max": 0
                 }
@@ -466,6 +560,11 @@
                     "prompt": "Answer (r, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": -1,
                     "max": 0
                 }
@@ -484,6 +583,11 @@
                     "prompt": "Answer (r, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": -1,
                     "max": 0
                 }
@@ -502,6 +606,11 @@
                     "prompt": "Answer (r, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": -1,
                     "max": 0
                 }
@@ -520,6 +629,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -538,6 +652,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -556,6 +675,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -574,6 +698,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -592,6 +721,11 @@
                     "prompt": "Answer (r, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
+                    "style": {
+                        "width": "400px",
+                        "margin": "20px 390px"
+                    },
+                    "required": true,
                     "min": 0,
                     "max": 1
                 }
@@ -601,19 +735,22 @@
             "type": "react-component",
             "path": "stats-study/assets/CorrelationFreeDraw.tsx",
             "response": [],
-            "recordAudio": false
+            "recordAudio": false,
+            "style": {"width": "800px"}
         },
         "post-transfer-add-points-1": {
             "type": "react-component",
             "path": "stats-study/assets/RFixedPostDecrease.tsx",
             "response": [],
-            "recordAudio": false
+            "recordAudio": false,
+            "style": {"width": "800px"}
         },
         "post-transfer-add-points-2": {
             "type": "react-component",
             "path": "stats-study/assets/RFixedPostIncrease.tsx",
             "response": [],
-            "recordAudio": false
+            "recordAudio": false,
+            "style": {"width": "800px"}
         },
         "post-questionnaire": {
             "type": "questionnaire",
@@ -623,7 +760,8 @@
                     "prompt": "Please describe how you can tell the strength of the correlation from these graphs? ",
                     "location": "aboveStimulus",
                     "type": "longText",
-                    "placeholder": "Enter your answer here"
+                    "placeholder": "Enter your answer here",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "q-further-studies",
@@ -634,7 +772,8 @@
                         "Yes",
                         "Maybe/Not Sure",
                         "No"
-                    ]
+                    ],
+                    "style": {"width": "800px"}
                 }
             ]
         },
@@ -644,7 +783,8 @@
                 {
                     "id": "age",
                     "type": "numerical",
-                    "prompt": "What is your age?"
+                    "prompt": "What is your age?",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "gender-identity",
@@ -656,6 +796,7 @@
                         "Non-binary",
                         "Prefer not to say"
                     ],
+                    "style": {"width": "800px"},
                     "withDivider": true
                 },
                 {
@@ -669,13 +810,15 @@
                         "Master’s degree",
                         "Doctoral degree",
                         "Prefer not to say"
-                    ]
+                    ],
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "country",
                     "type": "shortText",
                     "prompt": "Where do you currently live? (Country/Region)",
-                    "placeholder": "e.g., United States"
+                    "placeholder": "e.g., United States",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "native-language",
@@ -683,7 +826,8 @@
                     "prompt": "What is your native language? (optional)",
                     "placeholder": "e.g., English",
                     "required": false,
-                    "withDivider": true
+                    "withDivider": true,
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "english-proficiency",
@@ -692,7 +836,8 @@
                     "secondaryText": "1 = Not comfortable, 5 = Very comfortable",
                     "numItems": 5,
                     "leftLabel": "Not comfortable",
-                    "rightLabel": "Very comfortable"
+                    "rightLabel": "Very comfortable",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "vis-experience",
@@ -701,7 +846,8 @@
                     "secondaryText": "1 = Not familiar, 5 = Very familiar",
                     "numItems": 5,
                     "leftLabel": "Not familiar",
-                    "rightLabel": "Very familiar"
+                    "rightLabel": "Very familiar",
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "stats-background",
@@ -711,7 +857,8 @@
                     "numItems": 5,
                     "leftLabel": "None",
                     "rightLabel": "Advanced",
-                    "withDivider": true
+                    "withDivider": true,
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "color-vision",
@@ -724,7 +871,8 @@
                         "Tritanopia (blue-weak/blue-blind)",
                         "Unsure",
                         "Prefer not to say"
-                    ]
+                    ],
+                    "style": {"width": "800px"}
                 },
                 {
                     "id": "field-background",
@@ -740,7 +888,8 @@
                         "Business / Economics",
                         "Education"
                     ],
-                    "withOther": true
+                    "withOther": true,
+                    "style": {"width": "800px"}
                 }
             ]
         }
@@ -749,8 +898,8 @@
         "order": "fixed",
         "components": [
             "consent",
-            "introduction",
             "$screen-recording.co.screenRecordingPermission",
+            "about-study",
             "pre questions part one",
             "pre questions part two",
             "pre-guess-1",

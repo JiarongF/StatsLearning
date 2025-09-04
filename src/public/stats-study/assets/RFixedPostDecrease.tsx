@@ -256,7 +256,7 @@ export default function RFixedPostIncrease({
           ref={svgRef}
           width={width}
           height={height}
-          style={{ border: '1px solid #ccc' }}
+          style={{ border: '1px solid #ccc', marginLeft: 200}}
         />
 
         <Group justify="space-between" mt="xs">

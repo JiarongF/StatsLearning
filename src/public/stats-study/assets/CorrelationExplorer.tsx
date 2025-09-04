@@ -117,7 +117,7 @@ export default function CorrelationExplorer({
 
   // Chart dimensions
   const width = 400;
-  const height = 300;
+  const height = 380;
   const margin = { top: 20, right: 20, bottom: 40, left: 40 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -298,50 +298,61 @@ export default function CorrelationExplorer({
   );
 
   return (
-    <Card padding="md" radius="md">
-      <Stack gap="sm">
-        <Title order={3}>Positive Correlation</Title>
-        <Text size="sm">Slide the bar to decrease or increase the correlation.</Text>
+  <Card padding="md" radius="md" >
+    {/* Center children horizontally */}
+    <Stack gap="sm" align="center">
+      <Title order={3}>Positive Correlation</Title>
 
-        <Divider my="sm" />
+      <Text size="md" ta="left" maw={600}>
+  The scatterplot shows a set of simulated data points with values on an <strong>X</strong> axis and a <strong>Y</strong> axis. 
+  These values don’t come from a real dataset — they are randomly generated — but they are constructed so the relationship 
+  between X and Y matches the correlation (<em>r</em>) you choose. <br /><br />
+  Use the slider below to set the correlation value (<em>r</em>) between 0.0 and 1.0. 
+  As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value.
+</Text>
 
-        {/* CHART */}
-        <svg
-          ref={svgRef}
-          width={width}
-          height={height}
-          style={{ border: '1px solid #ccc', transition: 'all 0.1s ease' }}
-        />
+      {/* Correlation readout, centered */}
+      {generatedR !== null && (
+        <Text size="sm" c="green" ta="center" mt={0}>
+          r = {generatedR.toFixed(2)}
+        </Text>
+      )}
 
-        {/* SLIDER */}
-        <Slider
-          value={correlationStrength}
-          onChange={handleSliderChange}
-          step={0.1}
-          min={0}
-          max={1}
-          marks={Array.from({ length: 11 }, (_, i) => ({
-            value: i / 10,
-            label: (i / 10).toFixed(1),
-          }))}
-          styles={{
-            track: { transition: 'all 0.1s ease' },
-            thumb: { transition: 'all 0.1s ease' },
-          }}
-        />
+      {/* CHART — block + auto margins keeps it centered */}
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        style={{
+          border: '1px solid #ccc',
+          borderRadius: 6,
+          transition: 'all 0.1s ease',
+          display: 'block',
+          margin: '0 auto',
+        }}
+      />
 
-        {/* Info row (no "Overall r..." and no clear button) */}
-        <Group justify="space-between" align="flex-start" mt="sm">
-          <Stack gap="xs">
-            <Text fw={500}>Total points: {generatedPoints.length}</Text>
-            {generatedR !== null && (
-              <Text size="sm" c="green">
-                Generated points r = {generatedR.toFixed(2)}
-              </Text>
-            )}
-          </Stack>
-        </Group>
-      </Stack>
-    </Card>
-  );
+      {/* SLIDER — fixed max width + centered */}
+      <Group justify="center" w="100%">
+        <div style={{ width: 400, maxWidth: '100%' , marginBottom: 10}}>
+          <Slider
+            value={correlationStrength}
+            onChange={handleSliderChange}
+            step={0.1}
+            min={0}
+            max={1}
+            marks={Array.from({ length: 11 }, (_, i) => ({
+              value: i / 10,
+              label: (i / 10).toFixed(1),
+            }))}
+            styles={{
+              track: { transition: 'all 0.1s ease' },
+              thumb: { transition: 'all 0.1s ease' },
+            }}
+          />
+        </div>
+      </Group>
+    </Stack>
+  </Card>
+);
 }

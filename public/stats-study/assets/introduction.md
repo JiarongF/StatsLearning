@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to our study. Thanks for helping us learn how people understand correlation. You'll complete related tasks. We will only ask you a few questions and then we will be done.
+Welcome to our study. Thanks for helping us learn how people understand correlation. You'll complete related tasks.
 
 ### Friendly think-aloud reminder
 
