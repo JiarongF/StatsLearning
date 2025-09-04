@@ -1,0 +1,1 @@
+Below are some correlations with negative slopes, ranging from 0 [no relationship] to -1 [strong negative relationship]. Please guess their correlation.
