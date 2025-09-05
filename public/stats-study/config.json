@@ -49,11 +49,13 @@
             ],
             "recordAudio": false
         },
-        
         "about-study": {
             "type": "markdown",
             "path": "stats-study/assets/about-study.md",
-            "style": { "width": "1000px", "margin": "0 auto" },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": []
         },
         "pre questions part one": {
@@ -65,7 +67,10 @@
                     "location": "aboveStimulus",
                     "type": "longText",
                     "placeholder": "Enter your answer here",
-                    "style": {"width": "800px", "margin": "3em 0"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "q-understanding-correlation",
@@ -73,7 +78,10 @@
                     "location": "aboveStimulus",
                     "type": "likert",
                     "numItems": 6,
-                    "style": {"width": "800px", "margin": "3em 0"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "q-slope",
@@ -81,7 +89,10 @@
                     "location": "aboveStimulus",
                     "type": "longText",
                     "placeholder": "Enter your answer here",
-                    "style": {"width": "800px", "margin": "3em 0"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "q-understanding-slope",
@@ -89,7 +100,10 @@
                     "location": "aboveStimulus",
                     "type": "likert",
                     "numItems": 6,
-                    "style": {"width": "800px", "margin": "3em 0"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "q-class-taken",
@@ -100,7 +114,10 @@
                         "Yes",
                         "No"
                     ],
-                    "style": {"width": "800px", "margin": "3em 0"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "q-comments",
@@ -108,23 +125,31 @@
                     "location": "aboveStimulus",
                     "type": "longText",
                     "placeholder": "Enter your answer here",
-                    "style": {"width": "800px", "margin": "3em 0"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 }
-                
             ]
         },
         "pre questions part two": {
             "type": "react-component",
             "path": "stats-study/assets/PreTest.tsx",
             "response": [],
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "recordAudio": false
         },
         "pre-guess-1": {
             "description": "Pre Scatterplot image 1 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-1.png"
             },
@@ -151,7 +176,10 @@
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-2.png"
             },
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "pre-guess-2",
@@ -175,7 +203,10 @@
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-3.png"
             },
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "pre-guess-3",
@@ -199,7 +230,10 @@
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-4.png"
             },
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "pre-guess-4",
@@ -223,7 +257,10 @@
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-5.png"
             },
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "pre-guess-5",
@@ -247,7 +284,10 @@
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-6.png"
             },
-            "style": {"width": "800px", "margin": "0 auto"},
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "pre-guess-6",
@@ -269,7 +309,10 @@
             "instruction": "",
             "instructionLocation": "sidebar",
             "path": "stats-study/assets/CorrelationExplorer.tsx",
-            "style": { "width": "1000px", "margin": "0 auto" },
+            "style": {
+                "width": "1000px",
+                "margin": "0 auto"
+            },
             "parameters": {
                 "taskid": "correlation"
             },
@@ -281,14 +324,20 @@
             "type": "react-component",
             "path": "stats-study/assets/CorrelationImages.tsx",
             "response": [],
-            "style": { "width": "1000px", "margin": "0 auto" },
+            "style": {
+                "width": "1000px",
+                "margin": "0 auto"
+            },
             "nextButtonEnableTime": 60000,
             "recordAudio": false
         },
         "instruction": {
             "type": "markdown",
             "path": "stats-study/assets/instruction.md",
-            "style": { "width": "1000px", "margin": "0 auto" },
+            "style": {
+                "width": "800px",
+                "margin": "3em auto"
+            },
             "response": [],
             "recordAudio": false
         },
@@ -296,25 +345,32 @@
             "type": "markdown",
             "path": "stats-study/assets/thinkaloud.md",
             "response": [],
-            "style": { "width": "1000px", "margin": "0 auto" },
+            "style": {
+                "width": "1000px",
+                "margin": "0 auto"
+            },
             "recordAudio": false
         },
         "post-guess-1": {
             "description": "Scatterplot image 1 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "parameters": {
                 "imagePath": "assets/post-test-images/0.7-correlation.png"
             },
             "response": [
                 {
                     "id": "poss-guess-1",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -326,18 +382,22 @@
             "description": "Scatterplot image 2 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "parameters": {
                 "imagePath": "assets/post-test-images/0.3-correlation.png"
             },
             "response": [
                 {
                     "id": "poss-guess-2",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -352,15 +412,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/0.6-correlation.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-3",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -375,15 +439,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/0.5-correlation.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-4",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -398,15 +466,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/0.1-correlation.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-5",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -421,15 +493,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/0.9-correlation.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-6",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -441,18 +517,22 @@
             "description": "Scatterplot image 7 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "parameters": {
                 "imagePath": "assets/post-test-images/transfer-img-1.png"
             },
             "response": [
                 {
                     "id": "poss-guess-7",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -467,15 +547,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/transfer-img-2.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-8",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, 0.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -486,6 +570,10 @@
         "neg-instruction": {
             "type": "markdown",
             "path": "stats-study/assets/neg-instruction.md",
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [],
             "recordAudio": false
         },
@@ -496,15 +584,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.4.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "neg-guess-1",
-                    "prompt": "Answer (correlation, -1–0):",
+                    "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
@@ -519,15 +611,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.9.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "neg-guess-2",
-                    "prompt": "Answer (correlation, -1–0):",
+                    "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
@@ -542,15 +638,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.5.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "neg-guess-3",
-                    "prompt": "Answer (correlation, -1–0):",
+                    "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
@@ -565,15 +665,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.1.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "neg-guess-4",
-                    "prompt": "Answer (correlation, -1–0):",
+                    "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
@@ -588,15 +692,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.6.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "neg-guess-5",
-                    "prompt": "Answer (correlation, -1–0):",
+                    "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
@@ -611,15 +719,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.2.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "neg-guess-5",
-                    "prompt": "Answer (correlation, -1–0):",
+                    "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
@@ -634,15 +746,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-1.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-9",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, -1.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -657,15 +773,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-2.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-10",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, -1.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -680,15 +800,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-3.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-11",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, -1.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -703,15 +827,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-4.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-12",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, -1.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -726,15 +854,19 @@
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-5.png"
             },
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "response": [
                 {
                     "id": "poss-guess-13",
-                    "prompt": "Answer (correlation, 0–1):",
+                    "prompt": "Answer (correlation, -1.0–1.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
                         "width": "400px",
-                        "margin": "20px 390px"
+                        "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
@@ -747,24 +879,37 @@
             "path": "stats-study/assets/CorrelationFreeDraw.tsx",
             "response": [],
             "recordAudio": false,
-            "style": {"width": "800px"}
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            }
         },
         "post-transfer-add-points-1": {
             "type": "react-component",
             "path": "stats-study/assets/RFixedPostDecrease.tsx",
             "response": [],
             "recordAudio": false,
-            "style": {"width": "800px"}
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            }
         },
         "post-transfer-add-points-2": {
             "type": "react-component",
             "path": "stats-study/assets/RFixedPostIncrease.tsx",
             "response": [],
             "recordAudio": false,
-            "style": {"width": "800px"}
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            }
         },
         "post-questionnaire": {
             "type": "questionnaire",
+            "style": {
+                "width": "800px",
+                "margin": "3em 3em"
+            },
             "response": [
                 {
                     "id": "q-how-to-tell",
@@ -772,18 +917,35 @@
                     "location": "aboveStimulus",
                     "type": "longText",
                     "placeholder": "Enter your answer here",
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em auto"
+                    }
                 }
             ]
         },
+        "demographics-intro": {
+            "type": "markdown",
+            "path": "stats-study/assets/demographics.md",
+            "response": [],
+            "style": {
+                "width": "1000px",
+                "margin": "3em auto"
+            },
+            "recordAudio": false
+        },
         "demographics": {
             "type": "questionnaire",
+            "description": "✅ This is the final part of the study. Please answer the following questions, and remember to click **Next** so your responses are saved.",
             "response": [
                 {
                     "id": "age",
                     "type": "numerical",
                     "prompt": "What is your age?",
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "gender-identity",
@@ -795,7 +957,10 @@
                         "Non-binary",
                         "Prefer not to say"
                     ],
-                    "style": {"width": "800px"},
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    },
                     "withDivider": true
                 },
                 {
@@ -810,14 +975,19 @@
                         "Doctoral degree",
                         "Prefer not to say"
                     ],
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px"
+                    }
                 },
                 {
                     "id": "country",
                     "type": "shortText",
                     "prompt": "Where do you currently live? (Country/Region)",
                     "placeholder": "e.g., United States",
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "native-language",
@@ -826,38 +996,46 @@
                     "placeholder": "e.g., English",
                     "required": false,
                     "withDivider": true,
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "english-proficiency",
                     "type": "likert",
                     "prompt": "How comfortable are you reading English?",
-                    "secondaryText": "1 = Not comfortable, 5 = Very comfortable",
                     "numItems": 5,
                     "leftLabel": "Not comfortable",
                     "rightLabel": "Very comfortable",
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px"
+                    }
                 },
                 {
                     "id": "vis-experience",
                     "type": "likert",
                     "prompt": "How familiar are you with reading scatterplots?",
-                    "secondaryText": "1 = Not familiar, 5 = Very familiar",
                     "numItems": 5,
                     "leftLabel": "Not familiar",
                     "rightLabel": "Very familiar",
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "stats-background",
                     "type": "likert",
                     "prompt": "How would you rate your statistics background?",
-                    "secondaryText": "1 = None, 5 = Advanced",
                     "numItems": 5,
                     "leftLabel": "None",
                     "rightLabel": "Advanced",
                     "withDivider": true,
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 },
                 {
                     "id": "color-vision",
@@ -871,7 +1049,9 @@
                         "Unsure",
                         "Prefer not to say"
                     ],
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px"
+                    }
                 },
                 {
                     "id": "field-background",
@@ -888,7 +1068,10 @@
                         "Education"
                     ],
                     "withOther": true,
-                    "style": {"width": "800px"}
+                    "style": {
+                        "width": "800px",
+                        "margin": "3em 0"
+                    }
                 }
             ]
         }
@@ -902,15 +1085,16 @@
             "thinkaloud",
             "pre questions part one",
             "pre questions part two",
-            { "order": "random",
-                  "components": [
+            {
+                "order": "random",
+                "components": [
                     "pre-guess-1",
                     "pre-guess-2",
                     "pre-guess-3",
                     "pre-guess-4",
                     "pre-guess-5",
                     "pre-guess-6"
-                  ]
+                ]
             },
             "instruction",
             {
@@ -957,6 +1141,7 @@
             "post-transfer-add-points-1",
             "post-transfer-add-points-2",
             "post-questionnaire",
+            "demographics-intro",
             "demographics"
         ]
     }

@@ -168,7 +168,7 @@ export default function CorrelationFreeDraw({
         <Text size="lg">For the next question, we are going to ask you to draw datapoints on a scatterplot, go ahead and try out this new feature
 </Text>
 
-        <Divider my="sm" />
+        
 
         {/* CHART */}
         <svg

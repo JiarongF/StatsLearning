@@ -31,7 +31,6 @@ const ScatterPlotImage = ({
   </div>
 );
 
-// NOTE: default param {} prevents "Cannot destructure property 'setAnswer' of undefined"
 export default function PreTest(
   { setAnswer }: { setAnswer?: SetAnswerFn } = {}
 ) {
@@ -97,17 +96,15 @@ export default function PreTest(
     }
   };
 
-  // Report "complete" exactly once so ReVISit can enable Next
+
   useEffect(() => {
     if (!gameComplete) return;
     if (reportedCompleteRef.current) return;
     reportedCompleteRef.current = true;
 
-    // ReVISit gate: requiredValue === 'complete'
     try {
-      setAnswer?.('complete'); // simple string value (safest)
+      setAnswer?.('complete');
     } catch {
-      // Swallow in case we're running outside ReVISit; UI still shows "Complete!"
     }
   }, [gameComplete, setAnswer]);
 

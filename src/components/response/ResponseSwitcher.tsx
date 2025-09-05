@@ -68,7 +68,7 @@ export function ResponseSwitcher({
   if (response.type !== 'numerical') return '';
   const { min, max } = response as any;
   const v = (ans as any)?.value;
-  if (v === '' || v === null || v === undefined) return '';
+  if (v === '' || v === null || v === undefined || v === '.') return '';
   const num = Number(v);
   if (Number.isNaN(num)) return 'Please enter a valid number.';
   if (min !== undefined && num < min) return `Please enter a number between ${min} and ${max}.`;

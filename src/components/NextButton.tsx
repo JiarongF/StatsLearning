@@ -96,7 +96,7 @@ export function NextButton({
       const max = r.max ?? Number.POSITIVE_INFINITY;
 
       const raw = (currentAnswers as Record<string, unknown>)[r.id];
-      if (raw === '' || raw === null || raw === undefined) return false; // emptiness handled by required rules elsewhere
+      if (raw === '' || raw === null || raw === undefined) return false;
 
       const num = Number(raw);
       if (Number.isNaN(num)) return true;
@@ -118,7 +118,7 @@ export function NextButton({
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     }
-    return () => {};
+    return () => { };
   }, [disabled, isNextDisabled, buttonTimerSatisfied, hasNumericOutOfRange, goToNextStep, nextOnEnter]);
 
   const nextButtonDisabled = useMemo(
