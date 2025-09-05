@@ -304,13 +304,14 @@ export default function CorrelationExplorer({
       <Title order={3}>Positive Correlation</Title>
 
       <Text size="md" ta="left" maw={600}>
-  The scatterplot shows a set of simulated data points with values on an <strong>X</strong> axis and a <strong>Y</strong> axis. 
-  These values don’t come from a real dataset — they are randomly generated — but they are constructed so the relationship 
-  between X and Y matches the correlation (<em>r</em>) you choose. <br /><br />
-  Use the slider below to set the correlation value (<em>r</em>) between 0.0 and 1.0. 
-  As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value. <br /><br />
-  Please study the scatterplots and their different correlation values for <strong>1 minute</strong>.
-</Text>
+        The scatterplot shows a set of simulated data points with values on an <strong>X</strong> axis and a <strong>Y</strong> axis. 
+        These values don’t come from a real dataset — they are randomly generated — but they are constructed so the relationship 
+        between X and Y matches the correlation (<em>r</em>) you choose. <br /><br />
+        Use the slider below to set the correlation value (<em>r</em>) between 0.0 and 1.0. 
+        As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value. <br /><br />
+        Please interact with the scatterplots and explore different correlation values using the slider for <strong>at least 1 minute</strong>.<br /><br />
+        🎙️ Please remember to think-aloud as you explore the tutorial!
+      </Text>
 
       {/* Correlation readout, centered */}
       {generatedR !== null && (
