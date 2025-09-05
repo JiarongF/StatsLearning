@@ -33,6 +33,10 @@
         "consent": {
             "type": "markdown",
             "path": "stats-study/assets/consent.md",
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
             "nextButtonText": "Continue",
             "response": [
                 {
@@ -40,6 +44,10 @@
                     "prompt": "Are you ready to continue?",
                     "requiredValue": "Accept",
                     "location": "belowStimulus",
+                    "style": {
+                        "width": "800px",
+                        "margin": "0 auto"
+                    },
                     "type": "radio",
                     "options": [
                         "Decline",
@@ -739,6 +747,16 @@
                 }
             ]
         },
+        "transfer": {
+            "type": "markdown",
+            "path": "stats-study/assets/transfer.md",
+            "style": {
+                "width": "800px",
+                "margin": "0 auto"
+            },
+            "response": [],
+            "recordAudio": false
+        },
         "post-guess-9": {
             "description": "Scatterplot image 9 for correlation estimation",
             "type": "react-component",
@@ -1132,6 +1150,7 @@
             "neg-guess-4",
             "neg-guess-5",
             "neg-guess-6",
+            "transfer",
             "post-guess-9",
             "post-guess-10",
             "post-guess-11",
