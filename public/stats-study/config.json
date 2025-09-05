@@ -74,9 +74,7 @@
                     "location": "aboveStimulus",
                     "type": "likert",
                     "numItems": 6,
-                    "leftLabel": "Very low",
-                    "rightLabel": "Very high",
-                    "style": {"width": "800px"}
+                    "style": {"width": "800px", "margin": "10px 0"}
                 },
                 {
                     "id": "q-slope",
@@ -84,7 +82,7 @@
                     "location": "aboveStimulus",
                     "type": "longText",
                     "placeholder": "Enter your answer here",
-                    "style": {"width": "800px"}
+                    "style": {"width": "800px", "margin": "10px 0"}
                 },
                 {
                     "id": "q-understanding-slope",
@@ -93,9 +91,7 @@
                     "location": "aboveStimulus",
                     "type": "likert",
                     "numItems": 6,
-                    "leftLabel": "Very low",
-                    "rightLabel": "Very high",
-                    "style": {"width": "800px"}
+                    "style": {"width": "800px", "margin": "10px 0"}
                 },
                 {
                     "id": "q-class-taken",
@@ -106,7 +102,7 @@
                         "Yes",
                         "No"
                     ],
-                    "style": {"width": "800px"}
+                    "style": {"width": "800px", "margin": "10px 0"}
                 },
                 {
                     "id": "q-comments",
@@ -114,7 +110,7 @@
                     "location": "aboveStimulus",
                     "type": "longText",
                     "placeholder": "Enter your answer here",
-                    "style": {"width": "800px"}
+                    "style": {"width": "800px", "margin": "10px 0"}
                 }
                 
             ]
@@ -135,7 +131,7 @@
             "response": [
                 {
                     "id": "pre-guess-1",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "min": 0,
@@ -158,7 +154,7 @@
             "response": [
                 {
                     "id": "pre-guess-2",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -181,7 +177,7 @@
             "response": [
                 {
                     "id": "pre-guess-3",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -204,7 +200,7 @@
             "response": [
                 {
                     "id": "pre-guess-4",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -227,7 +223,7 @@
             "response": [
                 {
                     "id": "pre-guess-5",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -250,7 +246,7 @@
             "response": [
                 {
                     "id": "pre-guess-6",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -298,7 +294,7 @@
             "response": [
                 {
                     "id": "poss-guess-1",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -321,7 +317,7 @@
             "response": [
                 {
                     "id": "poss-guess-2",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -344,7 +340,7 @@
             "response": [
                 {
                     "id": "poss-guess-3",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -367,7 +363,7 @@
             "response": [
                 {
                     "id": "poss-guess-4",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -390,7 +386,7 @@
             "response": [
                 {
                     "id": "poss-guess-5",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -413,7 +409,7 @@
             "response": [
                 {
                     "id": "poss-guess-6",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -436,7 +432,7 @@
             "response": [
                 {
                     "id": "poss-guess-7",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -459,7 +455,7 @@
             "response": [
                 {
                     "id": "poss-guess-8",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -488,7 +484,7 @@
             "response": [
                 {
                     "id": "neg-guess-1",
-                    "prompt": "Answer (r, -1–0):",
+                    "prompt": "Answer (correlation, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -511,7 +507,7 @@
             "response": [
                 {
                     "id": "neg-guess-2",
-                    "prompt": "Answer (r, -1–0):",
+                    "prompt": "Answer (correlation, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -534,7 +530,7 @@
             "response": [
                 {
                     "id": "neg-guess-3",
-                    "prompt": "Answer (r, -1–0):",
+                    "prompt": "Answer (correlation, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -557,7 +553,7 @@
             "response": [
                 {
                     "id": "neg-guess-4",
-                    "prompt": "Answer (r, -1–0):",
+                    "prompt": "Answer (correlation, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -580,7 +576,7 @@
             "response": [
                 {
                     "id": "neg-guess-5",
-                    "prompt": "Answer (r, -1–0):",
+                    "prompt": "Answer (correlation, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -603,7 +599,7 @@
             "response": [
                 {
                     "id": "neg-guess-5",
-                    "prompt": "Answer (r, -1–0):",
+                    "prompt": "Answer (correlation, -1–0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -626,7 +622,7 @@
             "response": [
                 {
                     "id": "poss-guess-9",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -649,7 +645,7 @@
             "response": [
                 {
                     "id": "poss-guess-10",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -672,7 +668,7 @@
             "response": [
                 {
                     "id": "poss-guess-11",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -695,7 +691,7 @@
             "response": [
                 {
                     "id": "poss-guess-12",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -718,7 +714,7 @@
             "response": [
                 {
                     "id": "poss-guess-13",
-                    "prompt": "Answer (r, 0–1):",
+                    "prompt": "Answer (correlation, 0–1):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
@@ -902,12 +898,16 @@
             "about-study",
             "pre questions part one",
             "pre questions part two",
-            "pre-guess-1",
-            "pre-guess-2",
-            "pre-guess-3",
-            "pre-guess-4",
-            "pre-guess-5",
-            "pre-guess-6",
+            { "order": "random",
+      "components": [
+        "pre-guess-1",
+        "pre-guess-2",
+        "pre-guess-3",
+        "pre-guess-4",
+        "pre-guess-5",
+        "pre-guess-6"
+      ]
+    },
             "instruction",
             {
                 "order": "latinSquare",

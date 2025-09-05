@@ -81,6 +81,8 @@ export function ResponseBlock({
     }
     return response;
   }), [responses]);
+  
+  
 
   const answerValidator = useAnswerField(responsesWithDefaults, currentStep, storedAnswer || {});
   // Set up trrack to store provenance graph of the answerValidator status

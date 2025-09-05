@@ -24,6 +24,7 @@ import { getSequenceFlatMap } from '../../utils/getSequenceFlatMap';
 import { useCurrentStep } from '../../routes/utils';
 import { TextOnlyInput } from './TextOnlyInput';
 import { useFetchStylesheet } from '../../utils/fetchStylesheet';
+import { Alert } from '@mantine/core';
 
 export function ResponseSwitcher({
   response,
@@ -62,6 +63,18 @@ export function ResponseSwitcher({
   const currentStep = useCurrentStep();
 
   useFetchStylesheet(response.stylesheetPath);
+
+  const numericRangeError = useMemo(() => {
+  if (response.type !== 'numerical') return '';
+  const { min, max } = response as any;
+  const v = (ans as any)?.value;
+  if (v === '' || v === null || v === undefined) return '';
+  const num = Number(v);
+  if (Number.isNaN(num)) return 'Please enter a valid number.';
+  if (min !== undefined && num < min) return `Please enter a number between ${min} and ${max}.`;
+  if (max !== undefined && num > max) return `Please enter a number between ${min} and ${max}.`;
+  return '';
+}, [response, ans]);
 
   const isDisabled = useMemo(() => {
     // Do not disable if we're at the last element before a dynamic block
@@ -123,7 +136,7 @@ export function ResponseSwitcher({
 
   return (
     <Box mb={responseDividers ? 'xl' : 'lg'} className="response" id={response.id} style={responseStyle}>
-      {response.type === 'numerical' && (
+      {response.type === 'numerical' && (<>
       <NumericInput
         response={response}
         disabled={isDisabled || dontKnowCheckbox?.checked}
@@ -131,6 +144,11 @@ export function ResponseSwitcher({
         index={index}
         enumerateQuestions={enumerateQuestions}
       />
+      {numericRangeError && (
+      <Alert mt="xs" color="red" title="Out of range">
+        {numericRangeError}
+      </Alert>
+    )}</>
       )}
       {response.type === 'shortText' && (
       <StringInput

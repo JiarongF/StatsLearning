@@ -130,7 +130,7 @@ export default function PreTest(
             Correlations describe the strength of the relationship between two numerical variables, such as height and weight.
           </p>
           <p className="text-gray-700 mb-4">
-            Below are scatter plots showing correlations that range between 0 (no relationship) and 1 (a very strong positive relationship).
+            On the next few pages you will see scatterplots showing correlations that range between 0 (no relationship) and 1 (a strong positive relationship).
           </p>
           <p className="text-gray-700 font-medium">
             Please make your best guess as to what the correlation is for these graphs.

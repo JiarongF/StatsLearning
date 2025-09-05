@@ -308,13 +308,14 @@ export default function CorrelationExplorer({
   These values don’t come from a real dataset — they are randomly generated — but they are constructed so the relationship 
   between X and Y matches the correlation (<em>r</em>) you choose. <br /><br />
   Use the slider below to set the correlation value (<em>r</em>) between 0.0 and 1.0. 
-  As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value.
+  As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value. <br /><br />
+  Please study the scatterplots and their different correlation values for <strong>1 minute</strong>.
 </Text>
 
       {/* Correlation readout, centered */}
       {generatedR !== null && (
         <Text size="sm" c="green" ta="center" mt={0}>
-          r = {generatedR.toFixed(2)}
+          correlation = {generatedR.toFixed(2)}
         </Text>
       )}
 

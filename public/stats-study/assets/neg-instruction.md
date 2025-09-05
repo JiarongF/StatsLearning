@@ -1,1 +1,1 @@
-Below are some correlations with negative slopes, ranging from 0 [no relationship] to -1 [strong negative relationship]. Please guess their correlation.
+On the next few pages, you will see scatterplots illustrating correlations with negative slopes. These range from 0 (no relationship) to -1 (a strong negative relationship). Please estimate the correlation for each plot.
