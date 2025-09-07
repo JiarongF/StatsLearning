@@ -20,13 +20,13 @@ export default function CorrelationImages() {
       <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16, textAlign: "center" }}>
         Positive Correlation
       </h2>
-      <Text size="md" ta="left" maw={600} style={{marginLeft: 300, marginBottom: 10}}>
+      <Text size="md" ta="left" maw={650} style={{marginLeft: 200, marginBottom: 10}}>
   
 These plots are shown for practice — they are not from real data, but are generated to illustrate 
 a range of correlations. <br /><br />
 Take your time to observe how the points are arranged, and notice how the strength and direction 
 of the relationship changes across the graphs.<br /><br />
-Please study the scatterplots and their different correlation values for <strong>1 minute</strong>. 
+Please study the scatterplots and their different correlation values for <strong>at least 1 minute</strong>. 
 </Text>
       <SimpleGrid cols={3} spacing="md">
         {images.map((src, idx) => (

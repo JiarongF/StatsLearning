@@ -55,7 +55,8 @@
                     ]
                 }
             ],
-            "recordAudio": false
+            "recordAudio": false,
+            "recordScreen": true
         },
         "about-study": {
             "type": "markdown",
@@ -64,10 +65,12 @@
                 "width": "800px",
                 "margin": "0 auto"
             },
-            "response": []
+            "response": [],
+            "recordScreen": true
         },
         "pre questions part one": {
             "type": "questionnaire",
+            "recordScreen": true,
             "response": [
                 {
                     "id": "q-correlation",
@@ -148,7 +151,8 @@
                 "width": "800px",
                 "margin": "0 auto"
             },
-            "recordAudio": false
+            "recordAudio": false,
+            "recordScreen": true
         },
         "pre-guess-1": {
             "description": "Pre Scatterplot image 1 for correlation estimation",
@@ -161,6 +165,7 @@
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-1.png"
             },
+            "recordScreen": true,
             "response": [
                 {
                     "id": "pre-guess-1",
@@ -175,12 +180,20 @@
                         "margin": "0 auto"
                     }
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "pre-guess-1",
+                    "answer": 0.7
+                }
+            ],
+            "provideFeedback": false
         },
         "pre-guess-2": {
             "description": "Pre Scatterplot image 2 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-2.png"
             },
@@ -202,12 +215,20 @@
                     "max": 1,
                     "required": true
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "pre-guess-2",
+                    "answer": 0.3
+                }
+            ],
+            "provideFeedback": false
         },
         "pre-guess-3": {
             "description": "Pre Scatterplot image 3 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-3.png"
             },
@@ -229,12 +250,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "pre-guess-3",
+                    "answer": 0.6
+                }
+            ],
+            "provideFeedback": false
         },
         "pre-guess-4": {
             "description": "Pre Scatterplot image 4 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-4.png"
             },
@@ -256,12 +285,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "pre-guess-4",
+                    "answer": 0.5
+                }
+            ],
+            "provideFeedback": false
         },
         "pre-guess-5": {
             "description": "Pre Scatterplot image 5 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-5.png"
             },
@@ -283,12 +320,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "pre-guess-5",
+                    "answer": 0.1
+                }
+            ],
+            "provideFeedback": false
         },
         "pre-guess-6": {
             "description": "Pre Scatterplot image 6 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/pre-test-images/pre-test-image-6.png"
             },
@@ -310,12 +355,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "pre-guess-6",
+                    "answer": 0.9
+                }
+            ],
+            "provideFeedback": false
         },
         "plotwise": {
             "type": "react-component",
             "instruction": "",
             "instructionLocation": "sidebar",
+            "recordScreen": true,
             "path": "stats-study/assets/CorrelationExplorer.tsx",
             "style": {
                 "width": "1000px",
@@ -331,6 +384,7 @@
         "CorrelationImages": {
             "type": "react-component",
             "path": "stats-study/assets/CorrelationImages.tsx",
+            "recordScreen": true,
             "response": [],
             "style": {
                 "width": "1000px",
@@ -342,6 +396,7 @@
         "instruction": {
             "type": "markdown",
             "path": "stats-study/assets/instruction.md",
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "3em auto"
@@ -352,6 +407,7 @@
         "thinkaloud": {
             "type": "markdown",
             "path": "stats-study/assets/thinkaloud.md",
+            "recordScreen": true,
             "response": [],
             "style": {
                 "width": "1000px",
@@ -363,6 +419,7 @@
             "description": "Scatterplot image 1 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "0 auto"
@@ -384,12 +441,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-1",
+                    "answer": 0.7
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-2": {
             "description": "Scatterplot image 2 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "0 auto"
@@ -411,12 +476,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-1",
+                    "answer": 0.3
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-3": {
             "description": "Scatterplot image 3 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/0.6-correlation.png"
             },
@@ -438,12 +511,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-3",
+                    "answer": 0.6
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-4": {
             "description": "Scatterplot image 4 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/0.5-correlation.png"
             },
@@ -465,12 +546,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-4",
+                    "answer": 0.5
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-5": {
             "description": "Scatterplot image 5 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/0.1-correlation.png"
             },
@@ -492,12 +581,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-5",
+                    "answer": 0.1
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-6": {
             "description": "Scatterplot image 6 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/0.9-correlation.png"
             },
@@ -519,12 +616,20 @@
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-6",
+                    "answer": 0.9
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-7": {
             "description": "Scatterplot image 7 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "0 auto"
@@ -552,6 +657,7 @@
             "description": "Scatterplot image 8 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/transfer-img-2.png"
             },
@@ -578,6 +684,7 @@
         "neg-instruction": {
             "type": "markdown",
             "path": "stats-study/assets/neg-instruction.md",
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "0 auto"
@@ -589,6 +696,7 @@
             "description": "Scatterplot negative guess image 1",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.4.png"
             },
@@ -610,12 +718,20 @@
                     "min": -1,
                     "max": 0
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "neg-guess-1",
+                    "answer": -0.4
+                }
+            ],
+            "provideFeedback": false
         },
         "neg-guess-2": {
             "description": "Scatterplot negative guess image 2",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.9.png"
             },
@@ -637,12 +753,20 @@
                     "min": -1,
                     "max": 0
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "neg-guess-2",
+                    "answer": -0.9
+                }
+            ],
+            "provideFeedback": false
         },
         "neg-guess-3": {
             "description": "Scatterplot negative guess image 3",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.5.png"
             },
@@ -664,12 +788,20 @@
                     "min": -1,
                     "max": 0
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "neg-guess-3",
+                    "answer": -0.5
+                }
+            ],
+            "provideFeedback": false
         },
         "neg-guess-4": {
             "description": "Scatterplot negative guess image 4",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.1.png"
             },
@@ -691,12 +823,20 @@
                     "min": -1,
                     "max": 0
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "neg-guess-4",
+                    "answer": -0.1
+                }
+            ],
+            "provideFeedback": false
         },
         "neg-guess-5": {
             "description": "Scatterplot negative guess image 5",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.6.png"
             },
@@ -718,12 +858,20 @@
                     "min": -1,
                     "max": 0
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "neg-guess-1",
+                    "answer": -0.6
+                }
+            ],
+            "provideFeedback": false
         },
         "neg-guess-6": {
             "description": "Scatterplot negative guess image 6",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/neg-0.2.png"
             },
@@ -750,6 +898,7 @@
         "transfer": {
             "type": "markdown",
             "path": "stats-study/assets/transfer.md",
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "0 auto"
@@ -761,6 +910,7 @@
             "description": "Scatterplot image 9 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-1.png"
             },
@@ -779,7 +929,7 @@
                         "margin": "0 auto"
                     },
                     "required": true,
-                    "min": 0,
+                    "min": -1,
                     "max": 1
                 }
             ]
@@ -788,6 +938,7 @@
             "description": "Scatterplot image 10 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-2.png"
             },
@@ -806,7 +957,7 @@
                         "margin": "0 auto"
                     },
                     "required": true,
-                    "min": 0,
+                    "min": -1,
                     "max": 1
                 }
             ]
@@ -815,6 +966,7 @@
             "description": "Scatterplot image 11 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-3.png"
             },
@@ -833,7 +985,7 @@
                         "margin": "0 auto"
                     },
                     "required": true,
-                    "min": 0,
+                    "min": -1,
                     "max": 1
                 }
             ]
@@ -842,6 +994,7 @@
             "description": "Scatterplot image 12 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-4.png"
             },
@@ -860,7 +1013,7 @@
                         "margin": "0 auto"
                     },
                     "required": true,
-                    "min": 0,
+                    "min": -1,
                     "max": 1
                 }
             ]
@@ -869,6 +1022,7 @@
             "description": "Scatterplot image 13 for correlation estimation",
             "type": "react-component",
             "path": "stats-study/assets/PostRGuess.tsx",
+            "recordScreen": true,
             "parameters": {
                 "imagePath": "assets/post-test-images/post-img-5.png"
             },
@@ -887,7 +1041,7 @@
                         "margin": "0 auto"
                     },
                     "required": true,
-                    "min": 0,
+                    "min": -1,
                     "max": 1
                 }
             ]
@@ -897,6 +1051,7 @@
             "path": "stats-study/assets/CorrelationFreeDraw.tsx",
             "response": [],
             "recordAudio": false,
+            "recordScreen": true,
             "style": {
                 "width": "800px",
                 "margin": "0 auto"
@@ -906,6 +1061,7 @@
             "type": "react-component",
             "path": "stats-study/assets/RFixedPostDecrease.tsx",
             "response": [],
+            "recordScreen": true,
             "recordAudio": false,
             "style": {
                 "width": "800px",
@@ -916,6 +1072,7 @@
             "type": "react-component",
             "path": "stats-study/assets/RFixedPostIncrease.tsx",
             "response": [],
+            "recordScreen": true,
             "recordAudio": false,
             "style": {
                 "width": "800px",
@@ -928,6 +1085,8 @@
                 "width": "800px",
                 "margin": "3em 3em"
             },
+            "recordScreen": true,
+            "recordAudio": false,
             "response": [
                 {
                     "id": "q-how-to-tell",
@@ -950,10 +1109,12 @@
                 "width": "1000px",
                 "margin": "3em auto"
             },
+            "recordScreen": true,
             "recordAudio": false
         },
         "demographics": {
             "type": "questionnaire",
+            "recordScreen": false,
             "description": "✅ This is the final part of the study. Please answer the following questions, and remember to click **Next** so your responses are saved.",
             "response": [
                 {
