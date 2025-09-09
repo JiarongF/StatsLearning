@@ -310,6 +310,7 @@ export default function CorrelationExplorer({
         Use the slider below to set the correlation value (<em>r</em>) between 0.0 and 1.0. 
         As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value. <br /><br />
         Please interact with the scatterplots and explore different correlation values using the slider for <strong>at least 1 minute</strong>.<br /><br />
+        After one minute, you will be able to click the next button and advance.<br/><br/>
         🎙️ Please remember to think-aloud as you explore the tutorial!
       </Text>
 

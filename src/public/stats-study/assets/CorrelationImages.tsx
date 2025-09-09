@@ -26,7 +26,9 @@ These plots are shown for practice — they are not from real data, but are gene
 a range of correlations. <br /><br />
 Take your time to observe how the points are arranged, and notice how the strength and direction 
 of the relationship changes across the graphs.<br /><br />
-Please study the scatterplots and their different correlation values for <strong>at least 1 minute</strong>. 
+Please study the scatterplots and their different correlation values for <strong>at least 1 minute</strong>. <br/><br/>
+After one minute, you will be able to click the next button and advance.<br/><br/>
+🎙️ Please remember to think-aloud as you explore the tutorial!
 </Text>
       <SimpleGrid cols={3} spacing="md">
         {images.map((src, idx) => (
