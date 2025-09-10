@@ -205,19 +205,19 @@ export default function RFixedPostIncrease({
         .append('circle')
         .attr('r', 4)
         .attr('fill', '#2f9e44') // green
-        .attr('opacity', 0)
+        .attr('opacity', 0.8)
         .attr('cx', (d) => xScale(d.x))
         .attr('cy', (d) => yScale(d.y))
         .transition()
-        .duration(150)
-        .attr('opacity', 1),
+        .duration(150),
+
       (update) => update
         .transition()
         .duration(150)
         .ease(d3.easeQuadInOut)
         .attr('cx', (d) => xScale(d.x))
         .attr('cy', (d) => yScale(d.y)),
-      (exit) => exit.transition().duration(100).attr('opacity', 0).remove(),
+      (exit) => exit.transition().duration(100).attr('opacity', 0.8).remove(),
     );
 
     const userSel = userG
@@ -229,19 +229,19 @@ export default function RFixedPostIncrease({
         .append('circle')
         .attr('r', 5)
         .attr('fill', '#1c7ed6') // blue
-        .attr('opacity', 0)
+        .attr('opacity', 0.8)
         .attr('cx', (d) => xScale(d.x))
         .attr('cy', (d) => yScale(d.y))
         .transition()
-        .duration(200)
-        .attr('opacity', 1),
+        .duration(200),
+
       (update) => update
         .transition()
         .duration(150)
         .ease(d3.easeCubicOut)
         .attr('cx', (d) => xScale(d.x))
         .attr('cy', (d) => yScale(d.y)),
-      (exit) => exit.transition().duration(150).attr('opacity', 0).remove(),
+      (exit) => exit.transition().duration(150).attr('opacity', 0.8).remove(),
     );
   }, [generatedPoints, userPoints, xScale, yScale]);
 

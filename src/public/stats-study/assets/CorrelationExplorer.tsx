@@ -12,7 +12,6 @@ import {
   Slider,
   Stack,
   Group,
-  Divider,
 } from '@mantine/core';
 import * as d3 from 'd3';
 import { initializeTrrack, Registry } from '@trrack/core';
@@ -23,6 +22,12 @@ interface Point {
   y: number;
 }
 
+type Mode = 'positive' | 'negative';
+
+type Props = StimulusParams<any, any> & {
+  mode?: Mode; // default 'positive'
+};
+
 /** ---------- utilities ---------- */
 
 // Keep base normals stable across re-generations
@@ -31,6 +36,7 @@ let cachedBasePoints: { x: number; y: number }[] | null = null;
 /**
  * Make generated points whose *sample* correlation equals targetCorrelation.
  * Key: orthogonalize Y against X before mixing.
+ * Works for any targetCorrelation in [-1, 1].
  */
 function generateCorrelatedData(targetCorrelation: number, n = 30): Point[] {
   // 1) Stable base normals
@@ -57,11 +63,11 @@ function generateCorrelatedData(targetCorrelation: number, n = 30): Point[] {
 
   // 3) Gram–Schmidt: remove projection of y on x
   const dotXY = d3.sum(x.map((vx, i) => vx * y[i]));
-  const dotXX = d3.sum(x.map((vx) => vx * vx)); // ~ (n-1)
+  const dotXX = d3.sum(x.map((vx) => vx * vx));
   const proj = dotXY / dotXX;
   const yPerp = y.map((vy, i) => vy - proj * x[i]);
 
-  // 4) Normalize yPerp to unit variance (ensure proper mixing)
+  // 4) Normalize yPerp to unit variance
   const yPerpMean = d3.mean(yPerp)!;
   const yPerpC = yPerp.map((v) => v - yPerpMean);
   const yPerpStd = Math.sqrt(d3.variance(yPerpC)!);
@@ -100,19 +106,49 @@ function computePearsonR(data: Point[]): number | null {
   return den === 0 ? null : num / den;
 }
 
-export default function CorrelationExplorer({
+// Avoid displaying "-0.00"
+function formatR(r: number | null) {
+  if (r === null) return null;
+  const val = Object.is(r, -0) ? 0 : r;
+  return val.toFixed(2);
+}
+
+export default function CorrelationExplorerUnified({
   parameters,
   setAnswer,
   provenanceState,
-}: StimulusParams<any, any>) {
+  mode = 'positive',
+}: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement | null>(null);
   const genGroupRef = useRef<SVGGElement | null>(null);
-  const animationRef = useRef<number | null>(null);
 
-  // State (no user points anymore)
-  const [correlationStrength, setCorrelationStrength] = useState<number>(0.8);
-  const [displayCorrelation, setDisplayCorrelation] = useState<number>(0.8);
+  // For RAF animation
+  const prevPointsRef = useRef<Point[] | null>(null);
+  const animIdRef = useRef<number | null>(null);
+
+  // Mode-dependent config
+  const { title, sliderMin, sliderMax, initialCorr, helpTextRange } = useMemo(() => {
+    if (mode === 'negative') {
+      return {
+        title: 'Negative Correlation',
+        sliderMin: -1,
+        sliderMax: 0,
+        initialCorr: -0.8,
+        helpTextRange: 'between -1.0 and 0.0',
+      };
+    }
+    return {
+      title: 'Positive Correlation',
+      sliderMin: 0,
+      sliderMax: 1,
+      initialCorr: 0.8,
+      helpTextRange: 'between 0.0 and 1.0',
+    };
+  }, [mode]);
+
+  // State
+  const [correlationStrength, setCorrelationStrength] = useState<number>(initialCorr);
   const [generatedPoints, setGeneratedPoints] = useState<Point[]>([]);
 
   // Chart dimensions
@@ -132,29 +168,32 @@ export default function CorrelationExplorer({
     [innerHeight],
   );
 
-  // Trrack (only slider changes now)
+  // Trrack (only slider changes now) — recreate when mode changes so initial state matches
   const { actions, trrack } = useMemo(() => {
     const reg = Registry.create();
-
     const sliderChange = reg.register('sliderChange', (state, value: number) => {
       state.correlationStrength = value;
       return state;
     });
-
     const trrackInst = initializeTrrack({
       registry: reg,
       initialState: {
-        correlationStrength: 0.8,
+        correlationStrength: initialCorr,
+        mode,
       },
     });
+    return { actions: { sliderChange }, trrack: trrackInst };
+  }, [initialCorr, mode]);
 
-    return {
-      actions: { sliderChange },
-      trrack: trrackInst,
-    };
-  }, []);
+  // Re-seed slider when mode changes
+  useEffect(() => {
+    setCorrelationStrength(initialCorr);
+    const initial = generateCorrelatedData(initialCorr);
+    prevPointsRef.current = initial;
+    setGeneratedPoints(initial);
+  }, [initialCorr, mode]);
 
-  // Initialize SVG (no click handler anymore)
+  // Initialize SVG
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -191,7 +230,7 @@ export default function CorrelationExplorer({
     genGroupRef.current = genG.node() as SVGGElement;
   }, [height, innerHeight, innerWidth, margin.left, xScale, yScale]);
 
-  // Keep ReVISit answer updated (no userPoints now)
+  // ReVISit answer
   const updateAnswer = useCallback(() => {
     setAnswer({
       status: true,
@@ -200,7 +239,6 @@ export default function CorrelationExplorer({
     });
   }, [setAnswer, trrack]);
 
-  // Initialize answer
   useEffect(() => {
     setAnswer({
       status: true,
@@ -209,51 +247,54 @@ export default function CorrelationExplorer({
     });
   }, [setAnswer, trrack]);
 
-  // Load provenance (only correlationStrength supported)
+  // Load provenance (supports correlationStrength only)
   useEffect(() => {
     if (provenanceState && provenanceState.correlationStrength !== undefined) {
       setCorrelationStrength(provenanceState.correlationStrength);
-      setDisplayCorrelation(provenanceState.correlationStrength);
     }
   }, [provenanceState]);
 
-  // Animate displayCorrelation to target (kept)
-  useEffect(() => {
-    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+  /** ---------- Smooth per-point tween to new correlation ---------- */
+  const animateTo = useCallback((nextCorr: number) => {
+    const from =
+      (prevPointsRef.current ?? generateCorrelatedData(nextCorr)).map(p => ({ ...p }));
+    const to = generateCorrelatedData(nextCorr);
 
-    const startValue = displayCorrelation;
-    const endValue = correlationStrength;
-    const duration = 100;
-    const startTime = performance.now();
+    prevPointsRef.current = from; // tween from current
 
-    const animate = (t: number) => {
-      const p = Math.min((t - startTime) / duration, 1);
-      const eased = 1 - (1 - p) ** 4; // easeOutQuart
-      const cur = startValue + (endValue - startValue) * eased;
-      setDisplayCorrelation(cur);
+    if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
+
+    const duration = 400; // ms
+    const start = performance.now();
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const e = ease(p);
+
+      const interp = from.map((fp, i) => {
+        const tp = to[i];
+        return {
+          x: fp.x + (tp.x - fp.x) * e,
+          y: fp.y + (tp.y - fp.y) * e,
+        };
+      });
+
+      setGeneratedPoints(interp);
 
       if (p < 1) {
-        animationRef.current = requestAnimationFrame(animate);
+        animIdRef.current = requestAnimationFrame(tick);
+      } else {
+        setGeneratedPoints(to);      // snap final
+        prevPointsRef.current = to;  // next tween starts here
+        animIdRef.current = null;
       }
     };
 
-    if (Math.abs(endValue - startValue) > 0.01) {
-      animationRef.current = requestAnimationFrame(animate);
-    } else {
-      setDisplayCorrelation(endValue);
-    }
+    animIdRef.current = requestAnimationFrame(tick);
+  }, []);
 
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [correlationStrength, displayCorrelation]);
-
-  // Regenerate points when displayCorrelation changes
-  useEffect(() => {
-    setGeneratedPoints(generateCorrelatedData(displayCorrelation));
-  }, [displayCorrelation]);
-
-  // Draw/update generated circles
+  // Draw/update generated circles (no d3 transitions)
   useEffect(() => {
     const genG = d3.select(genGroupRef.current);
 
@@ -267,21 +308,15 @@ export default function CorrelationExplorer({
           .append('circle')
           .attr('r', 4)
           .attr('fill', '#2f9e44')
-          .attr('opacity', 0)
-          .attr('cx', (d) => xScale(d.x))
-          .attr('cy', (d) => yScale(d.y))
-          .transition()
-          .duration(150)
-          .attr('opacity', 1),
-      (update) =>
-        update
-          .transition()
-          .duration(150)
-          .ease(d3.easeQuadInOut)
+          .attr('fill-opacity', 0.8)
           .attr('cx', (d) => xScale(d.x))
           .attr('cy', (d) => yScale(d.y)),
-      (exit) =>
-        exit.transition().duration(100).attr('opacity', 0).remove(),
+      (update) =>
+        update
+          .attr('fill-opacity', 0.8)
+          .attr('cx', (d) => xScale(d.x))
+          .attr('cy', (d) => yScale(d.y)),
+      (exit) => exit.remove(),
     );
   }, [generatedPoints, xScale, yScale]);
 
@@ -291,71 +326,79 @@ export default function CorrelationExplorer({
   const handleSliderChange = useCallback(
     (val: number) => {
       setCorrelationStrength(val);
+      animateTo(val); // smooth motion
       trrack.apply('Slider Changed', actions.sliderChange(val));
       updateAnswer();
     },
-    [trrack, actions, updateAnswer],
+    [animateTo, trrack, actions, updateAnswer],
   );
 
+  // Slider marks
+  const marks = useMemo(() => {
+    const steps = 10;
+    const arr: { value: number; label: string }[] = [];
+    for (let i = 0; i <= steps; i++) {
+      const v = sliderMin + (i * (sliderMax - sliderMin)) / steps;
+      const rounded = Math.round(v * 10) / 10;
+      // avoid "-0.0" labels
+      const labelVal = (Object.is(rounded, -0) ? 0 : rounded).toFixed(1);
+      arr.push({ value: rounded, label: labelVal });
+    }
+    return arr;
+  }, [sliderMin, sliderMax]);
+
   return (
-  <Card padding="md" radius="md" >
-    {/* Center children horizontally */}
-    <Stack gap="sm" align="center">
-      <Title order={3}>Positive Correlation</Title>
+    <Card padding="md" radius="md">
+      <Stack gap="sm" align="center">
+        <Title order={3}>{title}</Title>
 
-      <Text size="md" ta="left" maw={600}>
-        The scatterplot shows a set of simulated data points with values on an <strong>X</strong> axis and a <strong>Y</strong> axis. 
-        These values don’t come from a real dataset — they are randomly generated — but they are constructed so the relationship 
-        between X and Y matches the correlation (<em>r</em>) you choose. <br /><br />
-        Use the slider below to set the correlation value (<em>r</em>) between 0.0 and 1.0. 
-        As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value. <br /><br />
-        Please interact with the scatterplots and explore different correlation values using the slider for <strong>at least 1 minute</strong>.<br /><br />
-        After one minute, you will be able to click the next button and advance.<br/><br/>
-        🎙️ Please remember to think-aloud as you explore the tutorial!
-      </Text>
-
-      {/* Correlation readout, centered */}
-      {generatedR !== null && (
-        <Text size="sm" c="green" ta="center" mt={0}>
-          correlation = {generatedR.toFixed(2)}
+        <Text size="md" ta="left" maw={600}>
+          The scatterplot shows a set of simulated data points.
+          These values don’t come from a real dataset — they are randomly generated — but they are constructed so the relationship
+          between X and Y matches the correlation (<em>r</em>) you choose. <br />
+          Use the slider below to set the correlation value (<em>r</em>) {helpTextRange}.
+          As you adjust the slider, the scatterplot below will move the points so their relationship matches the chosen value. <br />
+          Please interact with the scatterplots and explore different correlation values using the slider for <strong>at least 1 minute</strong>.<br />
+          After one minute, you will be able to click the next button and advance.<br />
+          🎙️ Please remember to think-aloud as you explore the tutorial!
         </Text>
-      )}
 
-      {/* CHART — block + auto margins keeps it centered */}
-      <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        style={{
-          border: '1px solid #ccc',
-          borderRadius: 6,
-          transition: 'all 0.1s ease',
-          display: 'block',
-          margin: '0 auto',
-        }}
-      />
+        {generatedR !== null && (
+          <Text size="sm" c="green" ta="center" mt={0}>
+            correlation = {formatR(generatedR)}
+          </Text>
+        )}
 
-      {/* SLIDER — fixed max width + centered */}
-      <Group justify="center" w="100%">
-        <div style={{ width: 400, maxWidth: '100%' , marginBottom: 10}}>
-          <Slider
-            value={correlationStrength}
-            onChange={handleSliderChange}
-            step={0.1}
-            min={0}
-            max={1}
-            marks={Array.from({ length: 11 }, (_, i) => ({
-              value: i / 10,
-              label: (i / 10).toFixed(1),
-            }))}
-            styles={{
-              track: { transition: 'all 0.1s ease' },
-              thumb: { transition: 'all 0.1s ease' },
-            }}
-          />
-        </div>
-      </Group>
-    </Stack>
-  </Card>
-);
+        <svg
+          ref={svgRef}
+          width={width}
+          height={height}
+          style={{
+            border: '1px solid #ccc',
+            borderRadius: 6,
+            transition: 'all 0.1s ease',
+            display: 'block',
+            margin: '0 auto',
+          }}
+        />
+
+        <Group justify="center" w="100%">
+          <div style={{ width: 400, maxWidth: '100%', marginBottom: 10 }}>
+            <Slider
+              value={correlationStrength}
+              onChange={handleSliderChange}
+              step={0.1}
+              min={sliderMin}
+              max={sliderMax}
+              marks={marks}
+              styles={{
+                track: { transition: 'all 0.1s ease' },
+                thumb: { transition: 'all 0.1s ease' },
+              }}
+            />
+          </div>
+        </Group>
+      </Stack>
+    </Card>
+  );
 }

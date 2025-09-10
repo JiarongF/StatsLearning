@@ -10,11 +10,9 @@ function PostRGuess({ parameters }: { parameters: { imagePath: string } }) {
         src={parameters.imagePath}
         alt="Correlation stimulus"
         style={{
-          width: "400px",       // fixed display width
-          height: "300px",      // fixed display height
-          objectFit: "contain", // keeps aspect ratio, fits inside box
-          border: "1px solid #ddd",
-          borderRadius: "6px",
+          width: "450px",       // fixed display width
+          height: "450px",      // fixed display height
+          objectFit: "contain"// keeps aspect ratio, fits inside box
         }}
       />
     </div>

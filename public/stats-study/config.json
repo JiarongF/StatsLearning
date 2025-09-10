@@ -140,7 +140,8 @@
                     "style": {
                         "width": "800px",
                         "margin": "3em 0"
-                    }
+                    },
+                    "required": false
                 }
             ]
         },
@@ -177,7 +178,7 @@
                     "max": 1,
                     "required": true,
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     }
                 }
@@ -209,7 +210,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "min": 0,
@@ -244,7 +245,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -279,7 +280,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -314,7 +315,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -349,7 +350,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -435,7 +436,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -470,7 +471,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -505,7 +506,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -540,7 +541,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -575,7 +576,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -610,7 +611,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -645,14 +646,21 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-6",
+                    "answer": 0.2
+                }
+            ],
+            "provideFeedback": false
         },
         "post-guess-8": {
             "description": "Scatterplot image 8 for correlation estimation",
@@ -673,14 +681,21 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
                     "min": 0,
                     "max": 1
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "poss-guess-6",
+                    "answer": 0.55
+                }
+            ],
+            "provideFeedback": false
         },
         "neg-instruction": {
             "type": "markdown",
@@ -712,7 +727,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -747,7 +762,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -782,7 +797,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -817,7 +832,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -852,7 +867,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -887,7 +902,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "400px",
+                        "width": "500px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -895,192 +910,6 @@
                     "max": 0
                 }
             ]
-        },
-        "transfer": {
-            "type": "markdown",
-            "path": "stats-study/assets/transfer.md",
-            "recordScreen": true,
-            "style": {
-                "width": "800px",
-                "margin": "0 auto"
-            },
-            "response": [],
-            "recordAudio": false
-        },
-        "post-guess-9": {
-            "description": "Scatterplot image 9 for correlation estimation",
-            "type": "react-component",
-            "path": "stats-study/assets/PostRGuess.tsx",
-            "recordScreen": true,
-            "parameters": {
-                "imagePath": "assets/post-test-images/post-img-1.png"
-            },
-            "style": {
-                "width": "800px",
-                "margin": "0 auto"
-            },
-            "response": [
-                {
-                    "id": "poss-guess-9",
-                    "prompt": "Answer (correlation, -1.0–1.0):",
-                    "location": "belowStimulus",
-                    "type": "numerical",
-                    "style": {
-                        "width": "400px",
-                        "margin": "0 auto"
-                    },
-                    "required": true,
-                    "min": -1,
-                    "max": 1
-                }
-            ],
-            "correctAnswer": [
-                {
-                    "id": "poss-guess-9",
-                    "answer": 0.82
-                }
-            ],
-            "provideFeedback": false
-        },
-        "post-guess-10": {
-            "description": "Scatterplot image 10 for correlation estimation",
-            "type": "react-component",
-            "path": "stats-study/assets/PostRGuess.tsx",
-            "recordScreen": true,
-            "parameters": {
-                "imagePath": "assets/post-test-images/post-img-2.png"
-            },
-            "style": {
-                "width": "800px",
-                "margin": "0 auto"
-            },
-            "response": [
-                {
-                    "id": "poss-guess-10",
-                    "prompt": "Answer (correlation, -1.0–1.0):",
-                    "location": "belowStimulus",
-                    "type": "numerical",
-                    "style": {
-                        "width": "400px",
-                        "margin": "0 auto"
-                    },
-                    "required": true,
-                    "min": -1,
-                    "max": 1
-                }
-            ],
-            "correctAnswer": [
-                {
-                    "id": "poss-guess-10",
-                    "answer": 0.82
-                }
-            ],
-            "provideFeedback": false
-        },
-        "post-guess-11": {
-            "description": "Scatterplot image 11 for correlation estimation",
-            "type": "react-component",
-            "path": "stats-study/assets/PostRGuess.tsx",
-            "recordScreen": true,
-            "parameters": {
-                "imagePath": "assets/post-test-images/post-img-3.png"
-            },
-            "style": {
-                "width": "800px",
-                "margin": "0 auto"
-            },
-            "response": [
-                {
-                    "id": "poss-guess-11",
-                    "prompt": "Answer (correlation, -1.0–1.0):",
-                    "location": "belowStimulus",
-                    "type": "numerical",
-                    "style": {
-                        "width": "400px",
-                        "margin": "0 auto"
-                    },
-                    "required": true,
-                    "min": -1,
-                    "max": 1
-                }
-            ],
-            "correctAnswer": [
-                {
-                    "id": "poss-guess-11",
-                    "answer": 0.82
-                }
-            ],
-            "provideFeedback": false
-        },
-        "post-guess-12": {
-            "description": "Scatterplot image 12 for correlation estimation",
-            "type": "react-component",
-            "path": "stats-study/assets/PostRGuess.tsx",
-            "recordScreen": true,
-            "parameters": {
-                "imagePath": "assets/post-test-images/post-img-4.png"
-            },
-            "style": {
-                "width": "800px",
-                "margin": "0 auto"
-            },
-            "response": [
-                {
-                    "id": "poss-guess-12",
-                    "prompt": "Answer (correlation, -1.0–1.0):",
-                    "location": "belowStimulus",
-                    "type": "numerical",
-                    "style": {
-                        "width": "400px",
-                        "margin": "0 auto"
-                    },
-                    "required": true,
-                    "min": -1,
-                    "max": 1
-                }
-            ],
-            "correctAnswer": [
-                {
-                    "id": "poss-guess-12",
-                    "answer": 0
-                }
-            ],
-            "provideFeedback": false
-        },
-        "post-guess-13": {
-            "description": "Scatterplot image 13 for correlation estimation",
-            "type": "react-component",
-            "path": "stats-study/assets/PostRGuess.tsx",
-            "recordScreen": true,
-            "parameters": {
-                "imagePath": "assets/post-test-images/post-img-5.png"
-            },
-            "style": {
-                "width": "800px",
-                "margin": "0 auto"
-            },
-            "response": [
-                {
-                    "id": "poss-guess-13",
-                    "prompt": "Answer (correlation, -1.0–1.0):",
-                    "location": "belowStimulus",
-                    "type": "numerical",
-                    "style": {
-                        "width": "400px",
-                        "margin": "0 auto"
-                    },
-                    "required": true,
-                    "min": -1,
-                    "max": 1
-                }
-            ],
-            "correctAnswer": [
-                {
-                    "id": "poss-guess-13",
-                    "answer": 0
-                }
-            ],
-            "provideFeedback": false
         },
         "free-draw": {
             "type": "react-component",
@@ -1334,8 +1163,6 @@
             "post-guess-4",
             "post-guess-5",
             "post-guess-6",
-            "post-guess-7",
-            "post-guess-8",
             "neg-instruction",
             "neg-guess-1",
             "neg-guess-2",
@@ -1343,12 +1170,8 @@
             "neg-guess-4",
             "neg-guess-5",
             "neg-guess-6",
-            "transfer",
-            "post-guess-9",
-            "post-guess-10",
-            "post-guess-11",
-            "post-guess-12",
-            "post-guess-13",
+            "post-guess-7",
+            "post-guess-8",
             "free-draw",
             "post-transfer-add-points-1",
             "post-transfer-add-points-2",
