@@ -18,6 +18,7 @@
         "logoPath": "revisitAssets/revisitLogoSquare.svg",
         "withProgressBar": true,
         "autoDownloadStudy": false,
+        "urlParticipantIdParam": "PROLIFIC_PID",
         "withSidebar": true,
         "recordAudio": true,
         "recordScreen": true,
@@ -65,7 +66,20 @@
                 "width": "800px",
                 "margin": "0 auto"
             },
-            "response": [],
+            "response": [
+                {
+                    "id": "prolificId",
+                    "prompt": "Please enter your Prolific ID",
+                    "location": "belowStimulus",
+                    "type": "shortText",
+                    "placeholder": "Prolific ID",
+                    "paramCapture": "PROLIFIC_PID",
+                    "style": {
+                        "width": "68%",
+                        "margin": "0 auto"
+                    }
+                }
+            ],
             "recordScreen": true
         },
         "pre questions part one": {
@@ -178,7 +192,7 @@
                     "max": 1,
                     "required": true,
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     }
                 }
@@ -210,7 +224,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "min": 0,
@@ -245,7 +259,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -280,7 +294,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -315,7 +329,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -350,7 +364,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -383,16 +397,31 @@
             "nextButtonEnableTime": 60000,
             "recordAudio": false
         },
-        "CorrelationImages": {
+        "control": {
             "type": "react-component",
-            "path": "stats-study/assets/CorrelationImages.tsx",
+            "path": "stats-study/assets/Control.tsx",
+            "parameters": {
+                "studyConfig": {
+                    "timeLimit": 60,
+                    "correlations": [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9
+                    ]
+                }
+            },
             "recordScreen": true,
             "response": [],
             "style": {
                 "width": "1000px",
                 "margin": "0 auto"
             },
-            "nextButtonEnableTime": 60000,
             "recordAudio": false
         },
         "instruction": {
@@ -436,7 +465,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -471,7 +500,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -481,7 +510,7 @@
             ],
             "correctAnswer": [
                 {
-                    "id": "poss-guess-1",
+                    "id": "poss-guess-2",
                     "answer": 0.3
                 }
             ],
@@ -506,7 +535,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -541,7 +570,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -576,7 +605,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -611,7 +640,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -646,7 +675,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -681,7 +710,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -727,7 +756,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -762,7 +791,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -797,7 +826,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -832,7 +861,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -867,7 +896,7 @@
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
@@ -877,7 +906,7 @@
             ],
             "correctAnswer": [
                 {
-                    "id": "neg-guess-1",
+                    "id": "neg-guess-5",
                     "answer": -0.6
                 }
             ],
@@ -897,19 +926,26 @@
             },
             "response": [
                 {
-                    "id": "neg-guess-5",
+                    "id": "neg-guess-6",
                     "prompt": "Answer (correlation, -1.0–0.0):",
                     "location": "belowStimulus",
                     "type": "numerical",
                     "style": {
-                        "width": "500px",
+                        "width": "440px",
                         "margin": "0 auto"
                     },
                     "required": true,
                     "min": -1,
                     "max": 0
                 }
-            ]
+            ],
+            "correctAnswer": [
+                {
+                    "id": "neg-guess-6",
+                    "answer": -0.2
+                }
+            ],
+            "provideFeedback": false
         },
         "free-draw": {
             "type": "react-component",
@@ -1145,7 +1181,7 @@
                         "id": "control",
                         "order": "fixed",
                         "components": [
-                            "CorrelationImages"
+                            "control"
                         ]
                     },
                     {
