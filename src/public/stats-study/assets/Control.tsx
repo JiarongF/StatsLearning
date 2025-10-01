@@ -349,7 +349,7 @@ const Control: React.FC<ControlProps> = ({
 
             <Stack gap="md" maw={720}>
               <Text size="lg">
-                In this task, you will view scatter plots and estimate their <strong>positive correlation coefficients</strong>.
+                In this task, you will view scatter plots and estimate their <strong>positive correlation</strong>.
               </Text>
 
               <Alert color="blue" title="About the Data">
@@ -361,7 +361,7 @@ const Control: React.FC<ControlProps> = ({
                 <Stack gap="sm">
                   <Text fw={500}>Instructions:</Text>
                   <Text size="sm">• View scatter plots one at a time</Text>
-                  <Text size="sm">• Estimate the <strong>correlation coefficient</strong> (0.0 to 1.0)</Text>
+                  <Text size="sm">• Estimate the <strong>correlation</strong> (0.0 to 1.0). <strong>Please enter your answer to one decimal place (e.g., 0.3).</strong></Text>
                   <Text size="sm">• Complete all {defaultCorrs.length} trials</Text>
                   <Text size="sm">• 🎙️ Please remember to think-aloud as you explore</Text>
                 </Stack>
