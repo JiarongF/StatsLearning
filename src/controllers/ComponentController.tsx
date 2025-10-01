@@ -2,7 +2,10 @@ import {
   Suspense, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useSearchParams } from 'react-router';
-import { Box, Center, Loader } from '@mantine/core';
+import {
+  Box, Center, Loader, Text, Title,
+} from '@mantine/core';
+import { IconPlugConnectedX } from '@tabler/icons-react';
 import { ResponseBlock } from '../components/response/ResponseBlock';
 import { IframeController } from './IframeController';
 import { ImageController } from './ImageController';
@@ -56,7 +59,7 @@ export function ComponentController() {
   const screenRecording = useScreenRecordingContext();
 
   const {
-    isScreenCapturing, stopScreenCapture, startScreenRecording, stopScreenRecording, screenRecordingStream,
+    isScreenCapturing, stopScreenCapture, startScreenRecording, stopScreenRecording, combinedMediaRecorder: screenRecordingStream,
   } = screenRecording;
 
   const isAnalysis = useIsAnalysis();
@@ -116,7 +119,7 @@ export function ComponentController() {
       });
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentComponent, identifier]);
 
   useEffect(() => {
@@ -124,15 +127,14 @@ export function ComponentController() {
       return;
     }
 
-    if (screenRecordingStream.current && screenCaptureTrialName.current) {
-      storageEngine.saveScreenRecording(screenRecordingStream.current, screenCaptureTrialName.current);
-      screenCaptureTrialName.current = null;
+    if (screenRecordingStream.current) {
       stopScreenRecording();
+      screenCaptureTrialName.current = null;
     }
 
-    if (currentComponent !== 'end' && isScreenCapturing && screenCaptureTrialName.current !== identifier && stepConfig.recordScreen) {
+    if (currentComponent !== 'end' && isScreenCapturing && screenCaptureTrialName.current !== identifier && (stepConfig.recordScreen === undefined || stepConfig.recordScreen === true)) {
       screenCaptureTrialName.current = identifier;
-      startScreenRecording();
+      startScreenRecording(identifier);
     }
 
     if (currentComponent === 'end') {
@@ -146,6 +148,9 @@ export function ComponentController() {
   const [blockForStep, setBlockForStep] = useState<string[]>([]);
   const prevBlockForStepRef = useRef<string[]>([]);
   useEffect(() => {
+    if (isAnalysis) {
+      return;
+    }
     async function updateBlockForStep() {
       // Get all nested block IDs
       const blockIds = findBlockForStep(sequence, currentStep)
@@ -169,7 +174,7 @@ export function ComponentController() {
     }
 
     updateBlockForStep().then(addParticipantTag);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, storageEngine, sequence]);
 
   const currentIdentifier = useCurrentIdentifier();
@@ -220,6 +225,16 @@ export function ComponentController() {
 
   if (currentComponent === 'Notfound') {
     return <ResourceNotFound email={studyConfig.uiConfig.contactEmail} />;
+  }
+
+  if (!storageEngine?.isConnected()) {
+    return (
+      <Center style={{ height: '80vh', flexDirection: 'column', textAlign: 'center' }}>
+        <IconPlugConnectedX size={48} stroke={1.5} color="orange" />
+        <Title mt="md" order={4}>Database Disconnected</Title>
+        <Text mt="md">Please check your network connection or disable your adblocker for this site, then refresh the page.</Text>
+      </Center>
+    );
   }
 
   if (participantId && storePartId !== participantId) {

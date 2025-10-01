@@ -267,7 +267,7 @@ export function AudioProvenanceVis({ setTimeString }: { setTimeString: (time: st
         setTotalAudioLength(0);
       }
     },
-    [isAnalysis, identifier, storageEngine, participantId, storeDispatch, setAnalysisHasAudio],
+    [identifier, isAnalysis, storageEngine, participantId, storeDispatch, setAnalysisHasAudio],
   );
 
   const _setPlayTime = useThrottledCallback((n: number, percent: number | undefined) => {
@@ -285,7 +285,7 @@ export function AudioProvenanceVis({ setTimeString }: { setTimeString: (time: st
 
     setPlayTime(n);
 
-    if (wavesurfer.current && percent !== undefined) {
+    if (wavesurfer.current && percent !== undefined && !Number.isNaN(percent)) {
       setTimeout(() => {
         wavesurfer.current?.seekTo(percent);
       });
