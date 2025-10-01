@@ -6,4 +6,4 @@ If you go quiet, no worries—- please just pick up narrating again when you rem
 
 It’s also helpful to say when something is confusing or buggy!
 
-When you’re ready, click Next to begin.
+When you’re ready, click **Next** to begin.
