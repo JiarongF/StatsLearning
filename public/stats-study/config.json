@@ -161,7 +161,7 @@
         },
         "pre questions part two": {
             "type": "react-component",
-            "path": "stats-study/assets/pretest.md",
+            "path": "stats-study/assets/pre-test.md",
             "response": [],
             "style": {
                 "width": "800px",
