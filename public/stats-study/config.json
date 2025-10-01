@@ -75,7 +75,7 @@
                     "placeholder": "Prolific ID",
                     "paramCapture": "PROLIFIC_PID",
                     "style": {
-                        "width": "68%",
+                        "width": "800px",
                         "margin": "0 auto"
                     }
                 }
