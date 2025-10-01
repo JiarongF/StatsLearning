@@ -20,10 +20,10 @@
     "*.{tsx,jsx,ts,js}": "yarn lint"
   },
   "dependencies": {
-    "@mantine/core": "^7.10.1",
+    "@mantine/core": "^7.17.8",
     "@mantine/dates": "^7.10.1",
     "@mantine/form": "^7.10.1",
-    "@mantine/hooks": "^7.10.1",
+    "@mantine/hooks": "^7.17.8",
     "@mantine/modals": "^7.10.1",
     "@mantine/notifications": "^7.12.0",
     "@quentinroy/latin-square": "^1.1.1",

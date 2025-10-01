@@ -11,10 +11,8 @@ import {
   Progress,
   Badge,
   Card,
-  Divider,
-  Center,
   Alert,
-  Collapse
+  Center
 } from '@mantine/core';
 import { IconTarget } from '@tabler/icons-react';
 
@@ -59,9 +57,7 @@ interface ScatterPlotProps {
 }
 
 /* -------------------- Layout constants -------------------- */
-const FEEDBACK_CARD_W = 560;      // fixed width so Why? toggle doesn't change layout
 const PLOT_Q_SIZE = 320;          // question plot size
-const PLOT_FB_SIZE = 300;         // feedback plot size
 
 /* -------------------- Exact-r helpers (seeded, smooth) -------------------- */
 const mean = (a: number[]) => a.reduce((s, v) => s + v, 0) / a.length;
@@ -121,7 +117,7 @@ function pointsAtR(
   const b = Math.sqrt(Math.max(0, 1 - r * r));
   const Y = Xs.map((x, i) => r * x + b * Zperp[i]);   // exact sample r
   const Xp = rescale(Xs, xRange[0], xRange[1]);
-  const Yp = rescale(Y,  yRange[0], yRange[1]);
+  const Yp = rescale(Y, yRange[0], yRange[1]);
   return Xp.map((x, i) => ({ x, y: Yp[i] }));
 }
 
@@ -136,14 +132,25 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({
   const plotWidth = width - 2 * margin;
   const plotHeight = height - 2 * margin;
 
-  const xMin = Math.min(...data.map(d => d.x));
-  const xMax = Math.max(...data.map(d => d.x));
-  const yMin = Math.min(...data.map(d => d.y));
-  const yMax = Math.max(...data.map(d => d.y));
+  const rawXMin = Math.min(...data.map(d => d.x));
+  const rawXMax = Math.max(...data.map(d => d.x));
+  const rawYMin = Math.min(...data.map(d => d.y));
+  const rawYMax = Math.max(...data.map(d => d.y));
 
-  const xScale = (x: number): number => ((x - xMin) / (xMax - xMin)) * plotWidth + margin;
-  const yScale = (y: number): number => height - (((y - yMin) / (yMax - yMin)) * plotHeight + margin);
+  // pad the domain a touch so min/max points don't map to the axes
+  const padFrac = 0.03; // 3% of span; tweak if you want
+  const xSpan = Math.max(1e-9, rawXMax - rawXMin);
+  const ySpan = Math.max(1e-9, rawYMax - rawYMin);
+  const xMin = rawXMin - xSpan * padFrac;
+  const xMax = rawXMax + xSpan * padFrac;
+  const yMin = rawYMin - ySpan * padFrac;
+  const yMax = rawYMax + ySpan * padFrac;
 
+  const xScale = (x: number): number =>
+    ((x - xMin) / (xMax - xMin)) * plotWidth + margin;
+
+  const yScale = (y: number): number =>
+    height - (((y - yMin) / (yMax - yMin)) * plotHeight + margin);
   return (
     <Center>
       <div style={{ padding: '0.35rem', background: 'white', borderRadius: '8px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
@@ -223,7 +230,7 @@ const Control: React.FC<ControlProps> = ({
     [baseSeeds]
   );
 
-  // Build plots for each trial at its target r* (render ~0.99 for the “1.0” label)
+  // Build plots for each trial at its target r* (render ~0.99 for the "1.0" label)
   const plotData = useMemo(
     () => shuffledCorrelations.map((r, i) => pointsAtR(bases[i], Math.min(r, 0.99))),
     [shuffledCorrelations, bases]
@@ -232,11 +239,9 @@ const Control: React.FC<ControlProps> = ({
   const [studyStarted, setStudyStarted] = useState<boolean>(false);
   const [currentTrial, setCurrentTrial] = useState<number>(0);
   const [userGuess, setUserGuess] = useState<number | string>('');
-  const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [responses, setResponses] = useState<TrialResponse[]>([]);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [whyOpen, setWhyOpen] = useState<boolean>(false);
 
   // time tracking
   const startRef = useRef<number | null>(null);
@@ -273,7 +278,6 @@ const Control: React.FC<ControlProps> = ({
 
   const actualCorrelation = shuffledCorrelations[currentTrial];
   const currentData = plotData[currentTrial];
-  const guessNumber = typeof userGuess === 'string' ? parseFloat(userGuess) : userGuess;
 
   const handleSubmit = (): void => {
     const guess = typeof userGuess === 'string' ? parseFloat(userGuess) : userGuess;
@@ -296,16 +300,16 @@ const Control: React.FC<ControlProps> = ({
     };
 
     setResponses(prev => [...prev, responseData]);
-    setShowFeedback(true);
+
+    // Move to next trial immediately without showing feedback
+    nextTrial();
   };
 
   const nextTrial = (): void => {
     if (currentTrial < shuffledCorrelations.length - 1) {
       setCurrentTrial(t => t + 1);
       setUserGuess('');
-      setShowFeedback(false);
       setShowAlert(false);
-      setWhyOpen(false);
     } else {
       completeStudy();
     }
@@ -333,11 +337,7 @@ const Control: React.FC<ControlProps> = ({
     onComplete?.(studyData);
   };
 
-  const progress = ((currentTrial + (showFeedback ? 1 : 0)) / shuffledCorrelations.length) * 100;
-
-  // Helpers for feedback display
-  const displayedGuess = (typeof userGuess === 'number' ? userGuess : guessNumber);
-  const isCorrect = Number(displayedGuess?.toFixed(1)) === Number(actualCorrelation.toFixed(1));
+  const progress = ((currentTrial + 1) / shuffledCorrelations.length) * 100;
 
   /* -------------------- RENDER -------------------- */
   if (!studyStarted) {
@@ -362,7 +362,6 @@ const Control: React.FC<ControlProps> = ({
                   <Text fw={500}>Instructions:</Text>
                   <Text size="sm">• View scatter plots one at a time</Text>
                   <Text size="sm">• Estimate the <strong>correlation coefficient</strong> (0.0 to 1.0)</Text>
-                  <Text size="sm">• You'll get brief feedback after each guess</Text>
                   <Text size="sm">• Complete all {defaultCorrs.length} trials</Text>
                   <Text size="sm">• 🎙️ Please remember to think-aloud as you explore</Text>
                 </Stack>
@@ -397,13 +396,6 @@ const Control: React.FC<ControlProps> = ({
                 </Badge>
                 <Text size="sm" c="dimmed">Completed</Text>
               </Stack>
-
-              <Stack gap="xs" align="center">
-                <Badge size="lg" variant="light" color="violet">
-                  {percentCorrect}%
-                </Badge>
-                <Text size="sm" c="dimmed">Percent Correct</Text>
-              </Stack>
             </Group>
 
             <Text ta="center" c="dimmed" fw={500}>
@@ -415,7 +407,7 @@ const Control: React.FC<ControlProps> = ({
     );
   }
 
-  // Trial screen
+  // Trial screen - no feedback, just question
   return (
     <Container size="lg" py="md">
       <Stack gap="md" align="center">
@@ -437,108 +429,51 @@ const Control: React.FC<ControlProps> = ({
 
         {/* Main content */}
         <Card withBorder radius="md" p="md" shadow="sm" maw={720} w="100%">
-          {!showFeedback ? (
-            <Stack gap="md" align="center">
-              <Title order={3} ta="center" c="dark.8">
-                Estimate the Correlation
-              </Title>
+          <Stack gap="md" align="center">
+            <Title order={3} ta="center" c="dark.8">
+              Estimate the Correlation
+            </Title>
 
-              {/* plot wrapper matches fixed feedback width for alignment */}
-              <div style={{ width: FEEDBACK_CARD_W, maxWidth: '100%' }}>
-                <ScatterPlot data={currentData} correlation={actualCorrelation} width={PLOT_Q_SIZE} height={PLOT_Q_SIZE} />
-              </div>
+            <ScatterPlot data={currentData} correlation={actualCorrelation} width={PLOT_Q_SIZE} height={PLOT_Q_SIZE} />
 
-              <Stack gap="sm" align="center" w="100%" maw={360}>
-                <Stack gap="xs" w="100%">
-                  <Text fw={500} ta="center">Your estimate (0.0 to 1.0):</Text>
-                  <TextInput
-                    placeholder="e.g., 0.7"
-                    value={userGuess}
-                    onChange={(event) => {
-                      setUserGuess(event.currentTarget.value);
-                      if (showAlert) setShowAlert(false);
-                    }}
-                    size="md"
-                    radius="md"
-                    error={showAlert ? "Value must be between 0.0 and 1.0" : null}
-                    styles={{
-                      input: {
-                        textAlign: 'center',
-                        fontSize: '1.1rem',
-                        fontWeight: 500
-                      }
-                    }}
-                  />
-                  <Text size="xs" ta="center" c="dimmed">
-                    0.0 = no relationship, 1.0 = perfect positive relationship
-                  </Text>
-                </Stack>
-
-                <Button
+            <Stack gap="sm" align="center" w="100%" maw={360}>
+              <Stack gap="xs" w="100%">
+                <Text fw={500} ta="center">Your estimate (0.0 to 1.0):</Text>
+                <TextInput
+                  placeholder="e.g., 0.7"
+                  value={userGuess}
+                  onChange={(event) => {
+                    setUserGuess(event.currentTarget.value);
+                    if (showAlert) setShowAlert(false);
+                  }}
                   size="md"
-                  onClick={handleSubmit}
-                  leftSection={<IconTarget size={16} />}
                   radius="md"
-                  variant="filled"
-                  fullWidth
-                >
-                  Submit Answer
-                </Button>
-              </Stack>
-            </Stack>
-          ) : (
-            <Stack gap="md" align="center">
-              {/* Status header — fixed width */}
-              <Card withBorder radius="md" p="xs" bg={isCorrect ? 'teal.0' : 'red.0'} w={FEEDBACK_CARD_W} mx="auto">
-                <Text fw={700} c={isCorrect ? 'teal.8' : 'red.8'}>
-                  {isCorrect ? '✅ Correct' : '❌ Not quite'}
+                  error={showAlert ? "Value must be between 0.0 and 1.0" : null}
+                  styles={{
+                    input: {
+                      textAlign: 'center',
+                      fontSize: '1.1rem',
+                      fontWeight: 500
+                    }
+                  }}
+                />
+                <Text size="xs" ta="center" c="dimmed">
+                  0.0 = no relationship, 1.0 = perfect positive relationship
                 </Text>
-              </Card>
-
-              {/* Plot — fixed width wrapper to align with cards */}
-              <div style={{ width: FEEDBACK_CARD_W, maxWidth: '100%' }}>
-                <ScatterPlot data={currentData} correlation={actualCorrelation} width={PLOT_FB_SIZE} height={PLOT_FB_SIZE} />
-              </div>
-
-              {/* Details — fixed width */}
-              <Card withBorder p="md" radius="md" w={FEEDBACK_CARD_W} mx="auto" bg="gray.0">
-                <Stack gap="sm">
-                  <Group justify="space-between" align="center">
-                    <Text fw={500}>Your answer</Text>
-                    <Badge color="blue" size="lg" variant="light">
-                      {(typeof userGuess === 'number' ? userGuess : guessNumber).toFixed(1)}
-                    </Badge>
-                  </Group>
-
-                  <Group justify="space-between" align="center">
-                    <Text fw={500}>Correct answer</Text>
-                    <Badge color="green" size="lg" variant="light">
-                      {actualCorrelation.toFixed(1)}
-                    </Badge>
-                  </Group>
-
-                  <Divider />
-
-                  {/* Optional small hint */}
-                  <Text size="sm" c="dimmed">
-                    Tighter clustering around a clear upward line → higher r; more diffuse cloud → lower r.
-                  </Text>
-                </Stack>
-              </Card>
+              </Stack>
 
               <Button
                 size="md"
-                onClick={nextTrial}
-                color="green"
+                onClick={handleSubmit}
+                leftSection={<IconTarget size={16} />}
                 radius="md"
-                fullWidth
-                maw={320}
                 variant="filled"
+                fullWidth
               >
                 {currentTrial < shuffledCorrelations.length - 1 ? 'Next Question' : 'Complete'}
               </Button>
             </Stack>
-          )}
+          </Stack>
         </Card>
       </Stack>
     </Container>
