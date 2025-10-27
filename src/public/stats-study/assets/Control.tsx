@@ -16,7 +16,6 @@ import {
 } from '@mantine/core';
 import { IconTarget } from '@tabler/icons-react';
 
-/* -------------------- Types (simplified: no per-trial accuracy/score) -------------------- */
 interface DataPoint { x: number; y: number; }
 
 interface TrialResponse {
@@ -30,15 +29,15 @@ interface TrialResponse {
 interface StudyData {
   totalTrials: number;
   totalCorrect: number;
-  percentCorrect: number;  // 0..100
+  percentCorrect: number;
   responses: TrialResponse[];
-  timeSpent: number;       // ms
+  timeSpent: number;
   correlations: number[];
 }
 
 interface StudyConfig {
-  timeLimit?: number;        // IGNORED (no timer now)
-  correlations?: number[];   // optional override sequence (default 0.1..1.0)
+  timeLimit?: number;
+  correlations?: number[];
 }
 
 interface ControlProps {
@@ -46,7 +45,7 @@ interface ControlProps {
   studyConfig?: StudyConfig;
   participantData?: Record<string, any>;
   trialIndex?: number;
-  setAnswer?: (answer: any) => void; // kept for compatibility (unused)
+  setAnswer?: (answer: any) => void;
 }
 
 interface ScatterPlotProps {
@@ -56,10 +55,8 @@ interface ScatterPlotProps {
   height?: number;
 }
 
-/* -------------------- Layout constants -------------------- */
-const PLOT_Q_SIZE = 320;          // question plot size
+const PLOT_Q_SIZE = 320;
 
-/* -------------------- Exact-r helpers (seeded, smooth) -------------------- */
 const mean = (a: number[]) => a.reduce((s, v) => s + v, 0) / a.length;
 const sd = (a: number[]) => {
   const m = mean(a);
@@ -84,29 +81,23 @@ class SeededRandom {
   }
 }
 function boxMuller(rng: SeededRandom) {
-  let u1 = 0; while (u1 === 0) u1 = rng.random(); // avoid log(0)
+  let u1 = 0; while (u1 === 0) u1 = rng.random();
   const u2 = rng.random();
   const R = Math.sqrt(-2 * Math.log(u1));
   return { z1: R * Math.cos(2 * Math.PI * u2), z2: R * Math.sin(2 * Math.PI * u2) };
 }
 
-/** Build a stable base (Xs, Zperp) once per trial (sample-orthogonal). */
 function makeBase(n = 100, seed = 777): { Xs: number[]; Zperp: number[] } {
   const rng = new SeededRandom(seed);
   const X0 = Array.from({ length: n }, () => boxMuller(rng).z1);
   const Z0 = Array.from({ length: n }, () => boxMuller(rng).z2);
-
   const Xs = zscore(X0);
-
-  // orthogonalize Z0 against Xs so sample corr(Xs, Zperp) = 0
   const denom = Xs.reduce((s, x) => s + x * x, 0) || 1e-12;
   const beta = Xs.reduce((s, x, i) => s + x * Z0[i], 0) / denom;
   const Zperp = zscore(Z0.map((z, i) => z - beta * Xs[i]));
-
   return { Xs, Zperp };
 }
 
-/** Get points for any r using the same base; exact sample corr = r. */
 function pointsAtR(
   base: { Xs: number[]; Zperp: number[] },
   r: number,
@@ -115,13 +106,12 @@ function pointsAtR(
 ): DataPoint[] {
   const { Xs, Zperp } = base;
   const b = Math.sqrt(Math.max(0, 1 - r * r));
-  const Y = Xs.map((x, i) => r * x + b * Zperp[i]);   // exact sample r
+  const Y = Xs.map((x, i) => r * x + b * Zperp[i]);
   const Xp = rescale(Xs, xRange[0], xRange[1]);
   const Yp = rescale(Y, yRange[0], yRange[1]);
   return Xp.map((x, i) => ({ x, y: Yp[i] }));
 }
 
-/* -------------------- Scatter Plot -------------------- */
 const ScatterPlot: React.FC<ScatterPlotProps> = ({
   data,
   correlation,
@@ -137,8 +127,7 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({
   const rawYMin = Math.min(...data.map(d => d.y));
   const rawYMax = Math.max(...data.map(d => d.y));
 
-  // pad the domain a touch so min/max points don't map to the axes
-  const padFrac = 0.03; // 3% of span; tweak if you want
+  const padFrac = 0.03;
   const xSpan = Math.max(1e-9, rawXMax - rawXMin);
   const ySpan = Math.max(1e-9, rawYMax - rawYMin);
   const xMin = rawXMin - xSpan * padFrac;
@@ -155,7 +144,6 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({
     <Center>
       <div style={{ padding: '0.35rem', background: 'white', borderRadius: '8px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
         <svg width={width} height={height} style={{ background: 'white' }}>
-          {/* Grid lines */}
           {[0.25, 0.5, 0.75].map(tick => (
             <g key={tick}>
               <line
@@ -177,11 +165,9 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({
             </g>
           ))}
 
-          {/* Axes */}
           <line x1={margin} y1={height - margin} x2={width - margin} y2={height - margin} stroke="#495057" strokeWidth="2" />
           <line x1={margin} y1={margin} x2={margin} y2={height - margin} stroke="#495057" strokeWidth="2" />
 
-          {/* Data points */}
           {data.map((point, i) => (
             <circle
               key={i}
@@ -200,7 +186,6 @@ const ScatterPlot: React.FC<ScatterPlotProps> = ({
   );
 };
 
-/* -------------------- Main Control Component -------------------- */
 const Control: React.FC<ControlProps> = ({
   onComplete,
   studyConfig = {},
@@ -213,24 +198,20 @@ const Control: React.FC<ControlProps> = ({
     [studyConfig.correlations]
   );
 
-  // shuffle once (remove shuffle to preserve provided order)
   const [shuffledCorrelations] = useState<number[]>(
     () => [...defaultCorrs].sort(() => Math.random() - 0.5)
   );
 
-  // Create deterministic seeds per trial (share these with slider condition later)
   const baseSeeds = useMemo(
     () => shuffledCorrelations.map((_, i) => 1000 + i),
     [shuffledCorrelations]
   );
 
-  // Build bases once per trial
   const bases = useMemo(
     () => baseSeeds.map(seed => makeBase(100, seed)),
     [baseSeeds]
   );
 
-  // Build plots for each trial at its target r* (render ~0.99 for the "1.0" label)
   const plotData = useMemo(
     () => shuffledCorrelations.map((r, i) => pointsAtR(bases[i], Math.min(r, 0.99))),
     [shuffledCorrelations, bases]
@@ -243,10 +224,8 @@ const Control: React.FC<ControlProps> = ({
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
-  // time tracking
   const startRef = useRef<number | null>(null);
 
-  // Custom Next button control - keep parity with your previous behavior
   useEffect(() => {
     const controlNextButton = () => {
       const nextButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
@@ -281,8 +260,6 @@ const Control: React.FC<ControlProps> = ({
 
   const handleSubmit = (): void => {
     const guess = typeof userGuess === 'string' ? parseFloat(userGuess) : userGuess;
-
-    // Validate input range
     if (userGuess === '' || isNaN(guess) || guess < 0 || guess > 1) {
       setShowAlert(true);
       return;
@@ -300,8 +277,6 @@ const Control: React.FC<ControlProps> = ({
     };
 
     setResponses(prev => [...prev, responseData]);
-
-    // Move to next trial immediately without showing feedback
     nextTrial();
   };
 
@@ -320,7 +295,7 @@ const Control: React.FC<ControlProps> = ({
     const end = performance.now();
     const timeSpent = startRef.current ? end - startRef.current : 0;
 
-    const totalTrials = responses.length; // each submit pushes a response
+    const totalTrials = responses.length;
     const correlations = shuffledCorrelations.slice(0, totalTrials);
     const totalCorrect = responses.filter(r => r.isCorrect).length;
     const percentCorrect = totalTrials > 0 ? (totalCorrect / totalTrials) * 100 : 0;
@@ -339,7 +314,6 @@ const Control: React.FC<ControlProps> = ({
 
   const progress = ((currentTrial + 1) / shuffledCorrelations.length) * 100;
 
-  /* -------------------- RENDER -------------------- */
   if (!studyStarted) {
     return (
       <Container size="lg" py="xl">
@@ -377,7 +351,6 @@ const Control: React.FC<ControlProps> = ({
     );
   }
 
-  // Completion screen
   if (isComplete) {
     const totalTrials = responses.length;
     const totalCorrect = responses.filter(r => r.isCorrect).length;
@@ -407,11 +380,9 @@ const Control: React.FC<ControlProps> = ({
     );
   }
 
-  // Trial screen - no feedback, just question
   return (
     <Container size="lg" py="md">
       <Stack gap="md" align="center">
-        {/* Sticky progress */}
         <Card
           withBorder
           radius="md"
@@ -427,7 +398,6 @@ const Control: React.FC<ControlProps> = ({
           </Group>
         </Card>
 
-        {/* Main content */}
         <Card withBorder radius="md" p="md" shadow="sm" maw={720} w="100%">
           <Stack gap="md" align="center">
             <Title order={3} ta="center" c="dark.8">

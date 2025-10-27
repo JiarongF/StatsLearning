@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 
-/* -------------------- Types -------------------- */
 interface DataPoint { x: number; y: number; }
 interface CorrelationPlotProps {
-  correlation?: number;              // r in [-1, 1]
-  slope?: number | null;             // desired slope magnitude; sign comes from r
+  correlation?: number;
+  slope?: number | null;
   seed?: number;
   numPoints?: number;
   width?: number;
@@ -14,20 +13,17 @@ interface CorrelationPlotProps {
   pointColor?: string;
   pointRadius?: number;
   showTitle?: boolean;
-  showSlope?: boolean;               // (unused in this code, left for compat)
+  showSlope?: boolean;
   showSlopeLine?: boolean;
-  domainPadFrac?: number;            // padding applied to fixed ranges
+  domainPadFrac?: number;
   leftMargin?: number;
   rightMargin?: number;
   topMargin?: number;
   bottomMargin?: number;
   parameters?: Record<string, any>;
-
-  /** NEW: choose how axes are computed. 'fixed' recommended for comparisons */
   axisMode?: 'fixed' | 'tight';
 }
 
-/* -------------------- tiny coercion helpers -------------------- */
 const isNil = (v: any) => v === undefined || v === null || v === '';
 const num = (v: any, d: number) => {
   if (isNil(v)) return d;
@@ -51,7 +47,6 @@ const range = (v: any, d: [number, number]): [number, number] => {
   return d;
 };
 
-/* -------------------- helpers -------------------- */
 const mean = (a: number[]) => a.reduce((s, v) => s + v, 0) / a.length;
 const sd = (a: number[]) => {
   const m = mean(a);
@@ -79,26 +74,15 @@ function boxMuller(rng: SeededRandom){
 
 function makeBase(n: number, seed: number){
   const rng = new SeededRandom(seed);
-  // Generate two independent standard-normal streams
   const X0 = Array.from({length:n}, () => boxMuller(rng).z1);
   const Z0 = Array.from({length:n}, () => boxMuller(rng).z2);
   const Xs = zscore(X0);
-
-  // Orthogonalize Z0 against Xs for numerical stability
   const denom = Xs.reduce((s,x)=>s+x*x,0) || 1e-12;
   const beta = Xs.reduce((s,x,i)=>s+x*Z0[i],0) / denom;
   const Zperp = zscore(Z0.map((z,i)=> z - beta*Xs[i]));
   return { Xs, Zperp };
 }
 
-/**
- * Generate correlated (X, Y) with correlation r.
- * If targetSlope is provided, we set sd(Y)/sd(X) so that the *OLS slope*
- * is |targetSlope| but the SIGN of the slope (and of the relationship)
- * is determined by the sign of r. This guarantees consistency:
- *   sign(slope) === sign(r)
- * which is a mathematical identity when X, Y are centered.
- */
 function generateCorrelationSlopeData(
   r: number,
   targetSlope: number | null,
@@ -107,87 +91,55 @@ function generateCorrelationSlopeData(
   xRange: [number, number] = [0, 10],
   yRange: [number, number] = [0, 10]
 ): { data: DataPoint[]; actualSlope: number } {
-  // keep r in range
   const rr = Math.max(-0.999, Math.min(0.999, r));
-  const rSign = Math.sign(rr) || 1;       // define sign for r=0 edge
+  const rSign = Math.sign(rr) || 1;
   const rAbs = Math.max(Math.abs(rr), 1e-6);
-
   const { Xs, Zperp } = makeBase(n, seed);
-
-  // Standardized base Y before scaling into the box
-  // This ensures Corr(Xs, Y0) ~= rr
   const Y0 = Xs.map((x, i) => rr * x + Math.sqrt(1 - rr * rr) * Zperp[i]);
-
-  // Box (data-units) info
   const cx = 0.5 * (xRange[0] + xRange[1]);
   const cy = 0.5 * (yRange[0] + yRange[1]);
   const xSpan = Math.max(1e-9, xRange[1] - xRange[0]);
   const ySpan = Math.max(1e-9, yRange[1] - yRange[0]);
-
-  const sx0 = sd(Xs);           // ~1
-  const sy0 = sd(Y0);           // ~1
-
-  // How many sds should fit inside half-ranges
-  const padFrac = 0.05;         // breathing room
+  const sx0 = sd(Xs);
+  const sy0 = sd(Y0);
+  const padFrac = 0.05;
   const halfX = 0.5 * xSpan * (1 - padFrac);
   const halfY = 0.5 * ySpan * (1 - padFrac);
-  const sigmaThreshold = 2.5;   // most points stay in-bounds
-
-  // Decide X scaling (a). If targetSlope provided, also enforce Y sd.
+  const sigmaThreshold = 2.5;
   let a: number;
 
   if (targetSlope !== null && Number.isFinite(targetSlope)) {
-    // IMPORTANT: slope sign must match corr sign (mathematically true)
-    // We take only the magnitude from targetSlope.
     const mAbs = Math.abs(targetSlope);
-
-    // For centered vars, OLS slope = r * (sdY / sdX).
-    // So sdY / sdX should be mAbs / |r|.
-    // We'll set sdX = a*sx0, sdY = (mAbs/rAbs)*a*sx0, subject to box constraints.
     const mAbsOverR = mAbs / rAbs;
-
     const a_max_x = halfX / (sigmaThreshold * sx0);
     const a_max_y = halfY / (sigmaThreshold * sx0 * mAbsOverR);
     a = Math.max(1e-9, Math.min(a_max_x, a_max_y) * 0.95);
-
     const desiredSy = mAbsOverR * a * sx0;
     const scaleY = desiredSy / (sy0 || 1);
-
-    // NO sign flip: sign(slope) should equal sign(r).
-    // Therefore we just scale Y0; its sign already matches rr.
     const Xp = Xs.map(x => cx + a * x);
     const Yp = Y0.map(y => cy + scaleY * y);
-
-    // Compute actual slope (least-squares) in data coords
     const xMean = mean(Xp);
     const yMean = mean(Yp);
     const numCov = Xp.reduce((s, x, i) => s + (x - xMean) * (Yp[i] - yMean), 0);
     const denVar = Xp.reduce((s, x) => s + (x - xMean) ** 2, 0);
     const actualSlope = denVar > 0 ? numCov / denVar : 0;
-
     return { data: Xp.map((x, i) => ({ x, y: Yp[i] })), actualSlope };
   }
 
-  // No explicit slope target: scale X to box; Y follows to preserve r and natural spread
   a = Math.max(1e-9, halfX / (sigmaThreshold * sx0) * 0.95);
-
   const Xp = Xs.map(x => cx + a * x);
-  const scaleY = a * (sy0 || 1);        // keep comparable spread
+  const scaleY = a * (sy0 || 1);
   const Yp = Y0.map(y => cy + (y / (sy0 || 1)) * scaleY);
-
   const xMean = mean(Xp);
   const yMean = mean(Yp);
   const numCov = Xp.reduce((s, x, i) => s + (x - xMean) * (Yp[i] - yMean), 0);
   const denVar = Xp.reduce((s, x) => s + (x - xMean) ** 2, 0);
   const actualSlope = denVar > 0 ? numCov / denVar : 0;
-
   return { data: Xp.map((x, i) => ({ x, y: Yp[i] })), actualSlope };
 }
 
-/* -------------------- Component -------------------- */
 const CorrelationPlot: React.FC<CorrelationPlotProps> = (props) => {
   const p = props.parameters ?? {};
-
   const correlation = num(p.correlation ?? props.correlation, 0.7);
   const slope = (isNil(p.slope) && isNil(props.slope)) ? null : num(p.slope ?? props.slope, 1);
   const seed = num(p.seed ?? props.seed, 777);
@@ -199,17 +151,13 @@ const CorrelationPlot: React.FC<CorrelationPlotProps> = (props) => {
   const pointColor = (p.pointColor ?? props.pointColor ?? '#228be6') as string;
   const pointRadius = num(p.pointRadius ?? props.pointRadius, 3);
   const domainPadFrac = num(p.domainPadFrac ?? props.domainPadFrac, 0.03);
-
   const leftMargin = num(p.leftMargin ?? props.leftMargin, 60);
   const rightMargin = num(p.rightMargin ?? props.rightMargin, 36);
   const topMargin = num(p.topMargin ?? props.topMargin, 36);
   const bottomMargin = num(p.bottomMargin ?? props.bottomMargin, 36);
-
   const showTitle = bool(p.showTitle ?? props.showTitle, false);
   const showSlopeLine = bool(p.showSlopeLine ?? props.showSlopeLine, false);
-
   const axisMode = (p.axisMode ?? props.axisMode ?? 'fixed') as 'fixed' | 'tight';
-
   const r = Number.isFinite(Number(correlation)) ? Number(correlation) : 0;
 
   const { data, actualSlope } = useMemo(
@@ -219,14 +167,11 @@ const CorrelationPlot: React.FC<CorrelationPlotProps> = (props) => {
 
   const plotWidth = Math.max(1, width - leftMargin - rightMargin);
   const plotHeight = Math.max(1, height - topMargin - bottomMargin);
-
   const eps = 1e-9;
 
-  // ===== Axes =====
   let xMin: number, xMax: number, yMin: number, yMax: number;
 
   if (axisMode === 'fixed') {
-    // Use provided ranges; apply optional padding ONCE (consistent across plots)
     const pad = domainPadFrac;
     const xMid = 0.5 * (xRange[0] + xRange[1]);
     const yMid = 0.5 * (yRange[0] + yRange[1]);
@@ -235,7 +180,6 @@ const CorrelationPlot: React.FC<CorrelationPlotProps> = (props) => {
     xMin = xMid - xHalf; xMax = xMid + xHalf;
     yMin = yMid - yHalf; yMax = yMid + yHalf;
   } else {
-    // Tight fit to data (optional, but not good for comparing slopes visually)
     const rawXMin = Math.min(...data.map(d => d.x));
     const rawXMax = Math.max(...data.map(d => d.x));
     const rawYMin = Math.min(...data.map(d => d.y));
@@ -258,7 +202,6 @@ const CorrelationPlot: React.FC<CorrelationPlotProps> = (props) => {
     [seed, numPoints, width, height]
   );
 
-  // Regression line for display (in *data* coords)
   const xMean = mean(data.map(d => d.x));
   const yMean = mean(data.map(d => d.y));
   const intercept = yMean - actualSlope * xMean;
