@@ -1,5 +1,0 @@
-{
-  "yaml.schemas": {
-    "./src/parser/StudyConfigSchema.json": "*.yaml"
-  }
-}

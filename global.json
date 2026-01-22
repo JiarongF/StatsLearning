@@ -1,15 +1,11 @@
 {
-  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/dev/src/parser/GlobalConfigSchema.json",
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.3.2/src/parser/GlobalConfigSchema.json",
   "configsList": [
-    "stats-study",
     "tutorial",
-    "example-brush-interactions",
-    "example-cleveland",
-    "example-mvnv",
-    "example-VLAT-full-randomized",
-    "example-VLAT-mini-randomized",
+    "tutorial-replication",
     "demo-html",
     "demo-html-input",
+    "demo-screen-recording",
     "demo-survey",
     "demo-training",
     "demo-html-trrack",
@@ -22,15 +18,30 @@
     "demo-dynamic",
     "demo-style",
     "demo-yaml",
+    "demo-ranking-widget",
+    "example-brush-interactions",
+    "example-cleveland",
+    "example-mvnv",
+    "example-VLAT-adaptive",
+    "example-VLAT-full-randomized",
+    "example-VLAT-mini-randomized",
+    "library-adaptive-vlat",
     "library-beauvis",
+    "library-berlin-num",
     "library-calvi",
     "library-color-blindness",
     "library-demographics",
+    "library-graph-literacy-scale",
     "library-mic-check",
     "library-mini-vlat",
     "library-nasa-tlx",
     "library-previs",
+    "library-quis",
+    "library-sam",
+    "library-screen-recording",
+    "library-smeq",
     "library-sus",
+    "library-virtual-chinrest",
     "library-vlat",
     "test-audio",
     "test-library",
@@ -41,26 +52,20 @@
     "test-step-logic"
   ],
   "configs": {
-    "stats-study": {
-      "path": "stats-study/config.json"
-    },
     "tutorial": {
       "path": "tutorial/config.json"
     },
-    "example-brush-interactions": {
-      "path": "example-brush-interactions/config.json"
-    },
-    "example-cleveland": {
-      "path": "example-cleveland/config.json"
-    },
-    "example-mvnv": {
-      "path": "example-mvnv/config.json"
+    "tutorial-replication": {
+      "path": "tutorial/replication-config.json"
     },
     "demo-video-slider": {
       "path": "demo-video-slider/config.json"
     },
     "demo-html": {
       "path": "demo-html/config.json"
+    },
+    "demo-screen-recording": {
+      "path": "demo-screen-recording/config.json"
     },
     "demo-html-input": {
       "path": "demo-html-input/config.json"
@@ -80,12 +85,6 @@
     "demo-dynamic": {
       "path": "demo-dynamic/config.json"
     },
-    "example-VLAT-full-randomized": {
-      "path": "example-VLAT-full-randomized/config.json"
-    },
-    "example-VLAT-mini-randomized": {
-      "path": "example-VLAT-mini-randomized/config.json"
-    },
     "demo-html-trrack": {
       "path": "demo-html-trrack/config.json"
     },
@@ -98,19 +97,40 @@
     "demo-style": {
       "path": "demo-style/config.json"
     },
+    "demo-vega": {
+      "path": "demo-vega/config.json"
+    },
     "demo-yaml": {
       "path": "demo-yaml/config.yaml"
     },
-    "test-audio": {
-      "path": "test-audio/config.json",
-      "test": true
+    "demo-ranking-widget": {
+      "path": "demo-ranking-widget/config.json"
     },
-    "test-library": {
-      "path": "test-library/config.json",
+    "example-brush-interactions": {
+      "path": "example-brush-interactions/config.json"
+    },
+    "example-cleveland": {
+      "path": "example-cleveland/config.json"
+    },
+    "example-mvnv": {
+      "path": "example-mvnv/config.json"
+    },
+    "example-VLAT-full-randomized": {
+      "path": "example-VLAT-full-randomized/config.json"
+    },
+    "example-VLAT-mini-randomized": {
+      "path": "example-VLAT-mini-randomized/config.json"
+    },
+    "library-adaptive-vlat": {
+      "path": "library-adaptive-vlat/config.json",
       "test": true
     },
     "library-beauvis": {
       "path": "library-beauvis/config.json",
+      "test": true
+    },
+    "library-berlin-num": {
+      "path": "library-berlin-num/config.json",
       "test": true
     },
     "library-calvi": {
@@ -123,6 +143,10 @@
     },
     "library-demographics": {
       "path": "library-demographics/config.json",
+      "test": true
+    },
+    "library-graph-literacy-scale": {
+      "path": "library-graph-literacy-scale/config.json",
       "test": true
     },
     "library-mic-check": {
@@ -141,6 +165,22 @@
       "path": "library-previs/config.json",
       "test": true
     },
+    "library-quis": {
+      "path": "library-quis/config.json",
+      "test": true
+    },
+    "library-sam": {
+      "path": "library-sam/config.json",
+      "test": true
+    },
+    "library-screen-recording": {
+      "path": "library-screen-recording/config.json",
+      "test": true
+    },
+    "library-smeq": {
+      "path": "library-smeq/config.json",
+      "test": true
+    },
     "library-sus": {
       "path": "library-sus/config.json",
       "test": true
@@ -149,15 +189,20 @@
       "path": "library-vlat/config.json",
       "test": true
     },
+    "test-audio": {
+      "path": "test-audio/config.json",
+      "test": true
+    },
+    "test-library": {
+      "path": "test-library/config.json",
+      "test": true
+    },
     "test-likert-matrix": {
       "path": "test-likert-matrix/config.json"
     },
     "test-parser-errors": {
       "path": "test-parser-errors/config.json",
       "test": true
-    },
-    "demo-vega": {
-      "path": "demo-vega/config.json"
     },
     "test-randomization": {
       "path": "test-randomization/config.json",
@@ -169,6 +214,14 @@
     },
     "test-step-logic": {
       "path": "test-step-logic/config.json",
+      "test": true
+    },
+    "library-virtual-chinrest": {
+      "path": "library-virtual-chinrest/config.json",
+      "test": true
+    },
+    "example-VLAT-adaptive": {
+      "path": "example-VLAT-adaptive/config.json",
       "test": true
     }
   }

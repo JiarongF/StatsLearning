@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/dev/src/parser/StudyConfigSchema.json",
+  "$schema": "https://raw.githubusercontent.com/revisit-studies/study/v2.3.2/src/parser/StudyConfigSchema.json",
   "studyMetadata": {
     "title": "CALVI: Critical Thinking Assessment for Literacy in Visualizations",
     "version": "1.0.0",
@@ -18,7 +18,8 @@
     "contactEmail": "",
     "logoPath": "revisitAssets/revisitLogoSquare.svg",
     "withProgressBar": true,
-    "withSidebar": true
+    "withSidebar": true,
+    "stylesheetPath": "library-calvi/assets/image.css"
   },
   "importedLibraries": [
     "calvi"
